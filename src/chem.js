@@ -34,11 +34,35 @@ function parseMolblock(mb) {
   return { atoms, bonds };
 }
 
+// ペプチドの略記 "pep:Gly-Ala-Phe"（N末端 → C末端）を SMILES に展開する
+const RESIDUES = {
+  Gly: '', Ala: 'C', Ser: 'CO', Cys: 'CS', Phe: 'Cc1ccccc1', Tyr: 'Cc1ccc(O)cc1',
+  Lys: 'CCCCN', Glu: 'CCC(=O)O', Asp: 'CC(=O)O', Val: 'C(C)C', Leu: 'CC(C)C',
+};
+
+function expand(s) {
+  if (!s.startsWith('pep:')) return s;
+  const seq = s.slice(4).split('-');
+  return 'N' + seq.map((r, i) => {
+    if (!(r in RESIDUES)) throw new Error(`unknown residue ${r}`);
+    const side = RESIDUES[r] ? `(${RESIDUES[r]})` : '';
+    return `C${side}C(=O)` + (i === seq.length - 1 ? 'O' : 'N');
+  }).join('');
+}
+
 function graphFromSmiles(RDKit, smiles) {
-  const mol = RDKit.get_mol(smiles);
+  const mol = RDKit.get_mol(expand(smiles));
   if (!mol || !mol.is_valid()) throw new Error(`invalid SMILES: ${smiles}`);
   try {
-    return parseMolblock(mol.get_molblock());
+    const g = parseMolblock(mol.get_molblock());
+    const q = RDKit.get_qmol('a');
+    try {
+      const m = JSON.parse(mol.get_substruct_matches(q));
+      (Array.isArray(m) ? m : []).forEach((x) => { g.atoms[x.atoms[0]].arom = true; });
+    } finally {
+      q.delete();
+    }
+    return g;
   } finally {
     mol.delete();
   }
@@ -113,7 +137,7 @@ function components(g) {
 }
 
 function canonical(RDKit, smilesOrMolblock) {
-  const mol = RDKit.get_mol(smilesOrMolblock);
+  const mol = RDKit.get_mol(expand(smilesOrMolblock));
   if (!mol || !mol.is_valid()) throw new Error(`invalid structure: ${smilesOrMolblock}`);
   try {
     return mol.get_smiles();
@@ -133,7 +157,11 @@ function graphToSmilesList(RDKit, g) {
 function refine(g, fixed) {
   const nodes = g.atoms.map((a) => a.el);
   const adj = g.atoms.map(() => []);
-  g.bonds.forEach((b) => { adj[b.a].push([b.b, b.order]); adj[b.b].push([b.a, b.order]); });
+  g.bonds.forEach((b) => {
+    const o = g.atoms[b.a].arom && g.atoms[b.b].arom ? 'a' : b.order;
+    adj[b.a].push([b.b, o]);
+    adj[b.b].push([b.a, o]);
+  });
   const heavy = g.atoms.length;
   for (let i = 0; i < heavy; i++) {
     const h = hCount(g, i);
@@ -185,11 +213,13 @@ function bondInSmallRing(g, bond, maxSize) {
   return dist.has(bond.b) && dist.get(bond.b) + 1 < maxSize;
 }
 
-function hasCisTrans(g) {
+// シス-トランス異性を生じる C=C の数
+function stereoBondCount(g) {
+  let n = 0;
   for (const bond of g.bonds) {
     if (bond.order !== 2) continue;
     const { a, b } = bond;
-    if (g.atoms[a].el !== 'C' || g.atoms[b].el !== 'C') continue;
+    if (g.atoms[a].el !== 'C' || g.atoms[b].el !== 'C' || g.atoms[a].arom) continue;
     if (bondInSmallRing(g, bond, 8)) continue;
     const { color, adj } = refine(g, [a, b]);
     const ok = [a, b].every((x) => {
@@ -197,9 +227,13 @@ function hasCisTrans(g) {
       if (other.length !== 2) return false; // アレン等は除外
       return color[other[0][0]] !== color[other[1][0]];
     });
-    if (ok) return true;
+    if (ok) n++;
   }
-  return false;
+  return n;
+}
+
+function hasCisTrans(g) {
+  return stereoBondCount(g) > 0;
 }
 
 // ---------- 変換反応 ----------
@@ -209,35 +243,86 @@ function addAtom(g, el) {
   return g.atoms.length - 1;
 }
 
+// ベンゼン環の中の結合は数えない
+function isAromBond(g, b) {
+  return g.atoms[b.a].arom && g.atoms[b.b].arom;
+}
+
 function hasCC(g, order) {
-  return g.bonds.some((b) => b.order === order && g.atoms[b.a].el === 'C' && g.atoms[b.b].el === 'C');
+  return g.bonds.some((b) => b.order === order && !isAromBond(g, b)
+    && g.atoms[b.a].el === 'C' && g.atoms[b.b].el === 'C');
 }
 
 function isCarbonyl(g, c) {
   return neighbors(g, c).some((n) => n.order === 2 && g.atoms[n.atom].el === 'O');
 }
 
-// 硫酸酸性 KMnO4: 第一級アルコール・アルデヒド → カルボン酸、第二級アルコール → ケトン、第三級は反応しない
+function isPhenolO(g, o) {
+  return g.atoms[o].el === 'O' && hCount(g, o) === 1 && neighbors(g, o).some((n) => g.atoms[n.atom].arom);
+}
+
+// 生成物のうち、除外する原子を含む成分（CO2 や H2O になった断片）を取り除いて SMILES にする
+function productsExcluding(RDKit, g, drop) {
+  // components は原子をコピーするので、元の添字で判定するために印を付けておく
+  g.atoms.forEach((a, i) => { a._i = i; });
+  const keep = components(g).filter((p) => !p.atoms.some((a) => drop.has(a._i)));
+  g.atoms.forEach((a) => { delete a._i; });
+  return keep.map((p) => canonical(RDKit, toMolblock(p))).sort();
+}
+
+// 硫酸酸性 KMnO4
+// - ベンゼン環の側鎖: 環に直結した炭素に H があれば、側鎖全体が -COOH になる
+// - 第一級アルコール・アルデヒド → カルボン酸、第二級アルコール → ケトン、第三級は反応しない
 function oxidize(RDKit, g0) {
   const g = cloneGraph(g0);
   if (hasCC(g, 2) || hasCC(g, 3)) throw new Unsupported('KMnO4 with C=C / C#C');
+  if (g.atoms.some((a, i) => isPhenolO(g, i))) throw new Unsupported('KMnO4 with phenol');
   let changed = false;
+  const drop = new Set();
   const n0 = g.atoms.length;
+
   for (let c = 0; c < n0; c++) {
-    if (g.atoms[c].el !== 'C') continue;
+    const a = g.atoms[c];
+    if (a.el !== 'C' || a.arom) continue;
+    const nb = neighbors(g, c);
+    const ring = nb.filter((x) => g.atoms[x.atom].arom);
+    if (ring.length !== 1) continue;
+    if (isCarbonyl(g, c)) {
+      const singleHet = nb.some((x) => x.order === 1 && g.atoms[x.atom].el !== 'C');
+      if (!singleHet && hCount(g, c) === 0) throw new Unsupported('aryl ketone oxidation');
+      continue; // アルデヒドは下で、カルボン酸・エステル・アミドはそのまま
+    }
+    if (nb.some((x) => x.order !== 1)) continue;
+    if (hCount(g, c) === 0) continue; // tert-ブチル基などは酸化されない
+    // 側鎖を切り離して -COOH にする
+    for (const x of nb) {
+      if (x.atom === ring[0].atom) continue;
+      g.bonds.splice(g.bonds.indexOf(x.bond), 1);
+      markFragment(g, x.atom, drop);
+    }
+    const o1 = addAtom(g, 'O');
+    const o2 = addAtom(g, 'O');
+    g.bonds.push({ a: c, b: o1, order: 2 }, { a: c, b: o2, order: 1 });
+    changed = true;
+  }
+
+  for (let c = 0; c < n0; c++) {
+    if (g.atoms[c].el !== 'C' || g.atoms[c].arom || drop.has(c)) continue;
     const nb = neighbors(g, c);
     const carbonNb = nb.filter((x) => g.atoms[x.atom].el === 'C').length;
     const h = hCount(g, c);
     if (isCarbonyl(g, c)) {
       // アルデヒド基 → カルボキシ基
-      const singleO = nb.filter((x) => x.order === 1 && g.atoms[x.atom].el === 'O');
-      if (h === 1 && singleO.length === 0) {
+      const singleHet = nb.filter((x) => x.order === 1 && g.atoms[x.atom].el !== 'C');
+      if (h === 1 && singleHet.length === 0) {
         if (carbonNb === 0) throw new Unsupported('formaldehyde oxidation');
         const o = addAtom(g, 'O');
         g.bonds.push({ a: c, b: o, order: 1 });
         changed = true;
-      } else if (h === 1 && singleO.length === 1) {
-        throw new Unsupported('formic acid / formate oxidation');
+      } else if (h >= 1 && singleHet.length >= 1) {
+        throw new Unsupported('formic acid / formate / formamide oxidation');
+      } else if (h === 2) {
+        throw new Unsupported('formaldehyde oxidation');
       }
       continue;
     }
@@ -256,39 +341,123 @@ function oxidize(RDKit, g0) {
       changed = true;
     }
   }
-  return changed ? graphToSmilesList(RDKit, g) : [];
+  return changed ? productsExcluding(RDKit, g, drop) : [];
 }
 
-// エステルの加水分解: R-CO-O-R' → R-COOH + R'-OH
-function hydrolyze(RDKit, g0) {
-  const g = cloneGraph(g0);
-  let changed = false;
-  const n0 = g.atoms.length;
-  for (let c = 0; c < n0; c++) {
-    if (g.atoms[c].el !== 'C' || !isCarbonyl(g, c)) continue;
-    for (const x of neighbors(g, c)) {
-      if (x.order !== 1 || g.atoms[x.atom].el !== 'O') continue;
-      const oe = x.atom;
-      const alkyl = neighbors(g, oe).filter((y) => y.atom !== c);
-      if (alkyl.length !== 1 || g.atoms[alkyl[0].atom].el !== 'C') continue;
-      const r = alkyl[0].atom;
-      if (isCarbonyl(g, r)) throw new Unsupported('anhydride');
-      if (neighbors(g, r).some((y) => y.order !== 1)) throw new Unsupported('enol ester');
-      g.bonds.splice(g.bonds.indexOf(x.bond), 1);
-      const o = addAtom(g, 'O');
-      g.bonds.push({ a: c, b: o, order: 1 });
-      changed = true;
-      break;
-    }
+// start から結合をたどれる原子すべてに印を付ける（切り離した側鎖）
+function markFragment(g, start, set) {
+  const stack = [start];
+  set.add(start);
+  while (stack.length) {
+    const x = stack.pop();
+    for (const n of neighbors(g, x)) if (!set.has(n.atom)) { set.add(n.atom); stack.push(n.atom); }
   }
-  return changed ? graphToSmilesList(RDKit, g) : [];
+}
+
+// 加水分解で切れる結合: エステル R-CO-O-R' と アミド R-CO-NH-R'
+function hydrolyzable(g) {
+  const out = [];
+  g.atoms.forEach((a, c) => {
+    if (a.el !== 'C' || !isCarbonyl(g, c)) return;
+    for (const x of neighbors(g, c)) {
+      if (x.order !== 1) continue;
+      const het = g.atoms[x.atom].el;
+      if (het !== 'O' && het !== 'N') continue;
+      const other = neighbors(g, x.atom).filter((y) => y.atom !== c);
+      if (het === 'O') {
+        if (other.length !== 1 || g.atoms[other[0].atom].el !== 'C') continue; // カルボン酸
+        const r = other[0].atom;
+        if (isCarbonyl(g, r)) throw new Unsupported('anhydride');
+        if (!g.atoms[r].arom && neighbors(g, r).some((y) => y.order !== 1)) throw new Unsupported('enol ester');
+      } else {
+        if (other.some((y) => isCarbonyl(g, y.atom))) throw new Unsupported('imide');
+        if (other.length === 0) continue; // 第一級アミド R-CONH2 は扱わない
+      }
+      out.push({ c, bond: x.bond });
+    }
+  });
+  return out;
+}
+
+function breakBonds(RDKit, g0, list) {
+  const g = cloneGraph(g0);
+  const bonds = list.map((h) => g.bonds.find((b) => b.a === h.bond.a && b.b === h.bond.b));
+  for (let i = 0; i < list.length; i++) {
+    g.bonds.splice(g.bonds.indexOf(bonds[i]), 1);
+    const o = addAtom(g, 'O');
+    g.bonds.push({ a: list[i].c, b: o, order: 1 });
+  }
+  return graphToSmilesList(RDKit, g);
+}
+
+// 完全な加水分解
+function hydrolyze(RDKit, g) {
+  const hs = hydrolyzable(g);
+  return hs.length ? breakBonds(RDKit, g, hs) : [];
+}
+
+// 部分的な加水分解で得られうる化合物すべて（全部は切れない切り方）
+function partialProducts(RDKit, g) {
+  const hs = hydrolyzable(g);
+  if (hs.length < 2) throw new Unsupported('partial hydrolysis needs 2+ hydrolyzable bonds');
+  if (hs.length > 6) throw new Unsupported('too many hydrolyzable bonds');
+  const set = new Set();
+  for (let mask = 1; mask < (1 << hs.length) - 1; mask++) {
+    const pick = hs.filter((_, i) => mask & (1 << i));
+    breakBonds(RDKit, g, pick).forEach((s) => set.add(s));
+  }
+  return [...set].sort();
+}
+
+// 分子内脱水（濃硫酸・加熱）で生じるアルケン（構造異性体のみ、重複なし）
+function dehydrate(RDKit, g0) {
+  const alcohols = [];
+  g0.atoms.forEach((a, c) => {
+    if (a.el !== 'C' || a.arom || isCarbonyl(g0, c)) return;
+    const nb = neighbors(g0, c);
+    if (nb.some((x) => x.order !== 1)) return;
+    nb.forEach((x) => {
+      if (g0.atoms[x.atom].el === 'O' && hCount(g0, x.atom) === 1) alcohols.push({ c, o: x.atom, bond: x.bond });
+    });
+  });
+  if (alcohols.length === 0) return [];
+  if (alcohols.length > 1) throw new Unsupported('dehydration of polyol');
+  const { c, o } = alcohols[0];
+  const set = new Set();
+  for (const x of neighbors(g0, c)) {
+    const b = x.atom;
+    if (g0.atoms[b].el !== 'C' || g0.atoms[b].arom || isCarbonyl(g0, b)) continue;
+    if (neighbors(g0, b).some((y) => y.order !== 1)) continue;
+    if (hCount(g0, b) === 0) continue;
+    const g = cloneGraph(g0);
+    const ob = g.bonds.find((y) => (y.a === c && y.b === o) || (y.a === o && y.b === c));
+    g.bonds.splice(g.bonds.indexOf(ob), 1);
+    const cb = g.bonds.find((y) => (y.a === c && y.b === b) || (y.a === b && y.b === c));
+    cb.order = 2;
+    productsExcluding(RDKit, g, new Set([o])).forEach((s) => set.add(s));
+  }
+  if (set.size === 0) throw new Unsupported('alcohol without beta hydrogen');
+  return [...set].sort();
+}
+
+// 脱水で生じるアルケンの種類（シス-トランス異性体も別に数える）
+function dehydrationCount(RDKit, g) {
+  return dehydrate(RDKit, g).reduce((n, s) => n + 2 ** stereoBondCount(graphFromSmiles(RDKit, s)), 0);
+}
+
+// 脱水で得たアルケンをオゾン分解して得られる化合物（混合物全体）
+function dehydrateOzonolyze(RDKit, g) {
+  const set = new Set();
+  for (const s of dehydrate(RDKit, g)) ozonolyze(RDKit, graphFromSmiles(RDKit, s)).forEach((p) => set.add(p));
+  return [...set].sort();
 }
 
 // オゾン分解: C=C → C=O + O=C
 function ozonolyze(RDKit, g0) {
   const g = cloneGraph(g0);
   if (hasCC(g, 3)) throw new Unsupported('alkyne ozonolysis');
-  const dbl = g.bonds.filter((b) => b.order === 2 && g.atoms[b.a].el === 'C' && g.atoms[b.b].el === 'C');
+  const dbl = g.bonds.filter((b) => b.order === 2 && !isAromBond(g, b)
+    && g.atoms[b.a].el === 'C' && g.atoms[b.b].el === 'C');
   if (dbl.length === 0) return [];
   for (const b of dbl) {
     const i = g.bonds.indexOf(b);
@@ -301,10 +470,63 @@ function ozonolyze(RDKit, g0) {
   return graphToSmilesList(RDKit, g);
 }
 
+// 炭素上の H を1つ Cl に置き換えた化合物の種類（構造異性体）。onlyRing ならベンゼン環の H だけ
+function chloroCount(RDKit, g, onlyRing) {
+  const set = new Set();
+  g.atoms.forEach((a, i) => {
+    if (a.el !== 'C' || (onlyRing && !a.arom) || hCount(g, i) === 0) return;
+    const h = cloneGraph(g);
+    const cl = addAtom(h, 'Cl');
+    h.bonds.push({ a: i, b: cl, order: 1 });
+    set.add(canonical(RDKit, toMolblock(h)));
+  });
+  if (onlyRing && set.size === 0) throw new Unsupported('no aromatic C-H');
+  return set.size;
+}
+
+// 加熱で分子内脱水して環状の酸無水物（5員環・6員環）になるか
+function formsAnhydride(g) {
+  const acids = g.atoms.map((a, i) => i).filter((c) => g.atoms[c].el === 'C' && isCarbonyl(g, c)
+    && neighbors(g, c).some((x) => x.order === 1 && g.atoms[x.atom].el === 'O' && hCount(g, x.atom) === 1));
+  for (let i = 0; i < acids.length; i++) {
+    for (let j = i + 1; j < acids.length; j++) {
+      const path = shortestPath(g, acids[i], acids[j]);
+      const size = path.length + 1; // 経路上の原子 + 橋かけの O
+      if (size !== 5 && size !== 6) continue;
+      for (let k = 0; k + 1 < path.length; k++) {
+        const b = g.bonds.find((y) => (y.a === path[k] && y.b === path[k + 1]) || (y.b === path[k] && y.a === path[k + 1]));
+        if (b.order === 2 && !isAromBond(g, b)) throw new Unsupported('anhydride across C=C needs cis/trans');
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+function shortestPath(g, s, t) {
+  const prev = new Map([[s, -1]]);
+  const q = [s];
+  while (q.length) {
+    const x = q.shift();
+    if (x === t) break;
+    for (const n of neighbors(g, x)) if (!prev.has(n.atom)) { prev.set(n.atom, x); q.push(n.atom); }
+  }
+  const path = [];
+  for (let x = t; x !== -1; x = prev.get(x)) path.unshift(x);
+  return path;
+}
+
+// 立体異性体を含めた数（不斉炭素2個以上はメソ体の判定が要るので扱わない）
+function stereoCount(g) {
+  const n = chiralCount(g);
+  if (n > 1) throw new Unsupported('2+ chiral centers (meso check needed)');
+  return 2 ** (n + stereoBondCount(g));
+}
+
 // ---------- 官能基判定（SMARTS） ----------
 
 function matchesAny(RDKit, smiles, smartsList) {
-  const mol = RDKit.get_mol(smiles);
+  const mol = RDKit.get_mol(expand(smiles));
   try {
     return smartsList.some((s) => {
       const q = RDKit.get_qmol(s);
@@ -396,6 +618,92 @@ const CARDS = {
     kind: 'bool', yes: '存在する', no: '存在しない',
     compute: (RDKit, g) => hasCisTrans(g),
   },
+  // ---- Phase 2: 芳香族・脱水・部分加水分解 ----
+  naoh: {
+    name: 'NaOH 水溶液',
+    action: 'NaOH 水溶液に加えて振り混ぜる',
+    kind: 'bool', yes: '溶けた', no: '溶けない',
+    smarts: ['[CX3](=O)[OX2H1]', 'c[OX2H1]'],
+  },
+  hcl: {
+    name: '希塩酸',
+    action: '希塩酸に加えて振り混ぜる',
+    kind: 'bool', yes: '溶けた', no: '溶けない',
+    smarts: ['[NX3;!$(N-C=O);!$(N=*);!$(N#*)]'],
+  },
+  dehydration: {
+    name: '脱水',
+    action: '濃硫酸を加えて加熱し、分子内で脱水する',
+    kind: 'products', none: '脱水されなかった',
+    transform: dehydrate,
+  },
+  dehydration_count: {
+    name: '脱水生成物の数',
+    action: '分子内脱水で生じるアルケンの種類を数える（シス-トランス異性体は別に数える）',
+    kind: 'count',
+    compute: dehydrationCount,
+  },
+  dehydration_ozonolysis: {
+    name: '脱水 → オゾン分解',
+    action: '分子内脱水で得たアルケンをすべてオゾン分解する',
+    kind: 'products', none: '反応しない',
+    transform: dehydrateOzonolyze,
+  },
+  ring_cl: {
+    name: '環の塩素置換体',
+    action: 'ベンゼン環の H 原子1個を Cl 原子に置き換えた化合物の種類を数える',
+    kind: 'count',
+    compute: (RDKit, g) => chloroCount(RDKit, g, true),
+  },
+  cl_sub: {
+    name: '塩素置換体',
+    action: '炭素原子に結合した H 原子1個を Cl 原子に置き換えた化合物の種類を数える（構造異性体のみ）',
+    kind: 'count',
+    compute: (RDKit, g) => chloroCount(RDKit, g, false),
+  },
+  anhydride: {
+    name: '加熱脱水',
+    action: '加熱して、分子内で脱水した環状の酸無水物になるか調べる',
+    kind: 'bool', yes: '酸無水物になった', no: 'ならなかった',
+    compute: (RDKit, g) => formsAnhydride(g),
+  },
+  partial_hydrolysis: {
+    name: '部分加水分解',
+    action: '穏やかに加水分解し、途中の段階の生成物を調べる',
+    kind: 'contains', yes: 'が得られた', no: 'は得られない',
+    transform: partialProducts,
+  },
+  // ---- Phase 3: アミノ酸・ペプチド ----
+  ninhydrin: {
+    name: 'ニンヒドリン反応',
+    action: 'ニンヒドリン水溶液を加えて温める',
+    kind: 'bool', yes: '赤紫色になった', no: '変化なし',
+    smarts: ['[NX3H2][CX4]'],
+  },
+  alpha_amino: {
+    name: 'α-アミノ酸か',
+    action: '同じ炭素原子にアミノ基とカルボキシ基が結合しているか調べる',
+    kind: 'bool', yes: 'α-アミノ酸である', no: 'α-アミノ酸ではない',
+    smarts: ['[NX3;!$(NC=O)][CX4][CX3](=O)[OX2H1]'],
+  },
+  xanthoprotein: {
+    name: 'キサントプロテイン反応',
+    action: '濃硝酸を加えて加熱し、冷やしてアンモニア水を加える',
+    kind: 'bool', yes: '黄色 → 橙黄色になった', no: '変化なし',
+    smarts: ['c'],
+  },
+  sulfur: {
+    name: '硫黄の検出',
+    action: 'NaOH を加えて加熱し、酢酸鉛(II) 水溶液を加える',
+    kind: 'bool', yes: '黒色沈殿が生じた', no: '変化なし',
+    smarts: ['[SX2H1]'],
+  },
+  biuret: {
+    name: 'ビウレット反応',
+    action: 'NaOH 水溶液と少量の CuSO₄ 水溶液を加える',
+    kind: 'bool', yes: '赤紫色になった', no: '青色のまま',
+    compute: (RDKit, g) => hydrolyzable(g).filter((h) => g.atoms[h.bond.a === h.c ? h.bond.b : h.bond.a].el === 'N').length >= 2,
+  },
 };
 
 function evaluate(RDKit, card, smiles) {
@@ -408,7 +716,9 @@ function evaluate(RDKit, card, smiles) {
 }
 
 function normalizeResult(RDKit, card, result) {
-  if (CARDS[card].kind === 'products') return result.map((s) => canonical(RDKit, s)).sort();
+  const kind = CARDS[card].kind;
+  if (kind === 'products') return result.map((s) => canonical(RDKit, s)).sort();
+  if (kind === 'contains') return canonical(RDKit, result);
   return result;
 }
 
@@ -416,7 +726,13 @@ function sameResult(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+// 候補にカードを当てた値 value が、観察された結果 expected と矛盾しないか
+function consistent(card, value, expected) {
+  if (CARDS[card].kind === 'contains') return Array.isArray(value) && value.includes(expected);
+  return sameResult(value, expected);
+}
+
 module.exports = {
-  CARDS, Unsupported, evaluate, normalizeResult, sameResult,
-  canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans,
+  CARDS, Unsupported, evaluate, normalizeResult, sameResult, consistent, expand,
+  canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans, stereoCount, hydrolyze,
 };

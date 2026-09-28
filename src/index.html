@@ -225,6 +225,33 @@ table.key tr.ans td:first-child { font-weight: 700; color: var(--ok); }
 table.key td.bad { background: var(--pos-soft); color: var(--pos); font-weight: 700; }
 table.key td.hid { color: var(--muted); }
 
+/* ---------- Big / Count ---------- */
+.progress { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; }
+.step { border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); }
+.step.done { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.step.now { background: var(--ink); color: var(--ground); border-color: var(--ink); font-weight: 700; }
+.arrow { color: var(--muted); font-size: 0.75rem; }
+.story { margin: 0; max-width: 40em; }
+.solved { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 8px 12px; }
+.solved summary { cursor: pointer; font-weight: 700; font-size: 0.9rem; min-height: 32px; display: flex; align-items: center; }
+.solved-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; padding-top: 8px; }
+.btn.right { background: var(--ok); border-color: var(--ok); color: var(--paper); }
+.btn.wrong { background: var(--pos); border-color: var(--pos); color: var(--paper); }
+#opts .btn { min-width: 52px; font-family: var(--f-mono); font-size: 1.1rem; }
+.eq { font-size: 0.95rem; overflow-wrap: anywhere; }
+.xcard { max-width: 420px; }
+.stepper { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line); padding-block: 8px; }
+.stepper output { font-size: 1.6rem; min-width: 2.2em; text-align: center; font-variant-numeric: tabular-nums; }
+.stepper .btn { min-width: 48px; font-size: 1.2rem; }
+.conds { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.cands.one { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
+.cand.hit { border-color: var(--ok); box-shadow: 0 0 0 2px var(--ok-soft); }
+.cand.miss { opacity: 0.55; }
+.cap2 { gap: 6px; font-size: 0.78rem; align-items: flex-start; }
+.why { color: var(--muted); font-size: 0.72rem; text-align: right; }
+.plist .sub { font-size: .8rem; margin-left: 6px; }
+
 /* ---------- Night lock ---------- */
 .night {
   position: fixed; inset: 0; z-index: 50; background: #0b0f14; color: #c9d3dc;
@@ -254,6 +281,11 @@ const PER_CARD = 10;      // 手がかり1枚ごとの減点
 const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
 const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
 const STORE_KEY = 'jouzoukettei.v1';
+const MODES = [
+  { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
+  { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
+  { key: 'count', name: '数え上げ型', note: '異性体を数える' },
+];
 
 // ---------- 記録 ----------
 function loadStore() {
@@ -268,6 +300,18 @@ function saveStore() {
 }
 let store = loadStore();
 
+function record(id, correct, score) {
+  const st = store.stats[id] || { tries: 0, correct: 0, best: 0, everCorrect: false };
+  st.tries++;
+  if (correct) { st.correct++; st.everCorrect = true; st.best = Math.max(st.best, score); }
+  st.lastCorrect = correct;
+  store.stats[id] = st;
+  store.history.push({ id, correct, score, at: Date.now() });
+  store.history = store.history.slice(-200);
+  saveStore();
+}
+const bump = (card, d) => { store.weak[card] = Math.max(0, (store.weak[card] || 0) + d); };
+
 // ---------- 小道具 ----------
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -276,19 +320,25 @@ const stars = (n) => '★'.repeat(n) + '☆'.repeat(3 - n);
 const molName = (s) => (DATA.molecules[s] && DATA.molecules[s].name) || s;
 const molSvg = (s) => DATA.molecules[s].svg;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-const letter = (i) => String.fromCharCode(65 + i);
+const letter = (i) => String.fromCharCode(0x2460 + i); // ① ② ③ …
+const unit = (card) => (card === 'chiral' ? '個' : '種類');
+const byId = (id) => DATA.problems.find((p) => p.id === id);
 
 function resultText(card, r) {
   const c = DATA.cards[card];
   if (c.kind === 'bool') return r ? c.yes : c.no;
-  if (c.kind === 'count') return `${r} 個`;
+  if (c.kind === 'count') return `${r} ${unit(card)}`;
+  if (c.kind === 'contains') return r ? `${molName(r)} ${c.yes}` : `その化合物${c.no}`;
   if (!r.length) return c.none;
   return r.map(molName).join(' ＋ ');
 }
 function resultHtml(card, r) {
   const c = DATA.cards[card];
   if (c.kind === 'bool') return `<span class="res ${r ? 'pos' : 'neg'}">${esc(r ? c.yes : c.no)}</span>`;
-  if (c.kind === 'count') return `<span class="res num">${r} 個</span>`;
+  if (c.kind === 'count') return `<span class="res num">${r} ${unit(card)}</span>`;
+  if (c.kind === 'contains') {
+    return `<span class="res">次の化合物${esc(c.yes)}</span><div class="products"><div class="prod"><div class="mol">${molSvg(r)}</div><div class="pn">${esc(molName(r))}</div></div></div>`;
+  }
   if (!r.length) return `<span class="res neg">${esc(c.none)}</span>`;
   return `<span class="res">生成物</span><div class="products">${r.map((s) =>
     `<div class="prod"><div class="mol">${molSvg(s)}</div><div class="pn">${esc(molName(s))}</div></div>`).join('')}</div>`;
@@ -305,7 +355,7 @@ function checkNight() {
 }
 
 // ---------- 出題 ----------
-let view = { screen: 'home', level: 0 };
+let view = { screen: 'home', level: 0, mode: 'narrow' };
 let game = null;
 
 function accuracy(n = 20) {
@@ -314,16 +364,22 @@ function accuracy(n = 20) {
   return Math.round((100 * h.filter((x) => x.correct).length) / h.length);
 }
 
+function cardsOf(p) {
+  if (p.mode === 'big') return p.stages.flatMap((s) => s.clues || []).map((c) => c.card);
+  return p.clues.map((c) => c.card);
+}
+
 function pickProblem(level, avoidId) {
-  const pool = DATA.problems.filter((p) => (!level || p.level === level) && p.id !== avoidId);
-  const list = pool.length ? pool : DATA.problems;
+  const inMode = DATA.problems.filter((p) => p.mode === view.mode);
+  const pool = inMode.filter((p) => (!level || p.level === level) && p.id !== avoidId);
+  const list = pool.length ? pool : inMode;
   const weights = list.map((p) => {
     const st = store.stats[p.id];
     let w = 1;
     if (!st) w += 2;
     else if (!st.lastCorrect) w += 3;
     else w *= 0.4;
-    for (const c of p.clues) w += Math.min(3, store.weak[c.card] || 0);
+    for (const c of new Set(cardsOf(p))) w += Math.min(3, store.weak[c] || 0);
     return w;
   });
   let r = Math.random() * weights.reduce((a, b) => a + b, 0);
@@ -334,33 +390,82 @@ function pickProblem(level, avoidId) {
   return list[list.length - 1];
 }
 
-function startGame(p) {
-  if (isNight()) { checkNight(); return; }
-  game = { p, struck: new Set(), opened: [], chosen: null, done: false };
-  view.screen = 'play';
+function show(screen) {
+  view.screen = screen;
   render();
   window.scrollTo(0, 0);
 }
 
-function remaining() {
-  return game.p.candidates.map((_, i) => i).filter((i) => !game.struck.has(i));
+function startProblem(p) {
+  if (isNight()) { checkNight(); return; }
+  if (p.mode === 'big') {
+    game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
+    goStage();
+  } else if (p.mode === 'count') {
+    game = { count: { P: p, nStruct: 0, nStereo: 0, done: null } };
+    show('count');
+  } else {
+    startNarrow(p);
+  }
 }
-function liveScore() {
-  return Math.max(0, 100 - PER_CARD * game.opened.length);
+
+function startNarrow(p, big) {
+  game = { p, struck: new Set(), opened: [], done: false, big };
+  show('play');
+}
+
+// ---------- 大問の進行 ----------
+function goStage() {
+  const b = game.big;
+  const st = b.P.stages[b.idx];
+  if (!st) { show('bigdone'); return; }
+  if (st.type === 'split') { game = { big: b, split: { answer: null } }; show('split'); }
+  else if (st.type === 'given') { game = { big: b }; show('given'); }
+  else startNarrow(st, b);
+}
+function nextStage(score, correct) {
+  const b = game.big;
+  if (score !== null) b.scores.push(score);
+  if (!correct) b.allCorrect = false;
+  b.idx++;
+  goStage();
+}
+
+function bigProgress() {
+  if (!game || !game.big) return '';
+  const b = game.big;
+  const label = (s) => (s.type === 'split' ? '分解' : s.label === 'X' ? '組み立て' : s.label);
+  return `<div class="progress" aria-label="大問の進み具合">
+    <span class="muted mono" style="font-size:.8rem">${esc(b.P.id)}</span>
+    ${b.P.stages.map((s, i) => `<span class="step ${i < b.idx ? 'done' : i === b.idx ? 'now' : ''}">${esc(label(s))}</span>`).join('<span class="arrow">→</span>')}
+  </div>`;
+}
+
+// これまでに決まった断片（大問の途中で見返す用）
+function solvedSoFar() {
+  if (!game || !game.big) return '';
+  const b = game.big;
+  const done = b.P.stages.slice(0, b.idx).filter((s) => s.type !== 'split');
+  if (!done.length) return '';
+  const smiles = (s) => (s.type === 'given' ? s.smiles : s.candidates[s.answer]);
+  return `<details class="solved"><summary>決まった構造（${done.map((s) => s.label).join('・')}）</summary>
+    <div class="solved-grid">${done.map((s) => `<div class="molcard"><div class="mol">${molSvg(smiles(s))}</div>
+      <div class="cap"><b>${esc(s.label)}</b>${esc(molName(smiles(s)))}</div></div>`).join('')}</div></details>`;
 }
 
 // ---------- 画面: ホーム ----------
 function renderHome() {
   const acc = accuracy();
+  const inMode = DATA.problems.filter((p) => p.mode === view.mode);
   const solved = DATA.problems.filter((p) => store.stats[p.id] && store.stats[p.id].everCorrect).length;
-  const weak = Object.entries(store.weak).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const list = DATA.problems.filter((p) => !view.level || p.level === view.level);
+  const weak = Object.entries(store.weak).filter(([c, n]) => n > 0 && DATA.cards[c]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const list = inMode.filter((p) => !view.level || p.level === view.level);
   $('#app').innerHTML = `
     <div class="stack">
       <header class="masthead">
-        <span class="eyebrow">京大化学 大問3 対策 ・ 絞り込み型</span>
+        <span class="eyebrow">京大化学 大問3・4 対策</span>
         <h1>有機構造決定パズル</h1>
-        <p>分子式から始め、手がかりカードを開いて矛盾する候補を自分で消す。カードは少ないほど高得点。</p>
+        <p>分子式から始めて手がかりを集め、構造を自分の手で決める。カードは少ないほど高得点。</p>
       </header>
       <section class="stats" aria-label="成績">
         <div class="stat"><b>${acc === null ? '—' : acc + '%'}</b><span>直近20問の正答率</span></div>
@@ -369,11 +474,10 @@ function renderHome() {
       </section>
       <section class="panel">
         <h2>モード</h2>
-        <div class="row">
-          <button class="chip" aria-pressed="true">絞り込み型</button>
-          <button class="chip" disabled>断片再構成型<small>Phase 2</small></button>
-          <button class="chip" disabled>数え上げ型<small>Phase 3</small></button>
+        <div class="row" id="modes">
+          ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
         </div>
+        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : '。'}</p>
       </section>
       <section class="panel">
         <h2>難易度</h2>
@@ -392,52 +496,65 @@ function renderHome() {
       </section>
       <section class="panel">
         <h2>問題一覧</h2>
-        <ul class="plist">
+        ${list.length ? `<ul class="plist">
           ${list.map((p) => {
             const st = store.stats[p.id];
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
+            const sub = p.mode === 'big' ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
             return `<li><button data-id="${p.id}">
-              <span class="num">${p.id.replace('narrow-', '#')}</span>
+              <span class="num">#${p.id.split('-')[1]}</span>
               <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
-                <span class="muted" style="font-size:.8rem;margin-left:6px">候補${p.candidates.length}</span></span>
+                <span class="muted sub">${sub}</span></span>
               ${badge}</button></li>`;
           }).join('')}
-        </ul>
+        </ul>` : '<p class="hint">この難易度の問題はない。</p>'}
       </section>
       <p class="hint">23時以降はプレイできない。週1回は京大過去問の構造決定を紙で解くこと。</p>
     </div>`;
+  $('#modes').onclick = (e) => {
+    const b = e.target.closest('[data-mode]');
+    if (!b) return;
+    view.mode = b.dataset.mode;
+    render();
+  };
   $('#levels').onclick = (e) => {
     const b = e.target.closest('[data-level]');
     if (!b) return;
     view.level = +b.dataset.level;
     render();
   };
-  $('#auto').onclick = () => startGame(pickProblem(view.level));
-  $('.plist').onclick = (e) => {
+  $('#auto').onclick = () => startProblem(pickProblem(view.level));
+  const pl = $('.plist');
+  if (pl) pl.onclick = (e) => {
     const b = e.target.closest('[data-id]');
-    if (b) startGame(DATA.problems.find((p) => p.id === b.dataset.id));
+    if (b) startProblem(byId(b.dataset.id));
   };
 }
 
-// ---------- 画面: 盤面 ----------
+// ---------- 画面: 盤面（絞り込み） ----------
 function renderPlay() {
   const p = game.p;
   const rest = remaining();
   const n = p.candidates.length;
+  const heading = game.big
+    ? (p.label === 'X' ? '組み立て: 化合物 X の構造' : `断片 ${esc(p.label)} の構造`)
+    : '';
   $('#app').innerHTML = `
     <div class="stack">
       <div class="row" style="justify-content:space-between">
         <button class="btn ghost" id="back">← 問題一覧</button>
-        <span class="muted mono" style="font-size:.85rem">${p.id} <span class="lv">${stars(p.level)}</span></span>
+        <span class="muted mono" style="font-size:.85rem">${esc(p.id)} <span class="lv">${stars(p.level)}</span></span>
       </div>
+      ${bigProgress()}
       <div class="board-head">
-        <div><span class="eyebrow">分子式</span><div class="formula">${fmtFormula(p.formula)}</div></div>
+        <div><span class="eyebrow">${heading || '分子式'}</span><div class="formula">${fmtFormula(p.formula)}</div></div>
         <div class="meter">候補 <b>${rest.length}</b>/${n}<br>持ち点 <b>${liveScore()}</b></div>
       </div>
+      ${solvedSoFar()}
       <p class="hint">手がかりを開いて、矛盾する候補を自分で消す。左右にスワイプか「消す」で消し、もう一度押すと戻る。</p>
-      <section class="cands" id="cands">
+      <section class="cands ${game.big && p.label === 'X' ? 'one' : ''}" id="cands">
         ${p.candidates.map((s, i) => `
           <div class="cand ${game.struck.has(i) ? 'struck' : ''}" data-i="${i}">
             <div class="mol">${molSvg(s)}</div>
@@ -451,7 +568,7 @@ function renderPlay() {
           ${p.clues.map((c, ci) => {
             const meta = DATA.cards[c.card];
             const open = game.opened.includes(ci);
-            const wide = open && meta.kind === 'products' && c.result.length;
+            const wide = open && ((meta.kind === 'products' && c.result.length) || meta.kind === 'contains');
             return `<button class="clue ${open ? 'open' : 'closed'} ${wide ? 'wide' : ''}" data-ci="${ci}" ${open ? 'aria-disabled="true"' : ''}>
               <span class="cname">${esc(meta.name)}</span>
               <span class="act">${esc(meta.action)}</span>
@@ -466,7 +583,7 @@ function renderPlay() {
       <button class="btn primary" id="submit" ${rest.length === 1 ? '' : 'disabled'}>確定</button>
     </div></div>`;
 
-  $('#back').onclick = () => { view.screen = 'home'; render(); };
+  $('#back').onclick = () => show('home');
   $('#deck').onclick = (e) => {
     const b = e.target.closest('[data-ci]');
     if (!b) return;
@@ -480,6 +597,13 @@ function renderPlay() {
     if (r.length === 1) finish(r[0]);
   };
   bindCandidates();
+}
+
+function remaining() {
+  return game.p.candidates.map((_, i) => i).filter((i) => !game.struck.has(i));
+}
+function liveScore() {
+  return Math.max(0, 100 - PER_CARD * game.opened.length);
 }
 
 function toggleStrike(i) {
@@ -523,48 +647,42 @@ function bindCandidates() {
   });
 }
 
-// ---------- 判定 ----------
+// ---------- 判定（絞り込み） ----------
 function finish(chosen) {
   const p = game.p;
   const correct = chosen === p.answer;
-  // 開いた手がかりのうち、その候補を除外できるもの
+  // 手がかりのうち、その候補を除外できるもの
   const excludedBy = (k, clueIdx) => clueIdx.filter((ci) => !same(p.clues[ci].byCandidate[k], p.clues[ci].result));
   const all = p.clues.map((_, ci) => ci);
   const guesses = [...game.struck].filter((k) => k !== p.answer && excludedBy(k, game.opened).length === 0);
   const contradictions = correct ? [] : excludedBy(chosen, all);
   const score = correct ? Math.max(0, liveScore() - PER_GUESS * guesses.length) : 0;
 
-  // 記録と復習リスト
-  const bump = (card, d) => { store.weak[card] = Math.max(0, (store.weak[card] || 0) + d); };
+  // 復習リスト
   contradictions.forEach((ci) => bump(p.clues[ci].card, 1));
   guesses.forEach((k) => excludedBy(k, all).forEach((ci) => bump(p.clues[ci].card, 1)));
   if (correct && !guesses.length) game.opened.forEach((ci) => bump(p.clues[ci].card, -1));
-  const st = store.stats[p.id] || { tries: 0, correct: 0, best: 0, everCorrect: false };
-  st.tries++;
-  if (correct) { st.correct++; st.everCorrect = true; st.best = Math.max(st.best, score); }
-  st.lastCorrect = correct && !guesses.length;
-  store.stats[p.id] = st;
-  store.history.push({ id: p.id, correct, score, at: Date.now() });
-  store.history = store.history.slice(-200);
-  saveStore();
+  if (game.big) saveStore();
+  else record(p.id, correct && !guesses.length, score);
 
   game.done = { chosen, correct, guesses, contradictions, score, excludedBy };
-  view.screen = 'result';
-  render();
-  window.scrollTo(0, 0);
+  show('result');
+}
+
+function molCardHtml(smiles, cap) {
+  return `<div class="molcard"><div class="mol">${molSvg(smiles)}</div>
+    <div class="cap"><b>${cap}</b>${esc(molName(smiles))}</div></div>`;
 }
 
 function renderResult() {
   const p = game.p;
   const r = game.done;
   const all = p.clues.map((_, ci) => ci);
-  const molCard = (k, cap) => `<div class="molcard"><div class="mol">${molSvg(p.candidates[k])}</div>
-    <div class="cap"><b>${cap}</b>${esc(molName(p.candidates[k]))}</div></div>`;
   const notes = [];
   if (!r.correct) {
     r.contradictions.forEach((ci) => {
       const c = p.clues[ci];
-      notes.push(`<li><b>${esc(DATA.cards[c.card].name)}</b>${game.opened.includes(ci) ? '' : '（未開封）'}: 
+      notes.push(`<li><b>${esc(DATA.cards[c.card].name)}</b>${game.opened.includes(ci) ? '' : '（未開封）'}:
         ${letter(r.chosen)} なら「${esc(resultText(c.card, c.byCandidate[r.chosen]))}」になるはず。実際は「${esc(resultText(c.card, c.result))}」。</li>`);
     });
   }
@@ -575,17 +693,21 @@ function renderResult() {
   });
   if (r.correct && !r.guesses.length) notes.push(`<li class="good">全部の消去に根拠がある。開いたカード ${game.opened.length} 枚 / 全 ${p.clues.length} 枚。</li>`);
 
+  const inBig = !!game.big;
+  const last = inBig && game.big.idx === game.big.P.stages.length - 1;
   $('#app').innerHTML = `
     <div class="stack">
+      ${bigProgress()}
       <div class="verdict ${r.correct ? 'ok' : 'ng'}">
-        <span class="eyebrow" style="color:inherit">${p.id} ・ <span class="formula">${fmtFormula(p.formula)}</span></span>
+        <span class="eyebrow" style="color:inherit">${esc(p.id)} ・ <span class="formula">${fmtFormula(p.formula)}</span></span>
         <h2>${r.correct ? '正解' : '不正解'}</h2>
         <span class="score">${r.score} 点</span>
       </div>
       <div class="pair">
-        ${molCard(r.chosen, 'あなたの答え ' + letter(r.chosen))}
-        ${r.correct ? '' : molCard(p.answer, '正解 ' + letter(p.answer))}
+        ${molCardHtml(p.candidates[r.chosen], 'あなたの答え ' + letter(r.chosen))}
+        ${r.correct ? '' : molCardHtml(p.candidates[p.answer], '正解 ' + letter(p.answer))}
       </div>
+      ${inBig && !r.correct ? '<p class="hint">大問では正解の構造を使って次の段階へ進む。</p>' : ''}
       ${notes.length ? `<ul class="notes">${notes.join('')}</ul>` : ''}
       <section class="panel">
         <h2>答え合わせ表</h2>
@@ -602,19 +724,218 @@ function renderResult() {
         </table></div>
       </section>
       <div class="row">
-        <button class="btn primary" id="next">次の問題（おまかせ）</button>
+        ${inBig
+          ? `<button class="btn primary" id="next">${last ? '大問の結果へ' : '次の段階へ'}</button>`
+          : `<button class="btn primary" id="next">次の問題（おまかせ）</button>
+             <button class="btn" id="retry">もう一度</button>`}
+        <button class="btn ghost" id="home">問題一覧</button>
+      </div>
+    </div>`;
+  $('#next').onclick = () => (inBig ? nextStage(r.score, r.correct) : startProblem(pickProblem(view.level, p.id)));
+  if (!inBig) $('#retry').onclick = () => startProblem(p);
+  $('#home').onclick = () => show('home');
+}
+
+// ---------- 画面: 大問（分解） ----------
+function renderSplit() {
+  const P = game.big.P;
+  const st = P.stages[0];
+  const ans = game.split.answer;
+  const opts = [1, 2, 3, 4, 5];
+  const water = (n) => (n === 1 ? 'H₂O' : `${n} H₂O`);
+  const rhs = st.products.map((x) => (x.count > 1 ? `${x.count} ` : '') + fmtFormula(x.formula)).join(' ＋ ');
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+      </div>
+      ${bigProgress()}
+      <div class="board-head">
+        <div><span class="eyebrow">化合物 X ・ ${esc(P.title)}</span><div class="formula">${fmtFormula(P.formula)}</div></div>
+      </div>
+      <p class="story">${esc(P.story)}</p>
+      <div class="tbl-wrap"><table class="key">
+        <thead><tr><th>生成物</th><th>分子式</th><th>得られた量</th></tr></thead>
+        <tbody>${st.products.map((x) => `<tr><td><b>${esc(x.label)}</b></td><td class="formula">${fmtFormula(x.formula)}</td><td>X 1分子から ${x.count} 分子</td></tr>`).join('')}</tbody>
+      </table></div>
+      <section class="panel">
+        <h2>X 1分子の加水分解で切れた結合（エステル・アミド）はいくつか</h2>
+        <p class="hint">H と O の数の収支で決まる。反応した水の分子数と同じ。</p>
+        <div class="row" id="opts">
+          ${opts.map((n) => `<button class="btn ${ans === n ? (n === st.bonds ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}</button>`).join('')}
+        </div>
+        ${ans === null ? '' : `
+          <div class="verdict ${ans === st.bonds ? 'ok' : 'ng'}">
+            <h2>${ans === st.bonds ? '正解' : '不正解'}</h2>
+            <span class="formula eq">${fmtFormula(P.formula)} ＋ ${water(st.bonds)} → ${rhs}</span>
+          </div>
+          <div class="row"><button class="btn primary" id="next">断片の構造を決める</button></div>`}
+      </section>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#opts').onclick = (e) => {
+    const b = e.target.closest('[data-n]');
+    if (!b || game.split.answer !== null) return;
+    game.split.answer = +b.dataset.n;
+    render();
+  };
+  const nx = $('#next');
+  if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
+}
+
+function renderGiven() {
+  const b = game.big;
+  const st = b.P.stages[b.idx];
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+      </div>
+      ${bigProgress()}
+      <div class="board-head"><div><span class="eyebrow">断片 ${esc(st.label)}（与えられている）</span>
+        <div class="formula">${esc(st.note)}</div></div></div>
+      <div class="pair">${molCardHtml(st.smiles, st.label)}</div>
+      <p class="hint">この断片は問題文で与えられている。次へ進む。</p>
+      <div class="row"><button class="btn primary" id="next">次へ</button></div>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#next').onclick = () => nextStage(null, true);
+}
+
+function renderBigDone() {
+  const b = game.big;
+  const P = b.P;
+  const total = b.scores.length ? Math.round(b.scores.reduce((a, c) => a + c, 0) / b.scores.length) : 0;
+  if (!b.recorded) {
+    record(P.id, b.allCorrect, total);
+    b.recorded = true;
+  }
+  const scored = P.stages.filter((s) => s.type !== 'given');
+  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.label === 'X' ? '組み立て' : `断片 ${s.label}`);
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="verdict ${b.allCorrect ? 'ok' : 'ng'}">
+        <span class="eyebrow" style="color:inherit">${esc(P.id)} ・ ${esc(P.title)}</span>
+        <h2>${b.allCorrect ? '完答' : 'どこかで間違えた'}</h2>
+        <span class="score">${total} 点（各段階の平均）</span>
+      </div>
+      <div class="xcard">${molCardHtml(P.answerSmiles, '化合物 X ・ ' + P.formula)}</div>
+      <div class="tbl-wrap"><table class="key">
+        <thead><tr><th>段階</th><th>得点</th></tr></thead>
+        <tbody>${scored.map((s, i) => `<tr><td>${esc(label(s))}</td><td class="mono">${b.scores[i] ?? '—'}</td></tr>`).join('')}</tbody>
+      </table></div>
+      <p class="hint">同じ流れを本番の問題文でもたどれるか、京大の過去問で確かめる。</p>
+      <div class="row">
+        <button class="btn primary" id="next">次の大問（おまかせ）</button>
         <button class="btn" id="retry">もう一度</button>
         <button class="btn ghost" id="home">問題一覧</button>
       </div>
     </div>`;
-  $('#next').onclick = () => startGame(pickProblem(view.level, p.id));
-  $('#retry').onclick = () => startGame(p);
-  $('#home').onclick = () => { view.screen = 'home'; render(); };
+  $('#next').onclick = () => startProblem(pickProblem(view.level, P.id));
+  $('#retry').onclick = () => startProblem(P);
+  $('#home').onclick = () => show('home');
+}
+
+// ---------- 画面: 数え上げ ----------
+function stepper(id, label, value) {
+  return `<div class="stepper"><span>${label}</span>
+    <div class="row"><button class="btn" data-step="${id}" data-d="-1" aria-label="${label}を1減らす">−</button>
+    <output class="mono" id="${id}">${value}</output>
+    <button class="btn" data-step="${id}" data-d="1" aria-label="${label}を1増やす">＋</button></div></div>`;
+}
+
+function renderCount() {
+  const g = game.count;
+  const P = g.P;
+  const d = g.done;
+  const cond = P.clues.map((c) => `<li><b>${esc(DATA.cards[c.card].name)}</b>: ${esc(resultText(c.card, c.result))}<br><span class="muted">${esc(DATA.cards[c.card].action)}</span></li>`).join('');
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${stars(P.level)}</span></span>
+      </div>
+      <div class="board-head">
+        <div><span class="eyebrow">${esc(P.scope)}</span><div class="formula">${fmtFormula(P.formula)}</div></div>
+      </div>
+      <section class="panel">
+        <h2>条件</h2>
+        <ul class="conds">${cond}</ul>
+        <p class="hint">この条件を満たす異性体を、紙にすべて書き出してから数を入れる。</p>
+      </section>
+      <section class="panel">
+        ${stepper('n1', '構造異性体の数', g.nStruct)}
+        ${stepper('n2', '立体異性体も含めた数', g.nStereo)}
+        ${d ? '' : '<div class="row"><button class="btn primary" id="check">答え合わせ</button></div>'}
+      </section>
+      ${d ? countResultHtml() : ''}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  if (!d) {
+    $('#app').querySelectorAll('[data-step]').forEach((b) => {
+      b.onclick = () => {
+        const key = b.dataset.step === 'n1' ? 'nStruct' : 'nStereo';
+        g[key] = Math.max(0, Math.min(40, g[key] + +b.dataset.d));
+        $('#' + b.dataset.step).textContent = g[key];
+      };
+    });
+    $('#check').onclick = () => {
+      const ok1 = g.nStruct === P.answers.length;
+      const ok2 = g.nStereo === P.nStereo;
+      const score = (ok1 ? 50 : 0) + (ok2 ? 50 : 0);
+      if (!ok1) P.clues.forEach((c) => bump(c.card, 1));
+      record(P.id, ok1 && ok2, score);
+      g.done = { ok1, ok2, score };
+      render();
+    };
+  } else {
+    $('#app').querySelectorAll('[data-step]').forEach((b) => { b.disabled = true; });
+    $('#next').onclick = () => startProblem(pickProblem(view.level, P.id));
+    $('#retry').onclick = () => startProblem(P);
+    $('#home').onclick = () => show('home');
+  }
+}
+
+function countResultHtml() {
+  const g = game.count;
+  const P = g.P;
+  const d = g.done;
+  const failing = (k) => P.clues.filter((c) => !same(c.byCandidate[k], c.result)).map((c) => `${DATA.cards[c.card].name}: ${resultText(c.card, c.byCandidate[k])}`);
+  return `
+    <div class="verdict ${d.ok1 && d.ok2 ? 'ok' : 'ng'}">
+      <h2>${d.ok1 && d.ok2 ? '正解' : '不正解'}</h2>
+      <span class="score">${d.score} 点 ・ 構造異性体 ${P.answers.length}（あなた ${g.nStruct}）・ 立体異性体を含め ${P.nStereo}（あなた ${g.nStereo}）</span>
+    </div>
+    <section class="panel">
+      <h2>全異性体の答え合わせ</h2>
+      <p class="hint">緑が条件を満たすもの。数字は立体異性体を含めた数。</p>
+      <div class="cands">
+        ${P.pool.map((s, k) => {
+          const hit = P.answers.includes(k);
+          return `<div class="cand ${hit ? 'hit' : 'miss'}">
+            <div class="mol">${molSvg(s)}</div>
+            <div class="bar cap2"><span>${esc(molName(s))}</span>
+              ${hit ? `<span class="badge ok">${P.stereo[k]} 種</span>` : `<span class="why">${esc(failing(k).join(' / '))}</span>`}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </section>
+    <div class="row">
+      <button class="btn primary" id="next">次の問題（おまかせ）</button>
+      <button class="btn" id="retry">もう一度</button>
+      <button class="btn ghost" id="home">問題一覧</button>
+    </div>`;
 }
 
 function render() {
-  if (view.screen === 'play' && game) renderPlay();
-  else if (view.screen === 'result' && game && game.done) renderResult();
+  const s = view.screen;
+  if (s === 'play' && game && game.p) renderPlay();
+  else if (s === 'result' && game && game.done) renderResult();
+  else if (s === 'split' && game && game.split) renderSplit();
+  else if (s === 'given' && game && game.big) renderGiven();
+  else if (s === 'bigdone' && game && game.big) renderBigDone();
+  else if (s === 'count' && game && game.count) renderCount();
   else renderHome();
 }
 

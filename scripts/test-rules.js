@@ -58,6 +58,51 @@ const CASES = [
   ['cis_trans', 'CC(C)=CC', false, '2-メチル-2-ブテン'],
   ['cis_trans', 'OC(=O)C=CC(=O)O', true, 'マレイン酸／フマル酸'],
   ['cis_trans', 'C1=CCCC1', false, 'シクロペンテン'],
+  // ---- 芳香族 ----
+  ['kmno4', 'Cc1ccccc1', ['O=C(O)c1ccccc1'], 'トルエン → 安息香酸'],
+  ['kmno4', 'CCc1ccccc1', ['O=C(O)c1ccccc1'], 'エチルベンゼン → 安息香酸'],
+  ['kmno4', 'Cc1ccccc1C', ['O=C(O)c1ccccc1C(=O)O'], 'o-キシレン → フタル酸'],
+  ['kmno4', 'CC(C)(C)c1ccccc1', [], 'tert-ブチルベンゼン → 酸化されない'],
+  ['kmno4', 'OCc1ccccc1', ['O=C(O)c1ccccc1'], 'ベンジルアルコール → 安息香酸'],
+  ['naoh', 'Oc1ccccc1', true, 'フェノール'],
+  ['naoh', 'OCc1ccccc1', false, 'ベンジルアルコール'],
+  ['hcl', 'Nc1ccccc1', true, 'アニリン'],
+  ['hcl', 'CC(=O)Nc1ccccc1', false, 'アセトアニリド'],
+  ['hydrolysis', 'CC(=O)Oc1ccccc1', ['CC(=O)O', 'Oc1ccccc1'], '酢酸フェニル'],
+  ['hydrolysis', 'CC(=O)Nc1ccccc1', ['CC(=O)O', 'Nc1ccccc1'], 'アセトアニリド'],
+  ['hydrolysis', 'CC(=O)Oc1ccccc1C(=O)O', ['CC(=O)O', 'O=C(O)c1ccccc1O'], 'アセチルサリチル酸'],
+  ['ring_cl', 'Cc1ccc(C)cc1', 1, 'p-キシレン'],
+  ['ring_cl', 'Cc1cccc(C)c1', 3, 'm-キシレン'],
+  ['ring_cl', 'Cc1ccccc1C', 2, 'o-キシレン'],
+  ['ring_cl', 'Cc1ccccc1', 3, 'トルエン'],
+  ['cl_sub', 'CCCC', 2, 'ブタン'],
+  ['cl_sub', 'CC(C)C', 2, '2-メチルプロパン'],
+  ['cl_sub', 'CCCCC', 3, 'ペンタン'],
+  ['anhydride', 'O=C(O)c1ccccc1C(=O)O', true, 'フタル酸'],
+  ['anhydride', 'O=C(O)c1ccc(C(=O)O)cc1', false, 'テレフタル酸'],
+  ['anhydride', 'O=C(O)CCC(=O)O', true, 'コハク酸'],
+  ['anhydride', 'O=C(O)CC(=O)O', false, 'マロン酸'],
+  // ---- 脱水 ----
+  ['dehydration', 'CCO', ['C=C'], 'エタノール → エチレン'],
+  ['dehydration', 'CCC(C)O', ['C=CCC', 'CC=CC'], '2-ブタノール → 1-ブテン + 2-ブテン'],
+  ['dehydration', 'CC(C)(C)O', ['C=C(C)C'], '2-メチル-2-プロパノール'],
+  ['dehydration', 'CCC(C)=O', [], '2-ブタノン'],
+  ['dehydration_count', 'CCC(C)O', 3, '2-ブタノール（シス・トランスを含め3種）'],
+  ['dehydration_count', 'CCC(O)CC', 2, '3-ペンタノール（2-ペンテンのシス・トランス）'],
+  ['dehydration_ozonolysis', 'CCC(C)(C)O', ['C=O', 'CC(C)=O', 'CC=O', 'CCC(C)=O'], '2-メチル-2-ブタノール'],
+  // ---- 部分加水分解・ペプチド ----
+  ['partial_hydrolysis', 'CC(OC(C)=O)COC(=O)c1ccccc1', ['CC(=O)O', 'CC(CO)OC(C)=O', 'CC(O)COC(=O)c1ccccc1', 'O=C(O)c1ccccc1'], '1,2-プロパンジオールのジエステル'],
+  ['ninhydrin', 'NCC(=O)O', true, 'グリシン'],
+  ['ninhydrin', 'CNCC(=O)O', false, 'サルコシン（第二級アミン）'],
+  ['alpha_amino', 'NC(C)C(=O)O', true, 'アラニン'],
+  ['alpha_amino', 'NCCC(=O)O', false, 'β-アラニン'],
+  ['xanthoprotein', 'pep:Gly-Phe', true, 'Gly-Phe'],
+  ['xanthoprotein', 'pep:Gly-Ala', false, 'Gly-Ala'],
+  ['sulfur', 'pep:Cys-Gly', true, 'Cys-Gly'],
+  ['biuret', 'pep:Gly-Ala', false, 'ジペプチド'],
+  ['biuret', 'pep:Gly-Ala-Phe', true, 'トリペプチド'],
+  ['hydrolysis', 'pep:Gly-Ala', ['CC(N)C(=O)O', 'NCC(=O)O'], 'Gly-Ala'],
+  ['chiral', 'pep:Gly-Ala-Phe', 2, 'Gly-Ala-Phe'],
 ];
 
 async function main() {
@@ -70,7 +115,9 @@ async function main() {
     } catch (e) {
       got = `ERROR ${e.message}`;
     }
-    const exp = chem.normalizeResult(RDKit, card, want);
+    const exp = chem.CARDS[card].kind === 'contains'
+      ? want.map((s) => chem.canonical(RDKit, s)).sort()
+      : chem.normalizeResult(RDKit, card, want);
     if (!chem.sameResult(got, exp)) {
       fail++;
       console.error(`NG ${card} ${label} (${smi}): got ${JSON.stringify(got)}, want ${JSON.stringify(exp)}`);
