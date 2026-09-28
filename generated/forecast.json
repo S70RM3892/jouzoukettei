@@ -1,0 +1,138 @@
+{
+  "target": 2027,
+  "params": {
+    "lambda": 1,
+    "gap": 0,
+    "alpha": 0.5
+  },
+  "backtest": {
+    "years": [
+      {
+        "year": 2011,
+        "hit": 7,
+        "k": 13,
+        "freqHit": 7,
+        "lastYearHit": 6
+      },
+      {
+        "year": 2012,
+        "hit": 8,
+        "k": 17,
+        "freqHit": 8,
+        "lastYearHit": 11
+      },
+      {
+        "year": 2013,
+        "hit": 7,
+        "k": 12,
+        "freqHit": 8,
+        "lastYearHit": 4
+      },
+      {
+        "year": 2014,
+        "hit": 7,
+        "k": 15,
+        "freqHit": 8,
+        "lastYearHit": 7
+      },
+      {
+        "year": 2015,
+        "hit": 5,
+        "k": 11,
+        "freqHit": 6,
+        "lastYearHit": 3
+      },
+      {
+        "year": 2016,
+        "hit": 6,
+        "k": 13,
+        "freqHit": 8,
+        "lastYearHit": 4
+      },
+      {
+        "year": 2017,
+        "hit": 4,
+        "k": 11,
+        "freqHit": 4,
+        "lastYearHit": 4
+      },
+      {
+        "year": 2018,
+        "hit": 1,
+        "k": 10,
+        "freqHit": 1,
+        "lastYearHit": 1
+      },
+      {
+        "year": 2019,
+        "hit": 2,
+        "k": 10,
+        "freqHit": 4,
+        "lastYearHit": 2
+      },
+      {
+        "year": 2021,
+        "hit": 5,
+        "k": 11,
+        "freqHit": 5,
+        "lastYearHit": 4
+      },
+      {
+        "year": 2022,
+        "hit": 4,
+        "k": 8,
+        "freqHit": 4,
+        "lastYearHit": 2
+      },
+      {
+        "year": 2026,
+        "hit": 5,
+        "k": 8,
+        "freqHit": 4,
+        "lastYearHit": 4
+      }
+    ],
+    "rprec": 0.4348596256684492,
+    "rprecFreq": 0.47400589606471955,
+    "rprecLastYear": 0.3555241327300151,
+    "brier": 0.23889884773930123,
+    "brierFreq": 0.23917122941151311,
+    "rprecRandom": 0.35101010101010105,
+    "chosen": "frequency"
+  },
+  "probs": {
+    "sugar": 0.7352941176470589,
+    "chiral": 0.6764705882352942,
+    "hydrogenation": 0.6176470588235294,
+    "mole_calc": 0.6176470588235294,
+    "isomer_enumeration": 0.5588235294117647,
+    "polymer": 0.5588235294117647,
+    "ester_hydrolysis": 0.5,
+    "novel_rule": 0.5,
+    "amino_acid": 0.5,
+    "side_chain_oxidation": 0.4411764705882353,
+    "anhydride": 0.4411764705882353,
+    "stereo_3d": 0.38235294117647056,
+    "amide_hydrolysis": 0.3235294117647059,
+    "alcohol_oxidation": 0.3235294117647059,
+    "iodoform": 0.3235294117647059,
+    "silver_mirror": 0.3235294117647059,
+    "nitration_reduction": 0.3235294117647059,
+    "peptide_sequence": 0.3235294117647059,
+    "fecl3": 0.2647058823529412,
+    "extraction": 0.2647058823529412,
+    "cis_trans": 0.2647058823529412,
+    "combustion_analysis": 0.2647058823529412,
+    "nucleic_acid": 0.2647058823529412,
+    "lipid": 0.2647058823529412,
+    "partial_hydrolysis": 0.20588235294117646,
+    "ozonolysis": 0.20588235294117646,
+    "kmno4_cleavage": 0.20588235294117646,
+    "dehydration": 0.20588235294117646,
+    "diazo": 0.20588235294117646,
+    "sulfonation_fusion": 0.20588235294117646,
+    "symmetry_carbons": 0.20588235294117646,
+    "glycerol_ester": 0.20588235294117646,
+    "enol_tautomer": 0.14705882352941177
+  }
+}

@@ -4,8 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 const chem = require('../src/chem');
+const calc = require('../src/calc');
 
-const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json'];
+const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json', 'generated.json'];
 
 async function loadRDKit() {
   const init = require('@rdkit/rdkit');
@@ -171,7 +172,19 @@ function checkBig(RDKit, P) {
     });
     assemble = { r, clues: P.assemble.clues };
   }
-  return { errors, X, bonds, frags, assemble };
+  // 計算段階: 問題文の数値から答えを計算し直して一致を確かめる
+  for (const c of P.calcs || []) {
+    if (!c.choices || !c.choices.includes(c.answer) || new Set(c.choices).size !== c.choices.length) err(`calc ${c.key}: choices must contain the answer once`);
+    if (c.key === 'h2') {
+      const M = calc.mass(P.formula);
+      const n = Math.round((c.data.V / 22.4) / (c.data.m / M));
+      if (n !== c.answer || n !== chem.h2Uptake(chem.graphFromSmiles(RDKit, X))) err(`calc h2: data gives ${n}, answer ${c.answer}`);
+    } else if (c.key === 'combustion') {
+      const f = calc.molecularFromEmpirical(calc.empiricalFromCombustion(c.data.sample, c.data.co2, c.data.h2o), { mw: c.data.M });
+      if (f !== c.answer || !frags.some((fr) => fr.formula === f)) err(`calc combustion: data gives ${f}, answer ${c.answer}`);
+    } else err(`unknown calc ${c.key}`);
+  }
+  return { errors, X, bonds, frags, assemble, calcs: P.calcs || [] };
 }
 
 // 数え上げ型: 母集団（その分子式のすべての異性体）から条件に合うものを数える

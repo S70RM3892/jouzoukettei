@@ -1,9 +1,12 @@
 name: pages
 
-# main に入った版をビルドし、GitHub Pages で公開する
+# main に入った版をビルドし、GitHub Pages で公開する。
+# 毎朝5時（日本時間）にも走らせ、その日の日付を種にして京大レベルの問題を作り直す。
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 20 * * *' # 20:00 UTC = 5:00 JST（夜間ロックが明ける時刻）
   workflow_dispatch:
 
 permissions:
@@ -26,6 +29,11 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: 判定ロジックのテストと問題の検証
         run: npm test
+      - name: 出題予測と、今日の京大レベルの問題を生成
+        run: |
+          npm run forecast
+          npm run generate -- "$(TZ=Asia/Tokyo date +%Y%m%d)" 12
+          npm run validate
       - name: dist/index.html を生成
         run: npm run build
       - name: 公開するファイルを用意

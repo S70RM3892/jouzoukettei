@@ -533,6 +533,119 @@ function stereoCount(g) {
   return 2 ** (n + stereoBondCount(g));
 }
 
+
+// 化学的に等価でない炭素原子の種類の数（分子の対称性。京大2007・2019）
+function carbonEnvCount(g) {
+  const { color } = refine(g, []);
+  const set = new Set();
+  g.atoms.forEach((a, i) => { if (a.el === 'C') set.add(color[i]); });
+  return set.size;
+}
+
+// 常圧・白金触媒で付加する H2 の物質量（1 mol あたり）。ベンゼン環と C=O には付加しない
+function h2Uptake(g) {
+  let n = 0;
+  for (const b of g.bonds) {
+    if (isAromBond(g, b) || g.atoms[b.a].el !== 'C' || g.atoms[b.b].el !== 'C') continue;
+    if (b.order === 2) n += 1;
+    if (b.order === 3) n += 2;
+  }
+  return n;
+}
+
+// 硫酸酸性 KMnO4 による C=C の酸化開裂: H が残る炭素は -COOH、H のない炭素はケトン、=CH2 は CO2
+function kmno4Cleave(RDKit, g0) {
+  const g = cloneGraph(g0);
+  if (hasCC(g, 3)) throw new Unsupported('alkyne cleavage');
+  const dbl = g.bonds.filter((b) => b.order === 2 && !isAromBond(g, b)
+    && g.atoms[b.a].el === 'C' && g.atoms[b.b].el === 'C');
+  if (dbl.length === 0) return [];
+  const co2 = new Set();
+  for (const b of dbl) g.bonds.splice(g.bonds.indexOf(b), 1);
+  for (const b of dbl) {
+    for (const c of [b.a, b.b]) {
+      const h = hCount(g, c) - 2; // もとの C=C 炭素についていた H の数
+      const o = addAtom(g, 'O');
+      g.bonds.push({ a: c, b: o, order: 2 });
+      if (h >= 2) co2.add(c); // =CH2 は CO2 まで酸化される
+      else if (h === 1) {
+        const oh = addAtom(g, 'O');
+        g.bonds.push({ a: c, b: oh, order: 1 });
+      }
+    }
+  }
+  return productsExcluding(RDKit, g, co2);
+}
+
+// 過ヨウ素酸（HIO4）による C–C 切断（京大2022 IV で与えられた規則）
+// OH をもつ炭素・アルデヒド・ケトンどうしの C–C を切る。OH の炭素はカルボニルに、
+// カルボニル炭素はカルボン酸に（両側で切られた炭素は CO2 まで）なる。切れる所がなくなるまで続ける。
+function periodate(RDKit, g0) {
+  const g = cloneGraph(g0);
+  const cut = new Set(); // 切断でカルボン酸になった炭素（さらに切られると CO2）
+  const oxygenated = (c) => {
+    if (g.atoms[c].el !== 'C' || g.atoms[c].arom) return false;
+    const nb = neighbors(g, c);
+    const oh = nb.some((x) => x.order === 1 && g.atoms[x.atom].el === 'O' && hCount(g, x.atom) === 1);
+    const co = nb.some((x) => x.order === 2 && g.atoms[x.atom].el === 'O');
+    const ether = nb.some((x) => x.order === 1 && g.atoms[x.atom].el === 'O' && hCount(g, x.atom) === 0);
+    if (ether) return false; // アセタール・エステルの炭素は切らない
+    if (co && oh) return cut.has(c); // カルボン酸は、切断で生じたものだけ続けて切る
+    return oh || co;
+  };
+  let changed = false;
+  for (let guard = 0; guard < 50; guard++) {
+    const b = g.bonds.find((y) => y.order === 1 && oxygenated(y.a) && oxygenated(y.b));
+    if (!b) break;
+    g.bonds.splice(g.bonds.indexOf(b), 1);
+    for (const c of [b.a, b.b]) {
+      const nb = neighbors(g, c);
+      const oh = nb.find((x) => x.order === 1 && g.atoms[x.atom].el === 'O' && hCount(g, x.atom) === 1);
+      const co = nb.find((x) => x.order === 2 && g.atoms[x.atom].el === 'O');
+      if (!co && oh) {
+        oh.bond.order = 2; // C–OH → C=O
+      } else {
+        const o = addAtom(g, 'O'); // C=O → COOH（すでに COOH なら炭酸 → CO2）
+        g.bonds.push({ a: c, b: o, order: 1 });
+        cut.add(c);
+      }
+    }
+    changed = true;
+  }
+  if (!changed) return [];
+  // 炭酸 HO–CO–OH は CO2 として表す
+  return graphToSmilesList(RDKit, g).map((s) => (s === 'O=C(O)O' ? 'O=C=O' : s)).sort();
+}
+
+// 白金触媒で水素を付加した生成物（ベンゼン環と C=O はそのまま）
+function hydrogenate(RDKit, g0) {
+  const g = cloneGraph(g0);
+  let changed = false;
+  for (const b of g.bonds) {
+    if (isAromBond(g, b) || g.atoms[b.a].el !== 'C' || g.atoms[b.b].el !== 'C' || b.order === 1) continue;
+    b.order = 1;
+    changed = true;
+  }
+  return changed ? graphToSmilesList(RDKit, g) : [];
+}
+
+// 二クロム酸カリウムによる穏やかな酸化: 第一級アルコール → アルデヒド、第二級 → ケトン
+function mildOxidize(RDKit, g0) {
+  const g = cloneGraph(g0);
+  if (g.atoms.some((a, i) => isPhenolO(g, i))) throw new Unsupported('dichromate with phenol');
+  let changed = false;
+  g.atoms.forEach((a, c) => {
+    if (a.el !== 'C' || a.arom || isCarbonyl(g, c)) return;
+    const nb = neighbors(g, c);
+    if (nb.some((x) => x.order !== 1)) return;
+    const oh = nb.filter((x) => g.atoms[x.atom].el === 'O' && hCount(g, x.atom) === 1);
+    if (oh.length !== 1) return;
+    if (!nb.some((x) => g.atoms[x.atom].el === 'C')) throw new Unsupported('methanol oxidation');
+    if (hCount(g, c) >= 1) { oh[0].bond.order = 2; changed = true; }
+  });
+  return changed ? graphToSmilesList(RDKit, g) : [];
+}
+
 // ---------- 官能基判定（SMARTS） ----------
 
 function matchesAny(RDKit, smiles, smartsList) {
@@ -706,13 +819,50 @@ const CARDS = {
     name: '硫黄の検出',
     action: 'NaOH を加えて加熱し、酢酸鉛(II) 水溶液を加える',
     kind: 'bool', yes: '黒色沈殿が生じた', no: '変化なし',
-    smarts: ['[SX2H1]'],
+    smarts: ['[#16]'], // 京大2012はメチオニンも陽性として扱っている
   },
   biuret: {
     name: 'ビウレット反応',
     action: 'NaOH 水溶液と少量の CuSO₄ 水溶液を加える',
     kind: 'bool', yes: '赤紫色になった', no: '青色のまま',
     compute: (RDKit, g) => hydrolyzable(g).filter((h) => g.atoms[h.bond.a === h.c ? h.bond.b : h.bond.a].el === 'N').length >= 2,
+  },
+  // ---- 過去問の分析から追加 ----
+  carbon_env: {
+    name: '炭素の種類',
+    action: '化学的に等価でない炭素原子が何種類あるか調べる',
+    kind: 'count',
+    compute: (RDKit, g) => carbonEnvCount(g),
+  },
+  h2_uptake: {
+    name: '水素の付加',
+    action: '白金触媒の存在下、常圧で水素を十分に反応させる（1 mol あたりの H₂）',
+    kind: 'count',
+    compute: (RDKit, g) => h2Uptake(g),
+  },
+  kmno4_cleave: {
+    name: 'KMnO₄ 酸化開裂',
+    action: '硫酸酸性の KMnO₄ で C=C を酸化開裂する（オゾン分解後に酸化剤で処理しても同じ）',
+    kind: 'products', none: 'C=C がなく開裂しない',
+    transform: kmno4Cleave,
+  },
+  periodate: {
+    name: '過ヨウ素酸（HIO₄）',
+    action: '十分な HIO₄ を作用させる。OH のついた炭素・アルデヒド・ケトンの炭素どうしの C–C が切れ、OH の炭素はカルボニルに、カルボニル炭素はカルボン酸（両側で切れれば CO₂）になる',
+    kind: 'products', none: '切断されなかった',
+    transform: periodate,
+  },
+  hydrogenation: {
+    name: '水素付加の生成物',
+    action: '白金触媒の存在下で水素を十分に付加させる',
+    kind: 'products', none: '水素は付加しなかった',
+    transform: hydrogenate,
+  },
+  mild_oxidation: {
+    name: '二クロム酸酸化',
+    action: '硫酸酸性の二クロム酸カリウムで穏やかに酸化する',
+    kind: 'products', none: '酸化されなかった',
+    transform: mildOxidize,
   },
 };
 
@@ -752,5 +902,6 @@ function formulaMass(f) {
 module.exports = {
   formulaMass,
   CARDS, Unsupported, evaluate, normalizeResult, sameResult, consistent, expand,
-  canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans, stereoCount, hydrolyze,
+  canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans, stereoCount, hydrolyze, partialProducts,
+  carbonEnvCount, h2Uptake, toMolblock, cloneGraph, neighbors, Unsupported: Unsupported, refine,
 };

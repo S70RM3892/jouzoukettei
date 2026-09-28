@@ -36,10 +36,24 @@ function drawSvg(RDKit, smiles) {
     };
     let svg = mol.get_svg_with_highlights(JSON.stringify(details));
     svg = svg.replace(/<\?xml[^>]*>\s*/, '').replace(/<!-- END OF HEADER -->\s*/, '');
-    return svg.replace(/\n/g, '');
+    return compactSvg(svg.replace(/\n/g, ''));
   } finally {
     mol.delete();
   }
+}
+
+// RDKit の SVG は線ごとに同じ style を繰り返すので、見た目を変えずに縮める（問題が増えてもファイルを軽く保つ）
+// 線の fill:none と太さは svg 要素に置いて継承させ、文字の path は自分の fill を持つのでそのまま
+function compactSvg(svg) {
+  const short = (c) => c.replace(/^#([0-9A-F])\1([0-9A-F])\2([0-9A-F])\3$/i, '#$1$2$3');
+  return svg
+    .replace(/<svg[^>]*viewBox='([^']*)'[^>]*>/, "<svg xmlns='http://www.w3.org/2000/svg' viewBox='$1' fill='none' stroke-width='1.6'>")
+    .replace(/<rect[^>]*\/>/g, '')
+    .replace(/ class='[^']*'/g, '')
+    .replace(/ style='fill:none;(?:fill-rule:evenodd;)?stroke:(#[0-9A-F]{6});stroke-width:1\.6px;[^']*'/gi, (m, c) => ` stroke='${short(c)}'`)
+    .replace(/ fill='(#[0-9A-F]{6})'/gi, (m, c) => ` fill='${short(c)}'`)
+    .replace(/ d='([^']*)'/g, (m, d) => ` d='${d.replace(/, /g, ' ').replace(/ ?([MLQZC]) /g, '$1').trim()}'`)
+    .replace(/\s*\/>/g, '/>');
 }
 
 // 正解を1つに決めるのに最低限必要な手がかりの枚数（総当たり）
@@ -65,6 +79,27 @@ function collectPeptideNames(RDKit, node, names) {
   }
 }
 
+function collectSmiles(RDKit, p, set) {
+  const add = (x) => {
+    if (typeof x === 'string') { try { set.add(chem.canonical(RDKit, x)); } catch (e) { /* 構造でない値 */ } }
+    else if (Array.isArray(x)) x.forEach(add);
+  };
+  add(p.answer);
+  const walk = (stage) => {
+    add(stage.answer);
+    add(stage.candidates || []);
+    (stage.clues || []).forEach((c) => { if (typeof c.result === 'string' || Array.isArray(c.result)) add(c.result); });
+  };
+  (p.fragments || []).forEach(walk);
+  if (p.assemble) walk(p.assemble);
+  // 候補に結果表で出てくる生成物も含める
+  (p.fragments || []).concat(p.assemble ? [p.assemble] : []).forEach((st) => (st.candidates || []).forEach((c) => {
+    (st.clues || []).forEach((cl) => {
+      try { add(chem.evaluate(RDKit, cl.card, c)); } catch (e) { /* 使えない */ }
+    });
+  }));
+}
+
 // 22600 → 2.26×10⁴（入試の表記）
 function sci(x) {
   const e = Math.floor(Math.log10(x));
@@ -82,7 +117,11 @@ async function main() {
 
   const molecules = {};
   const addMol = (s) => {
-    if (!molecules[s]) molecules[s] = { name: names[s] || null, svg: drawSvg(RDKit, s) };
+    if (!molecules[s]) {
+      molecules[s] = { name: names[s] || null, svg: drawSvg(RDKit, s) };
+      // 名前のない構造（自動生成の断片など）は分子式で呼ぶ
+      if (!molecules[s].name) { try { molecules[s].formula = chem.formula(chem.graphFromSmiles(RDKit, chem.expand(s))); } catch (e) { /* なし */ } }
+    }
     return s;
   };
 
@@ -117,11 +156,13 @@ async function main() {
       out.push(narrowData(r, p.clues, base));
     } else if (p.mode === 'big') {
       addMol(r.X);
-      const stages = [{
+      // 自動生成の大問: 水素付加量・燃焼分析の計算段階を先に解く（分解の表で断片の分子式が見える前に）
+      const stages = r.calcs.map((c) => ({ type: 'calc', key: c.key, prompt: c.prompt, answer: c.answer, choices: c.choices, unit: c.unit, explain: c.explain }));
+      stages.push({
         type: 'split',
         bonds: r.bonds,
         products: r.frags.map((f) => ({ label: f.label, formula: f.formula, count: f.count })),
-      }];
+      });
       for (const f of r.frags) {
         addMol(f.answer);
         if (f.given) stages.push({ type: 'given', label: f.label, smiles: f.answer, note: f.note });
@@ -130,7 +171,11 @@ async function main() {
       if (r.assemble) {
         stages.push(narrowData(r.assemble.r, r.assemble.clues, { type: 'narrow', label: 'X', id: `${p.id}/X`, formula: p.formula, level: p.level }));
       }
-      out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages });
+      if (p.generated) {
+        // 京大の過去問の再現と自動生成は「京大レベル」モードにまとめる
+        out.push({ ...base, mode: 'gen', title: p.title, story: p.story, answerSmiles: r.X, stages,
+          difficulty: p.meta.difficulty, kyoto: p.meta.kyoto || null, band: p.meta.band, seed: p.meta.seed });
+      } else out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages });
     } else if (p.mode === 'polymer') {
       const unit = addMol(chem.canonical(RDKit, p.unit));
       const choices = (a) => [...new Set([Math.round(a / 2), a, a * 2, a * 4])].sort((x, y) => x - y);
@@ -162,7 +207,10 @@ async function main() {
     }
   }
 
-  const missing = Object.keys(molecules).filter((s) => !molecules[s].name);
+  // 自動生成の断片には名前のないものがある（構造式だけを見せる）。手で作った問題だけ名前の抜けを警告する
+  const genMols = new Set();
+  problems.filter((p) => p.generated).forEach((p) => collectSmiles(RDKit, p, genMols));
+  const missing = Object.keys(molecules).filter((s) => !molecules[s].name && !genMols.has(s));
   if (missing.length) console.warn(`name missing for: ${missing.join(' ')}`);
 
   const cards = {};

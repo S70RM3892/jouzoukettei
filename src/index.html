@@ -311,6 +311,7 @@ const MODES = [
   { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
+  { key: 'gen', name: '京大レベル', note: '京大の過去問の答えを同じ物差しで測り、その難易度帯に入るものだけを採った自動生成の大問' },
 ];
 
 // ---------- 記録 ----------
@@ -344,7 +345,7 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmtFormula = (f) => esc(f).replace(/(\d+)/g, '<sub>$1</sub>');
 const stars = (n) => '★'.repeat(n) + '☆'.repeat(3 - n);
-const molName = (s) => (DATA.molecules[s] && DATA.molecules[s].name) || s;
+const molName = (s) => { const m = DATA.molecules[s]; return (m && (m.name || (m.formula && m.formula.replace(/\d+/g, (d) => [...d].map((x) => '₀₁₂₃₄₅₆₇₈₉'[x]).join(''))))) || s; };
 const molSvg = (s) => DATA.molecules[s].svg;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const letter = (i) => String.fromCharCode(0x2460 + i); // ① ② ③ …
@@ -425,7 +426,7 @@ function show(screen) {
 
 function startProblem(p) {
   if (isNight()) { checkNight(); return; }
-  if (p.mode === 'big' || p.mode === 'polymer') {
+  if (p.mode === 'big' || p.mode === 'polymer' || p.mode === 'gen') {
     game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
     goStage();
   } else if (p.mode === 'count') {
@@ -462,7 +463,7 @@ function nextStage(score, correct) {
 function bigProgress() {
   if (!game || !game.big) return '';
   const b = game.big;
-  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? (s.key === 'dp' ? '重合度' : '計算') : s.label === 'X' ? '組み立て' : s.label);
+  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? CALC_SHORT[s.key] || '計算' : s.label === 'X' ? '組み立て' : s.label);
   return `<div class="progress" aria-label="大問の進み具合">
     <span class="muted mono" style="font-size:.8rem">${esc(b.P.id)}</span>
     ${b.P.stages.map((s, i) => `<span class="step ${i < b.idx ? 'done' : i === b.idx ? 'now' : ''}">${esc(label(s))}</span>`).join('<span class="arrow">→</span>')}
@@ -514,7 +515,7 @@ function renderHome() {
         <div class="row" id="modes">
           ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
         </div>
-        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : '。'}</p>
+        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : view.mode === 'gen' ? genNote() : '。'}</p>
       </section>
       <section class="panel">
         <h2>難易度</h2>
@@ -539,7 +540,7 @@ function renderHome() {
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
-            const sub = p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
+            const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
             return `<li><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
               <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
@@ -786,7 +787,7 @@ function renderResult() {
 // ---------- 画面: 大問（分解） ----------
 function renderSplit() {
   const P = game.big.P;
-  const st = P.stages[0];
+  const st = P.stages[game.big.idx];
   const ans = game.split.answer;
   const opts = [1, 2, 3, 4, 5];
   const water = (n) => (n === 1 ? 'H₂O' : `${n} H₂O`);
@@ -831,12 +832,26 @@ function renderSplit() {
   if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
 }
 
-// ---------- 画面: 高分子（計算） ----------
+const CALC_SHORT = { dp: '重合度', per: '計算', h2: 'H₂付加', combustion: '燃焼' };
+const CALC_LONG = { dp: '重合度の計算', per: '結合・分子の数', h2: '水素付加量の計算', combustion: '燃焼分析' };
+
+// 京大レベルの説明（何年度の何題を物差しにしたか・いつの種か）
+function genNote() {
+  const gen = DATA.problems.filter((p) => p.mode === 'gen');
+  const k = gen.filter((p) => p.kyoto).length;
+  const g = gen.find((p) => !p.kyoto);
+  const band = g ? g.band : null;
+  const seed = g && g.seed ? `${g.seed.slice(0, 4)}-${g.seed.slice(4, 6)}-${g.seed.slice(6, 8)}` : '';
+  return `。京大の答え ${k} 題を同じ手順で問題化したもの（「京大○年度型の再現」）と、その難易度${band ? ` ${band[0]}〜${band[1]}` : ''} に入る自動生成 ${gen.length - k} 題。${seed ? `自動生成は ${seed} の朝5時に入れ替わった。` : ''}`;
+}
+
+// ---------- 画面: 計算（高分子の重合度・大問の水素付加量と燃焼分析） ----------
 function renderCalc() {
   const b = game.big;
   const P = b.P;
   const st = P.stages[b.idx];
   const ans = game.calc.answer;
+  const isPolymer = P.mode === 'polymer';
   $('#app').innerHTML = `
     <div class="stack">
       <div class="row" style="justify-content:space-between">
@@ -845,15 +860,15 @@ function renderCalc() {
       </div>
       ${bigProgress()}
       <div class="board-head">
-        <div><span class="eyebrow">${esc(P.title)} ・ 繰り返し単位</span><div class="formula">${fmtFormula(P.unitFormula)}</div></div>
+        <div><span class="eyebrow">${esc(P.title)} ・ ${isPolymer ? '繰り返し単位' : '化合物 X'}</span><div class="formula">${fmtFormula(isPolymer ? P.unitFormula : P.formula)}</div></div>
       </div>
-      <div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>
+      ${isPolymer ? `<div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>` : ''}
       <p class="story">${esc(P.story)}</p>
-      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16</p>
+      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16${isPolymer ? '' : '　気体 1 mol = 22.4 L（標準状態）'}</p>
       <section class="panel">
         <h2>${esc(st.prompt)}</h2>
         <div class="row" id="opts">
-          ${st.choices.map((n) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
+          ${st.choices.map((n, i) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-i="${i}" ${ans !== null ? 'disabled' : ''}>${typeof n === 'string' ? fmtFormula(n) : n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
         </div>
         ${ans === null ? '<p class="hint">紙で計算してから選ぶ。</p>' : `
           <div class="verdict ${ans === st.answer ? 'ok' : 'ng'}">
@@ -865,9 +880,9 @@ function renderCalc() {
     </div>`;
   $('#back').onclick = () => show('home');
   $('#opts').onclick = (e) => {
-    const t = e.target.closest('[data-n]');
+    const t = e.target.closest('[data-i]');
     if (!t || game.calc.answer !== null) return;
-    game.calc.answer = +t.dataset.n;
+    game.calc.answer = st.choices[+t.dataset.i];
     render();
   };
   const nx = $('#next');
@@ -902,7 +917,7 @@ function renderBigDone() {
     b.recorded = true;
   }
   const scored = P.stages.filter((s) => s.type !== 'given');
-  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? (s.key === 'dp' ? '重合度の計算' : '結合・分子の数') : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
+  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? CALC_LONG[s.key] || '計算' : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
   $('#app').innerHTML = `
     <div class="stack">
       <div class="verdict ${b.allCorrect ? 'ok' : 'ng'}">
