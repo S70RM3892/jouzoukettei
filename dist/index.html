@@ -256,6 +256,31 @@ table.key td.hid { color: var(--muted); }
 .why { color: var(--muted); font-size: 0.72rem; text-align: right; }
 .plist .sub { font-size: .8rem; margin-left: 6px; }
 
+/* ---------- Online ---------- */
+table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
+.composer { display: grid; gap: 8px; }
+.composer textarea { width: 100%; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; resize: vertical; }
+.posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.posts li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.posts p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-head { display: flex; gap: 10px; align-items: center; font-size: 0.85rem; }
+.post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
+.codein { font: inherit; font-family: var(--f-mono); font-size: 1.1rem; width: 9em; padding: 10px 12px; min-height: 44px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); text-transform: lowercase; }
+.codebox { display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.big { font-size: 1.8rem; letter-spacing: 0.1em; }
+.lobby { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.board { display: grid; gap: 6px; }
+.racer { display: grid; grid-template-columns: 1.5em minmax(0, 7em) 1fr auto; gap: 8px; align-items: center; font-size: 0.85rem; }
+.racer.me .rname { font-weight: 700; }
+.rname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rbar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.rbar span { display: block; height: 100%; background: var(--accent); transition: width 0.2s ease; }
+.countdown { font-size: 5rem; text-align: center; padding-block: 40px; color: var(--accent); }
+.cand.pick { cursor: pointer; text-align: left; padding: 0; font: inherit; color: inherit; }
+.cand.pick:disabled { cursor: not-allowed; }
+
 /* ---------- Night lock ---------- */
 .night {
   position: fixed; inset: 0; z-index: 50; background: #0b0f14; color: #c9d3dc;
@@ -314,6 +339,7 @@ function record(id, correct, score) {
   store.history.push({ id, correct, score, at: Date.now() });
   store.history = store.history.slice(-200);
   saveStore();
+  if (correct) syncScore();
 }
 const bump = (card, d) => { store.weak[card] = Math.max(0, (store.weak[card] || 0) + d); };
 
@@ -479,6 +505,15 @@ function renderHome() {
         <div class="stat"><b>${store.history.length}</b><span>挑戦回数</span></div>
       </section>
       <section class="panel">
+        <h2>友達と</h2>
+        <div class="row">
+          <button class="btn" id="go-rank">ランキング</button>
+          <button class="btn" id="go-posts">みんなの意見</button>
+          <button class="btn" id="go-race">早解き対戦</button>
+        </div>
+        <div id="online-status">${onlineStatusHtml()}</div>
+      </section>
+      <section class="panel">
         <h2>モード</h2>
         <div class="row" id="modes">
           ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
@@ -519,6 +554,9 @@ function renderHome() {
       </section>
       <p class="hint">23時以降はプレイできない。週1回は京大過去問の構造決定を紙で解くこと。</p>
     </div>`;
+  $('#go-rank').onclick = () => show('rank');
+  $('#go-posts').onclick = () => show('posts');
+  $('#go-race').onclick = () => show('race');
   $('#modes').onclick = (e) => {
     const b = e.target.closest('[data-mode]');
     if (!b) return;
@@ -977,6 +1015,434 @@ function countResultHtml() {
     </div>`;
 }
 
+// ---------- オンライン（claude.ai で開いたときだけ動く） ----------
+// A: ランキング   db の scores/<自分のid> に解いた問題の一覧を書き、全員分を読んで並べる
+// B: 意見投稿欄   db の posts/<自分のid> に自分の投稿（最新50件）を持つ
+// C: 早解き対戦   room の名前付き部屋で同じ問題を同時に解き、進み具合を presence で共有する
+const RACE_LEN = 5;
+const RACE_PENALTY = 10000;
+const POST_MAX = 300;
+const online = { ready: false, off: false, user: null, db: null, room: null, uid: null, scores: [], posts: [], writeErr: null };
+let writeChain = Promise.resolve();
+
+async function initOnline() {
+  if (!window.claude || typeof window.claude.use !== 'function') {
+    online.ready = true;
+    online.off = true;
+    return;
+  }
+  const [user, db, room] = await Promise.all([
+    window.claude.use('user'), window.claude.use('db'), window.claude.use('room'),
+  ]);
+  Object.assign(online, { user, db, room });
+  online.uid = user ? await user.id() : null;
+  online.ready = true;
+  if (db) {
+    db.collection('scores').orderBy('solved', 'desc').limit(200).onSnapshot((s) => {
+      online.scores = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.scores = []; });
+    db.collection('posts').onSnapshot((s) => {
+      online.posts = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.posts = []; });
+    if (online.uid) mergeRemoteScore();
+  }
+  refreshOnline();
+}
+
+// 画面全体ではなく一覧だけ描き直す（入力中の文字を消さないため）
+function refreshOnline() {
+  if (view.screen === 'rank') { const el = $('#rank-list'); if (el) { el.innerHTML = rankListHtml(); fillNames(el); } }
+  if (view.screen === 'posts') { const el = $('#post-list'); if (el) { el.innerHTML = postListHtml(); fillNames(el); bindPostDeletes(); } }
+  if (view.screen === 'home') { const el = $('#online-status'); if (el) el.innerHTML = onlineStatusHtml(); }
+}
+
+// data-uid を持つ要素に名前を入れる。名前は保存せず、表示のたびに引く
+async function fillNames(root) {
+  if (!online.user) return;
+  const els = [...root.querySelectorAll('[data-uid]')];
+  const ids = [...new Set(els.map((e) => e.dataset.uid).filter(Boolean))];
+  if (!ids.length) return;
+  const ps = await online.user.profiles(ids);
+  els.forEach((e) => {
+    const p = ps[e.dataset.uid];
+    e.textContent = (p && p.name) || '名前のない参加者';
+    if (e.dataset.uid === online.uid) e.textContent += '（あなた）';
+  });
+}
+
+function mySolvedIds() {
+  return Object.keys(store.stats).filter((id) => store.stats[id].everCorrect && byId(id));
+}
+
+// 自分の成績を scores/<id> に書く。同じ文書への書き込みは1つずつ
+function syncScore() {
+  if (!online.db || !online.uid) return;
+  const ids = mySolvedIds();
+  const body = {
+    solved: ids.length,
+    ids,
+    points: ids.reduce((a, id) => a + (store.stats[id].best || 0), 0),
+    wins: store.wins || 0,
+    updatedAt: Date.now(),
+  };
+  writeChain = writeChain
+    .then(() => online.db.doc('scores/' + online.uid).set(body))
+    .then(() => { online.writeErr = null; })
+    .catch((e) => { online.writeErr = e && e.code; refreshOnline(); });
+}
+
+// 別の端末で解いた分を取り込む（和集合）
+async function mergeRemoteScore() {
+  try {
+    const snap = await online.db.doc('scores/' + online.uid).get();
+    let changed = false;
+    if (snap.exists) {
+      const d = snap.data();
+      (Array.isArray(d.ids) ? d.ids : []).forEach((id) => {
+        if (typeof id !== 'string' || !byId(id)) return;
+        const st = store.stats[id];
+        if (!st || !st.everCorrect) {
+          store.stats[id] = { tries: st ? st.tries : 0, correct: st ? st.correct : 0, best: st ? st.best : 0, ...st, everCorrect: true };
+        }
+      });
+      if (typeof d.wins === 'number' && d.wins > (store.wins || 0)) store.wins = d.wins;
+      saveStore();
+      changed = !snap.exists || mySolvedIds().length !== d.solved || (store.wins || 0) !== d.wins;
+    } else {
+      changed = mySolvedIds().length > 0;
+    }
+    if (changed) syncScore();
+  } catch (e) {}
+}
+
+function onlineStatusHtml() {
+  if (!online.ready) return '<p class="hint">接続中…</p>';
+  if (online.off || !online.db) return '<p class="hint">ランキング・投稿・対戦は claude.ai でこのページを開いたときに使える。</p>';
+  if (!online.uid) return '<p class="hint">サインインすると成績がランキングに載る。</p>';
+  const i = online.scores.findIndex((s) => s.id === online.uid);
+  return `<p class="hint">${i >= 0 ? `あなたは ${i + 1} 位（${online.scores.length} 人中）` : 'まだランキングに載っていない。1問正解すると載る。'}${online.writeErr ? ' ・ 成績を保存できなかった（書き込み権限がない可能性がある）' : ''}</p>`;
+}
+
+// ---- A: ランキング ----
+function rankListHtml() {
+  if (!online.scores.length) return '<p class="hint">まだ誰も載っていない。</p>';
+  const rows = [...online.scores].sort((a, b) => (b.solved || 0) - (a.solved || 0) || (b.points || 0) - (a.points || 0));
+  let rank = 0, prev = null;
+  return `<div class="tbl-wrap"><table class="key rank">
+    <thead><tr><th>順位</th><th>名前</th><th>解いた問題</th><th>得点</th><th>対戦勝利</th></tr></thead>
+    <tbody>${rows.map((r, i) => {
+      const key = `${r.solved}/${r.points}`;
+      if (key !== prev) { rank = i + 1; prev = key; }
+      return `<tr class="${r.id === online.uid ? 'me' : ''}"><td class="mono">${rank}</td>
+        <td><span data-uid="${esc(r.id)}">…</span></td>
+        <td class="mono">${Number(r.solved) || 0}<span class="muted">/${DATA.problems.length}</span></td>
+        <td class="mono">${Number(r.points) || 0}</td><td class="mono">${Number(r.wins) || 0}</td></tr>`;
+    }).join('')}</tbody></table></div>`;
+}
+
+function renderRank() {
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>ランキング</h1>
+      <p class="hint">正解したことのある問題の数で並べる（同数なら各問題の最高点の合計）。</p>
+      ${online.db ? '<div id="rank-list"></div>' : onlineStatusHtml()}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const el = $('#rank-list');
+  if (el) { el.innerHTML = rankListHtml(); fillNames(el); }
+}
+
+// ---- B: 意見投稿欄 ----
+function allPosts() {
+  const out = [];
+  online.posts.forEach((d) => (Array.isArray(d.items) ? d.items : []).forEach((it) => {
+    if (it && typeof it.text === 'string' && typeof it.at === 'number') out.push({ by: d.id, id: String(it.id), text: it.text.slice(0, POST_MAX), at: it.at });
+  }));
+  return out.sort((a, b) => b.at - a.at).slice(0, 200);
+}
+
+function postListHtml() {
+  const ps = allPosts();
+  if (!ps.length) return '<p class="hint">まだ投稿はない。</p>';
+  const fmt = (t) => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  return `<ul class="posts">${ps.map((p) => `<li>
+    <div class="post-head"><b data-uid="${esc(p.by)}">…</b><span class="muted mono">${fmt(p.at)}</span>
+      ${p.by === online.uid ? `<button class="btn ghost small" data-del="${esc(p.id)}">削除</button>` : ''}</div>
+    <p>${esc(p.text)}</p></li>`).join('')}</ul>`;
+}
+
+let postDraft = '';
+function renderPosts() {
+  const canPost = online.db && online.uid;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>みんなの意見</h1>
+      <p class="hint">問題の感想、間違いの指摘、欲しい問題など。名前つきで全員に見える。</p>
+      ${canPost ? `<div class="composer">
+        <label for="post-text" class="eyebrow">投稿する（${POST_MAX}字まで）</label>
+        <textarea id="post-text" maxlength="${POST_MAX}" rows="3"></textarea>
+        <div class="row" style="justify-content:space-between"><span class="hint" id="post-msg"></span>
+          <button class="btn primary" id="post-send">投稿</button></div>
+      </div>` : onlineStatusHtml()}
+      <div id="post-list"></div>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const ta = $('#post-text');
+  if (ta) {
+    ta.value = postDraft;
+    ta.oninput = () => { postDraft = ta.value; };
+    $('#post-send').onclick = sendPost;
+  }
+  const el = $('#post-list');
+  el.innerHTML = postListHtml();
+  fillNames(el);
+  bindPostDeletes();
+}
+
+function myItems() {
+  const d = online.posts.find((p) => p.id === online.uid);
+  return d && Array.isArray(d.items) ? d.items.filter((it) => it && typeof it.text === 'string') : [];
+}
+
+async function writeMyPosts(items, msgOk) {
+  const btn = $('#post-send');
+  if (btn) btn.disabled = true;
+  try {
+    await (writeChain = writeChain.then(() => online.db.doc('posts/' + online.uid).set({ items })));
+    if ($('#post-msg')) $('#post-msg').textContent = msgOk;
+    return true;
+  } catch (e) {
+    if ($('#post-msg')) $('#post-msg').textContent = '保存できなかった。このページへの書き込み権限がない可能性がある。';
+    writeChain = Promise.resolve();
+    return false;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function sendPost() {
+  const text = postDraft.trim();
+  if (!text) { $('#post-msg').textContent = '何か書いてから投稿する。'; return; }
+  const items = myItems().slice(-49);
+  items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text: text.slice(0, POST_MAX), at: Date.now() });
+  if (await writeMyPosts(items, '投稿した。')) {
+    postDraft = '';
+    const ta = $('#post-text');
+    if (ta) ta.value = '';
+  }
+}
+
+function bindPostDeletes() {
+  document.querySelectorAll('[data-del]').forEach((b) => {
+    b.onclick = () => writeMyPosts(myItems().filter((it) => String(it.id) !== b.dataset.del), '削除した。');
+  });
+}
+
+// ---- C: 早解き対戦 ----
+const race = { rm: null, code: '', peers: [], round: null, ids: [], idx: 0, startAt: 0, penalty: 0, wrong: new Set(), finished: null, counted: false, msg: '' };
+
+function raceCode() {
+  const cs = 'abcdefghjkmnpqrstuvwxyz23456789';
+  return Array.from({ length: 4 }, () => cs[Math.floor(Math.random() * cs.length)]).join('');
+}
+
+async function joinRace(code) {
+  code = String(code || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
+  if (!code) { race.msg = '部屋コードを入れる。'; render(); return; }
+  if (isNight()) { checkNight(); return; }
+  try {
+    if (race.rm) await race.rm.leave();
+    const rm = await online.room.join('race-' + code);
+    Object.assign(race, { rm, code, round: null, peers: rm.peers(), msg: '' });
+    rm.onPeers((ch) => { race.peers = ch.peers; racePeersChanged(); });
+    rm.on('start', (m) => onRaceStart(m.data));
+    rm.presence({ uid: online.uid, round: null, idx: 0, done: null, pen: 0 });
+    show('race');
+  } catch (e) {
+    race.msg = '部屋に入れなかった。少し待ってからもう一度。';
+    render();
+  }
+}
+
+async function leaveRace() {
+  if (race.rm) { try { await race.rm.leave(); } catch (e) {} }
+  race.rm = null;
+  race.round = null;
+  show('home');
+}
+
+function startRace() {
+  const pool = DATA.problems.filter((p) => p.mode === 'narrow');
+  const ids = [];
+  while (ids.length < RACE_LEN && ids.length < pool.length) {
+    const p = pool[Math.floor(Math.random() * pool.length)];
+    if (!ids.includes(p.id)) ids.push(p.id);
+  }
+  // 自分の画面も、戻ってきた自分の発信（エコー）で始める
+  race.rm.emit('start', { round: Date.now().toString(36), ids }).catch(() => {
+    race.msg = '開始の合図を送れなかった。';
+    render();
+  });
+}
+
+function onRaceStart(data) {
+  if (!data || typeof data.round !== 'string' || !Array.isArray(data.ids)) return;
+  const ids = data.ids.filter((id) => typeof id === 'string' && byId(id) && byId(id).mode === 'narrow').slice(0, 10);
+  if (!ids.length || isNight()) return;
+  Object.assign(race, { round: data.round.slice(0, 20), ids, idx: 0, startAt: Date.now() + 3000, penalty: 0, wrong: new Set(), finished: null, counted: false });
+  race.rm.presence({ uid: online.uid, round: race.round, idx: 0, done: null, pen: 0 });
+  show('raceplay');
+}
+
+function raceElapsed() {
+  return Math.max(0, (race.finished !== null ? race.finished : Date.now() - race.startAt + race.penalty));
+}
+const fmtSec = (ms) => (ms / 1000).toFixed(1) + ' 秒';
+
+function racePlayers() {
+  return race.peers.filter((p) => p.kind === 'viewer').map((p) => ({
+    peer: p.peer,
+    uid: p.by || (typeof p.presence.uid === 'string' ? p.presence.uid : ''),
+    isMe: p.sameTab,
+    round: p.presence.round,
+    idx: Number(p.presence.idx) || 0,
+    done: typeof p.presence.done === 'number' ? p.presence.done : null,
+  }));
+}
+
+function raceBoardHtml() {
+  const ps = racePlayers().filter((p) => p.round === race.round);
+  ps.sort((a, b) => (a.done ?? Infinity) - (b.done ?? Infinity) || b.idx - a.idx);
+  return ps.map((p, i) => `<div class="racer ${p.isMe ? 'me' : ''}">
+    <span class="mono">${p.done !== null ? i + 1 : '–'}</span>
+    <span class="rname" data-uid="${esc(p.uid)}">…</span>
+    <span class="rbar"><span style="width:${Math.min(100, (100 * (p.done !== null ? race.ids.length : p.idx)) / race.ids.length)}%"></span></span>
+    <span class="mono">${p.done !== null ? fmtSec(p.done) : `${p.idx}/${race.ids.length}`}</span></div>`).join('');
+}
+
+function racePeersChanged() {
+  if (view.screen === 'race') { const el = $('#lobby'); if (el) { el.innerHTML = lobbyHtml(); fillNames(el); } }
+  if (view.screen === 'raceplay') { const el = $('#board'); if (el) { el.innerHTML = raceBoardHtml(); fillNames(el); } checkRaceWin(); }
+}
+
+function lobbyHtml() {
+  const ps = racePlayers();
+  return `<ul class="lobby">${ps.map((p) => `<li><span data-uid="${esc(p.uid)}">…</span>${p.isMe ? '' : ''}</li>`).join('')}</ul>
+    <p class="hint">${ps.length} 人がこの部屋にいる。</p>`;
+}
+
+function renderRaceHome() {
+  const can = online.room && online.uid;
+  if (!race.rm) {
+    $('#app').innerHTML = `
+      <div class="stack">
+        <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+        <h1>早解き対戦</h1>
+        <p class="hint">同じ ${RACE_LEN} 問を同時に解き、全問正解までの時間を競う。手がかりは最初から全部見えている。誤答は +${RACE_PENALTY / 1000} 秒。</p>
+        ${can ? `<section class="panel">
+          <button class="btn primary" id="create">部屋を作る</button>
+          <div class="row"><input id="code" class="codein" inputmode="latin" autocomplete="off" maxlength="8" placeholder="部屋コード">
+            <button class="btn" id="join">参加</button></div>
+          <p class="hint">${esc(race.msg)}</p>
+        </section>` : onlineStatusHtml()}
+      </div>`;
+    $('#back').onclick = () => show('home');
+    if (can) {
+      $('#create').onclick = () => joinRace(raceCode());
+      $('#join').onclick = () => joinRace($('#code').value);
+    }
+    return;
+  }
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="leave">← 部屋を出る</button></div>
+      <h1>対戦の部屋</h1>
+      <div class="codebox"><span class="eyebrow">部屋コード</span><span class="mono big">${esc(race.code)}</span>
+        <span class="hint">友達にこのコードを伝える</span></div>
+      <div id="lobby"></div>
+      <div class="row"><button class="btn primary" id="go">${RACE_LEN}問でスタート</button></div>
+      <p class="hint">誰が押してもこの部屋の全員が同時に始まる。 ${esc(race.msg)}</p>
+    </div>`;
+  $('#leave').onclick = leaveRace;
+  $('#go').onclick = startRace;
+  const el = $('#lobby');
+  el.innerHTML = lobbyHtml();
+  fillNames(el);
+}
+
+function renderRacePlay() {
+  const wait = Date.now() < race.startAt;
+  const p = byId(race.ids[race.idx]);
+  const done = race.finished !== null;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="leave">← 部屋に戻る</button>
+        <span class="mono big" id="race-timer">${wait ? '' : fmtSec(raceElapsed())}</span>
+      </div>
+      <div id="board" class="board"></div>
+      ${wait ? `<div class="countdown mono" id="count">${Math.ceil((race.startAt - Date.now()) / 1000)}</div>`
+      : done ? `<div class="verdict ok"><h2>完走</h2><span class="score">${fmtSec(race.finished)}（誤答 ${race.penalty / RACE_PENALTY} 回を含む）</span></div>
+          <div class="row"><button class="btn primary" id="again">部屋に戻る</button></div>`
+      : `<div class="board-head"><div><span class="eyebrow">${race.idx + 1} / ${race.ids.length} 問目</span>
+            <div class="formula">${fmtFormula(p.formula)}</div></div></div>
+          <div class="deck">${p.clues.map((c) => `<div class="clue open"><span class="cname">${esc(DATA.cards[c.card].name)}</span>${resultHtml(c.card, c.result)}</div>`).join('')}</div>
+          <p class="hint">正解の構造をタップ。</p>
+          <section class="cands" id="rcands">${p.candidates.map((s, i) => `
+            <button class="cand pick ${race.wrong.has(i) ? 'struck' : ''}" data-pick="${i}" ${race.wrong.has(i) ? 'disabled' : ''}>
+              <div class="mol">${molSvg(s)}</div><div class="bar"><span class="tag">${letter(i)}</span></div></button>`).join('')}</section>`}
+    </div>`;
+  $('#leave').onclick = () => show('race');
+  const ag = $('#again');
+  if (ag) ag.onclick = () => show('race');
+  const rc = $('#rcands');
+  if (rc) rc.onclick = (e) => { const b = e.target.closest('[data-pick]'); if (b) racePick(+b.dataset.pick); };
+  const el = $('#board');
+  el.innerHTML = raceBoardHtml();
+  fillNames(el);
+}
+
+function racePick(i) {
+  const p = byId(race.ids[race.idx]);
+  if (i === p.answer) {
+    race.idx++;
+    race.wrong = new Set();
+    if (race.idx >= race.ids.length) race.finished = Date.now() - race.startAt + race.penalty;
+  } else {
+    race.penalty += RACE_PENALTY;
+    race.wrong.add(i);
+  }
+  race.rm.presence({ uid: online.uid, round: race.round, idx: race.idx, done: race.finished, pen: race.penalty });
+  render();
+  checkRaceWin();
+}
+
+// 部屋の全員が完走し、自分が最速なら勝利を1つ数える（1ラウンド1回）
+function checkRaceWin() {
+  if (race.counted || race.finished === null) return;
+  const ps = racePlayers().filter((p) => p.round === race.round);
+  if (ps.length < 2 || ps.some((p) => p.done === null)) return;
+  race.counted = true;
+  const best = Math.min(...ps.map((p) => p.done));
+  if (race.finished <= best) {
+    store.wins = (store.wins || 0) + 1;
+    saveStore();
+    syncScore();
+  }
+}
+
+setInterval(() => {
+  if (view.screen !== 'raceplay') return;
+  if (Date.now() < race.startAt) { const c = $('#count'); if (c) c.textContent = Math.ceil((race.startAt - Date.now()) / 1000); return; }
+  if ($('#count')) { render(); return; }
+  const t = $('#race-timer');
+  if (t && race.finished === null) t.textContent = fmtSec(raceElapsed());
+}, 100);
+
 function render() {
   const s = view.screen;
   if (s === 'play' && game && game.p) renderPlay();
@@ -985,6 +1451,10 @@ function render() {
   else if (s === 'given' && game && game.big) renderGiven();
   else if (s === 'bigdone' && game && game.big) renderBigDone();
   else if (s === 'calc' && game && game.calc) renderCalc();
+  else if (s === 'rank') renderRank();
+  else if (s === 'posts') renderPosts();
+  else if (s === 'race') renderRaceHome();
+  else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();
   else if (s === 'count' && game && game.count) renderCount();
   else renderHome();
 }
@@ -995,6 +1465,7 @@ if (!DATA) {
   checkNight();
   setInterval(checkNight, 30000);
   render();
+  initOnline().catch(() => { online.ready = true; online.off = true; refreshOnline(); });
 }
 </script>
 
