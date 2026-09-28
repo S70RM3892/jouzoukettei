@@ -1,0 +1,35 @@
+name: build
+
+on:
+  push:
+    paths-ignore:
+      - 'dist/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - name: 判定ロジックのテストと問題の検証
+        run: npm test
+      - name: dist/index.html を生成
+        run: npm run build
+      - name: dist をコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist
+          if git diff --cached --quiet; then
+            echo "dist unchanged"
+          else
+            git commit -m "Build dist/index.html"
+            git push
+          fi
