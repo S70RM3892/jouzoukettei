@@ -51,6 +51,13 @@ function collectPeptideNames(RDKit, node, names) {
   }
 }
 
+// 22600 → 2.26×10⁴（入試の表記）
+function sci(x) {
+  const e = Math.floor(Math.log10(x));
+  const sup = String(e).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]).join('');
+  return `${(x / 10 ** e).toFixed(2)}×10${sup}`;
+}
+
 async function main() {
   const RDKit = await loadRDKit();
   const problems = loadProblems();
@@ -110,6 +117,23 @@ async function main() {
         stages.push(narrowData(r.assemble.r, r.assemble.clues, { type: 'narrow', label: 'X', id: `${p.id}/X`, formula: p.formula, level: p.level }));
       }
       out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages });
+    } else if (p.mode === 'polymer') {
+      const unit = addMol(chem.canonical(RDKit, p.unit));
+      const choices = (a) => [...new Set([Math.round(a / 2), a, a * 2, a * 4])].sort((x, y) => x - y);
+      const stages = [
+        { type: 'calc', key: 'dp', prompt: '平均重合度 n はおよそいくつか', answer: p.n, choices: choices(p.n),
+          explain: `繰り返し単位 ${r.unitFormula} の式量は ${r.unitMass}。${r.unitMass} × n = ${r.mw} より n = ${p.n}` },
+        { type: 'calc', key: 'per', prompt: p.perUnit.prompt, answer: p.perUnit.count * p.n, unit: p.perUnit.unit,
+          choices: choices(p.perUnit.count * p.n),
+          explain: `繰り返し単位 1 つあたり ${p.perUnit.count}、それが n = ${p.n} 個で ${p.perUnit.count * p.n}` },
+      ];
+      for (const m of r.mons) {
+        addMol(m.answer);
+        if (m.given) stages.push({ type: 'given', label: m.label, smiles: m.answer, note: m.note });
+        else stages.push(narrowData(m.r, m.clues, { type: 'narrow', label: m.label, id: `${p.id}/${m.label}`, formula: m.formula, level: p.level }));
+      }
+      out.push({ ...base, formula: r.unitFormula, title: p.title, story: p.story.replace('{M}', sci(r.mw)), answerSmiles: unit,
+        unitFormula: r.unitFormula, stages });
     } else if (p.mode === 'count') {
       r.pool.forEach(addMol);
       out.push({

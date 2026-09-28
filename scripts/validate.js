@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const chem = require('../src/chem');
 
-const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json'];
+const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json'];
 
 async function loadRDKit() {
   const init = require('@rdkit/rdkit');
@@ -211,7 +211,58 @@ function checkCount(RDKit, P) {
   return { errors, pool, table, expected, answers, stereo, nStereo };
 }
 
+function formulaCounts(f) {
+  const c = {};
+  for (const [, el, n] of f.matchAll(/([A-Z][a-z]?)(\d*)/g)) c[el] = (c[el] || 0) + (n ? +n : 1);
+  return c;
+}
+
+// 高分子型: 繰り返し単位と単量体の原子の収支、重合度の計算
+function checkPolymer(RDKit, P) {
+  const errors = [];
+  const err = (m) => errors.push(`${P.id}: ${m}`);
+  let unitFormula;
+  try {
+    const g = chem.graphFromSmiles(RDKit, P.unit);
+    if (g.atoms.filter((a) => a.el === 'R').length !== 2) err('unit must have exactly two * ends');
+    unitFormula = chem.formula(g);
+  } catch (e) {
+    err(e.message);
+    return { errors };
+  }
+  const unitMass = chem.formulaMass(unitFormula);
+  if (!Number.isInteger(P.n) || P.n < 10) err('n must be an integer >= 10');
+  const mw = Math.round(unitMass * P.n * 10) / 10;
+  // 単量体の合計 = 繰り返し単位 + (縮合で除かれた H2O)
+  const lhs = formulaCounts(unitFormula);
+  lhs.H = (lhs.H || 0) + 2 * P.bondsPerUnit;
+  lhs.O = (lhs.O || 0) + P.bondsPerUnit;
+  const rhs = {};
+  const mons = [];
+  for (const m of P.monomers) {
+    let a;
+    try {
+      a = chem.canonical(RDKit, m.answer);
+    } catch (e) {
+      err(e.message);
+      continue;
+    }
+    const formula = chem.formula(chem.graphFromSmiles(RDKit, a));
+    Object.entries(formulaCounts(formula)).forEach(([el, n]) => { rhs[el] = (rhs[el] || 0) + n; });
+    let r = null;
+    if (!m.given) {
+      r = checkNarrow(RDKit, { id: `${P.id}/${m.label}`, formula, answer: a, candidates: m.candidates, clues: m.clues });
+      errors.push(...r.errors);
+    }
+    mons.push({ label: m.label, answer: a, formula, given: !!m.given, note: m.note || '', r, clues: m.clues || [] });
+  }
+  const norm = (o) => JSON.stringify(Object.entries(o).filter(([, n]) => n).sort());
+  if (norm(lhs) !== norm(rhs)) err(`atom balance: unit ${unitFormula} + ${P.bondsPerUnit} H2O = ${norm(lhs)} but monomers give ${norm(rhs)}`);
+  return { errors, unitFormula, unitMass, mw, mons };
+}
+
 function checkAny(RDKit, p) {
+  if (p.mode === 'polymer') return checkPolymer(RDKit, p);
   if (p.mode === 'narrow') return checkNarrow(RDKit, p);
   if (p.mode === 'big') return checkBig(RDKit, p);
   if (p.mode === 'count') return checkCount(RDKit, p);
@@ -248,4 +299,4 @@ async function main() {
 
 if (require.main === module) main();
 
-module.exports = { loadRDKit, loadProblems, checkNarrow, checkBig, checkCount, checkAny, checkAll };
+module.exports = { loadRDKit, loadProblems, checkNarrow, checkBig, checkCount, checkPolymer, checkAny, checkAll };

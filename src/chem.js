@@ -5,7 +5,8 @@
 
 class Unsupported extends Error {}
 
-const VALENCE = { C: 4, O: 2, N: 3, S: 2, F: 1, Cl: 1, Br: 1, I: 1, H: 1 };
+const VALENCE = { C: 4, O: 2, N: 3, S: 2, F: 1, Cl: 1, Br: 1, I: 1, H: 1, R: 1 }; // R = 高分子の繰り返し単位の端（*）
+const MASS = { H: 1.0, C: 12, N: 14, O: 16, S: 32, Cl: 35.5 }; // 入試で与えられる原子量
 
 // ---------- 分子グラフ ----------
 
@@ -93,7 +94,7 @@ function hCount(g, i) {
 function formula(g) {
   const c = {};
   const add = (el, n) => { c[el] = (c[el] || 0) + n; };
-  g.atoms.forEach((a, i) => { add(a.el, 1); add('H', hCount(g, i)); });
+  g.atoms.forEach((a, i) => { if (a.el !== 'R') { add(a.el, 1); add('H', hCount(g, i)); } });
   const order = ['C', 'H', ...Object.keys(c).filter((e) => e !== 'C' && e !== 'H').sort()];
   return order.filter((e) => c[e]).map((e) => e + (c[e] > 1 ? c[e] : '')).join('');
 }
@@ -368,7 +369,10 @@ function hydrolyzable(g) {
         if (other.length !== 1 || g.atoms[other[0].atom].el !== 'C') continue; // カルボン酸
         const r = other[0].atom;
         if (isCarbonyl(g, r)) throw new Unsupported('anhydride');
-        if (!g.atoms[r].arom && neighbors(g, r).some((y) => y.order !== 1)) throw new Unsupported('enol ester');
+        const dbl = g.atoms[r].arom ? [] : neighbors(g, r).filter((y) => y.order !== 1);
+        if (dbl.length > 1 || (dbl.length === 1 && (dbl[0].order !== 2 || g.atoms[dbl[0].atom].el !== 'C'))) throw new Unsupported('unusual enol ester');
+        // ビニルエステル: 生じるビニルアルコール型はすぐにカルボニル化合物へ変わる
+        if (dbl.length === 1) { out.push({ c, bond: x.bond, enol: { r, o: x.atom, s: dbl[0].atom } }); continue; }
       } else {
         if (other.some((y) => isCarbonyl(g, y.atom))) throw new Unsupported('imide');
         if (other.length === 0) continue; // 第一級アミド R-CONH2 は扱わない
@@ -386,6 +390,12 @@ function breakBonds(RDKit, g0, list) {
     g.bonds.splice(g.bonds.indexOf(bonds[i]), 1);
     const o = addAtom(g, 'O');
     g.bonds.push({ a: list[i].c, b: o, order: 1 });
+    const e = list[i].enol;
+    if (e) {
+      const find = (p, q) => g.bonds.find((b) => (b.a === p && b.b === q) || (b.a === q && b.b === p));
+      find(e.r, e.o).order = 2;
+      find(e.r, e.s).order = 1;
+    }
   }
   return graphToSmilesList(RDKit, g);
 }
@@ -732,7 +742,15 @@ function consistent(card, value, expected) {
   return sameResult(value, expected);
 }
 
+// 分子式の式量（入試の原子量で）
+function formulaMass(f) {
+  let m = 0;
+  for (const [, el, n] of f.matchAll(/([A-Z][a-z]?)(\d*)/g)) m += MASS[el] * (n ? +n : 1);
+  return Math.round(m * 10) / 10;
+}
+
 module.exports = {
+  formulaMass,
   CARDS, Unsupported, evaluate, normalizeResult, sameResult, consistent, expand,
   canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans, stereoCount, hydrolyze,
 };

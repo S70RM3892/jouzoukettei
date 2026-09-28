@@ -103,6 +103,9 @@ const CASES = [
   ['biuret', 'pep:Gly-Ala-Phe', true, 'トリペプチド'],
   ['hydrolysis', 'pep:Gly-Ala', ['CC(N)C(=O)O', 'NCC(=O)O'], 'Gly-Ala'],
   ['chiral', 'pep:Gly-Ala-Phe', 2, 'Gly-Ala-Phe'],
+  // ---- 高分子 ----
+  ['hydrolysis', 'CC(=O)OC=C', ['CC(=O)O', 'CC=O'], '酢酸ビニル → 酢酸 + アセトアルデヒド'],
+  ['hydrolysis', 'C=CC(=O)OC', ['C=CC(=O)O', 'CO'], 'アクリル酸メチル'],
 ];
 
 async function main() {
@@ -126,6 +129,8 @@ async function main() {
   // 分子式
   const f = chem.formula(chem.graphFromSmiles(RDKit, 'CCC(C)=O'));
   if (f !== 'C4H8O') { fail++; console.error(`NG formula: ${f}`); }
+  const u = chem.formula(chem.graphFromSmiles(RDKit, '*C(=O)CCCCC(=O)NCCCCCCN*'));
+  if (u !== 'C12H22N2O2' || chem.formulaMass(u) !== 226) { fail++; console.error(`NG nylon66 unit: ${u} ${chem.formulaMass(u)}`); }
   if (fail) {
     console.error(`${fail} rule test(s) failed`);
     process.exit(1);

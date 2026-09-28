@@ -285,6 +285,7 @@ const MODES = [
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
   { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
+  { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
 ];
 
 // ---------- 記録 ----------
@@ -365,7 +366,7 @@ function accuracy(n = 20) {
 }
 
 function cardsOf(p) {
-  if (p.mode === 'big') return p.stages.flatMap((s) => s.clues || []).map((c) => c.card);
+  if (p.stages) return p.stages.flatMap((s) => s.clues || []).map((c) => c.card);
   return p.clues.map((c) => c.card);
 }
 
@@ -398,7 +399,7 @@ function show(screen) {
 
 function startProblem(p) {
   if (isNight()) { checkNight(); return; }
-  if (p.mode === 'big') {
+  if (p.mode === 'big' || p.mode === 'polymer') {
     game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
     goStage();
   } else if (p.mode === 'count') {
@@ -421,6 +422,7 @@ function goStage() {
   if (!st) { show('bigdone'); return; }
   if (st.type === 'split') { game = { big: b, split: { answer: null } }; show('split'); }
   else if (st.type === 'given') { game = { big: b }; show('given'); }
+  else if (st.type === 'calc') { game = { big: b, calc: { answer: null } }; show('calc'); }
   else startNarrow(st, b);
 }
 function nextStage(score, correct) {
@@ -434,7 +436,7 @@ function nextStage(score, correct) {
 function bigProgress() {
   if (!game || !game.big) return '';
   const b = game.big;
-  const label = (s) => (s.type === 'split' ? '分解' : s.label === 'X' ? '組み立て' : s.label);
+  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? (s.key === 'dp' ? '重合度' : '計算') : s.label === 'X' ? '組み立て' : s.label);
   return `<div class="progress" aria-label="大問の進み具合">
     <span class="muted mono" style="font-size:.8rem">${esc(b.P.id)}</span>
     ${b.P.stages.map((s, i) => `<span class="step ${i < b.idx ? 'done' : i === b.idx ? 'now' : ''}">${esc(label(s))}</span>`).join('<span class="arrow">→</span>')}
@@ -445,7 +447,7 @@ function bigProgress() {
 function solvedSoFar() {
   if (!game || !game.big) return '';
   const b = game.big;
-  const done = b.P.stages.slice(0, b.idx).filter((s) => s.type !== 'split');
+  const done = b.P.stages.slice(0, b.idx).filter((s) => s.type === 'narrow' || s.type === 'given');
   if (!done.length) return '';
   const smiles = (s) => (s.type === 'given' ? s.smiles : s.candidates[s.answer]);
   return `<details class="solved"><summary>決まった構造（${done.map((s) => s.label).join('・')}）</summary>
@@ -502,7 +504,7 @@ function renderHome() {
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
-            const sub = p.mode === 'big' ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
+            const sub = p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
             return `<li><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
               <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
@@ -539,7 +541,7 @@ function renderPlay() {
   const rest = remaining();
   const n = p.candidates.length;
   const heading = game.big
-    ? (p.label === 'X' ? '組み立て: 化合物 X の構造' : `断片 ${esc(p.label)} の構造`)
+    ? (p.label === 'X' ? '組み立て: 化合物 X の構造' : game.big.P.mode === 'polymer' ? `単量体 ${esc(p.label)} の構造` : `断片 ${esc(p.label)} の構造`)
     : '';
   $('#app').innerHTML = `
     <div class="stack">
@@ -784,6 +786,49 @@ function renderSplit() {
   if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
 }
 
+// ---------- 画面: 高分子（計算） ----------
+function renderCalc() {
+  const b = game.big;
+  const P = b.P;
+  const st = P.stages[b.idx];
+  const ans = game.calc.answer;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+      </div>
+      ${bigProgress()}
+      <div class="board-head">
+        <div><span class="eyebrow">${esc(P.title)} ・ 繰り返し単位</span><div class="formula">${fmtFormula(P.unitFormula)}</div></div>
+      </div>
+      <div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>
+      <p class="story">${esc(P.story)}</p>
+      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16</p>
+      <section class="panel">
+        <h2>${esc(st.prompt)}</h2>
+        <div class="row" id="opts">
+          ${st.choices.map((n) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
+        </div>
+        ${ans === null ? '<p class="hint">紙で計算してから選ぶ。</p>' : `
+          <div class="verdict ${ans === st.answer ? 'ok' : 'ng'}">
+            <h2>${ans === st.answer ? '正解' : '不正解'}</h2>
+            <span class="eq">${esc(st.explain)}</span>
+          </div>
+          <div class="row"><button class="btn primary" id="next">次へ</button></div>`}
+      </section>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#opts').onclick = (e) => {
+    const t = e.target.closest('[data-n]');
+    if (!t || game.calc.answer !== null) return;
+    game.calc.answer = +t.dataset.n;
+    render();
+  };
+  const nx = $('#next');
+  if (nx) nx.onclick = () => nextStage(ans === st.answer ? 100 : 0, ans === st.answer);
+}
+
 function renderGiven() {
   const b = game.big;
   const st = b.P.stages[b.idx];
@@ -812,7 +857,7 @@ function renderBigDone() {
     b.recorded = true;
   }
   const scored = P.stages.filter((s) => s.type !== 'given');
-  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.label === 'X' ? '組み立て' : `断片 ${s.label}`);
+  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? (s.key === 'dp' ? '重合度の計算' : '結合・分子の数') : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
   $('#app').innerHTML = `
     <div class="stack">
       <div class="verdict ${b.allCorrect ? 'ok' : 'ng'}">
@@ -820,7 +865,7 @@ function renderBigDone() {
         <h2>${b.allCorrect ? '完答' : 'どこかで間違えた'}</h2>
         <span class="score">${total} 点（各段階の平均）</span>
       </div>
-      <div class="xcard">${molCardHtml(P.answerSmiles, '化合物 X ・ ' + P.formula)}</div>
+      <div class="xcard">${molCardHtml(P.answerSmiles, (P.mode === 'polymer' ? '繰り返し単位 ・ ' : '化合物 X ・ ') + P.formula)}</div>
       <div class="tbl-wrap"><table class="key">
         <thead><tr><th>段階</th><th>得点</th></tr></thead>
         <tbody>${scored.map((s, i) => `<tr><td>${esc(label(s))}</td><td class="mono">${b.scores[i] ?? '—'}</td></tr>`).join('')}</tbody>
@@ -935,6 +980,7 @@ function render() {
   else if (s === 'split' && game && game.split) renderSplit();
   else if (s === 'given' && game && game.big) renderGiven();
   else if (s === 'bigdone' && game && game.big) renderBigDone();
+  else if (s === 'calc' && game && game.calc) renderCalc();
   else if (s === 'count' && game && game.count) renderCount();
   else renderHome();
 }
