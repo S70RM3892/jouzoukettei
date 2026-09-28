@@ -1,0 +1,1473 @@
+<title>有機構造決定パズル</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<style>
+:root {
+  --ground: #edf0ea;
+  --surface: #f8f9f5;
+  --paper: #ffffff;
+  --ink: #16221e;
+  --muted: #5b6862;
+  --line: #cfd6cd;
+  --accent: #2350a0;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe7f5;
+  --pos: #b0372b;
+  --pos-soft: #f6e1dd;
+  --ok: #2c7548;
+  --ok-soft: #dcefe2;
+  --warn: #9a6512;
+  --warn-soft: #f6ead2;
+  --shadow: 0 1px 2px rgb(22 34 30 / 0.08), 0 4px 14px rgb(22 34 30 / 0.06);
+  --mol-filter: none;
+  --f-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  --f-body: "BIZ UDPGothic", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #111714;
+    --surface: #19211d;
+    --paper: #1f2824;
+    --ink: #e5ebe6;
+    --muted: #95a29b;
+    --line: #2f3a35;
+    --accent: #86a8ea;
+    --accent-ink: #0f1a2e;
+    --accent-soft: #1f2c44;
+    --pos: #eb8579;
+    --pos-soft: #3a2320;
+    --ok: #74c393;
+    --ok-soft: #1c3226;
+    --warn: #e2b155;
+    --warn-soft: #362c18;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+    --mol-filter: invert(0.9) hue-rotate(180deg);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #111714;
+  --surface: #19211d;
+  --paper: #1f2824;
+  --ink: #e5ebe6;
+  --muted: #95a29b;
+  --line: #2f3a35;
+  --accent: #86a8ea;
+  --accent-ink: #0f1a2e;
+  --accent-soft: #1f2c44;
+  --pos: #eb8579;
+  --pos-soft: #3a2320;
+  --ok: #74c393;
+  --ok-soft: #1c3226;
+  --warn: #e2b155;
+  --warn-soft: #362c18;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  --mol-filter: invert(0.9) hue-rotate(180deg);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 15px/1.65 var(--f-body);
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 120px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 1.75rem; font-weight: 900; letter-spacing: 0.02em; }
+h2 { font-size: 1.05rem; font-weight: 700; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.formula { font-family: var(--f-mono); font-weight: 600; letter-spacing: 0.02em; }
+.formula sub { font-size: 0.68em; vertical-align: -0.25em; line-height: 0; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.btn {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
+  padding: 10px 16px; cursor: pointer; font-weight: 700; min-height: 44px;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.ghost { background: transparent; border-color: transparent; padding-inline: 8px; }
+.chip {
+  border: 1px solid var(--line); background: transparent; border-radius: 999px;
+  padding: 6px 14px; cursor: pointer; font-size: 0.9rem; min-height: 36px;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.chip small { font-size: 0.72rem; margin-left: 4px; }
+
+/* ---------- Home ---------- */
+.masthead { display: grid; gap: 6px; padding-block: 12px 4px; }
+.masthead p { margin: 0; max-width: 34em; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat b { display: block; font-family: var(--f-mono); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 0.78rem; color: var(--muted); }
+.panel { display: grid; gap: 10px; }
+.weak-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.weak { background: var(--warn-soft); color: var(--warn); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; font-weight: 700; }
+.plist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.plist li { border-bottom: 1px solid var(--line); }
+.plist button {
+  width: 100%; display: grid; grid-template-columns: 3.2em 1fr auto; gap: 12px; align-items: center;
+  background: none; border: 0; padding: 12px 4px; cursor: pointer; text-align: left; min-height: 52px;
+}
+.plist button:hover { background: var(--surface); }
+.plist .num { font-family: var(--f-mono); color: var(--muted); font-size: 0.85rem; }
+.plist .fm { font-size: 1.1rem; }
+.lv { color: var(--warn); letter-spacing: 1px; font-size: 0.8rem; margin-left: 8px; }
+.badge { font-size: 0.78rem; font-weight: 700; border-radius: 6px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+.badge.ok { background: var(--ok-soft); color: var(--ok); }
+.badge.ng { background: var(--pos-soft); color: var(--pos); }
+.badge.new { color: var(--muted); border: 1px dashed var(--line); }
+
+/* ---------- Board ---------- */
+.board-head {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--ground); padding-block: 8px 10px; border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 8px;
+}
+.board-head .formula { font-size: 2.1rem; line-height: 1.1; }
+.meter { text-align: right; font-size: 0.85rem; color: var(--muted); }
+.meter b { font-family: var(--f-mono); font-size: 1.15rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hint { font-size: 0.88rem; color: var(--muted); margin: 0; }
+
+.cands { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 620px) { .cands { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cand {
+  position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: var(--shadow); touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  transition: transform 0.18s ease, opacity 0.18s ease; overflow: hidden;
+}
+.cand.dragging { transition: none; }
+.cand .mol { padding: 6px 6px 0; }
+.mol svg { display: block; width: 100%; height: auto; filter: var(--mol-filter); }
+.cand .bar { display: flex; justify-content: space-between; align-items: center; padding: 0 6px 6px 10px; }
+.cand .tag { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
+.x-btn {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
+  min-width: 44px; min-height: 36px; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+}
+.cand.struck { opacity: 0.38; }
+.cand.struck .mol { filter: grayscale(1); }
+.cand.struck::after {
+  content: ""; position: absolute; left: 8%; right: 8%; top: 44%; height: 2px;
+  background: var(--pos); transform: rotate(-12deg); pointer-events: none;
+}
+.cand.struck .x-btn { opacity: 1; }
+.cand.chosen { outline: 3px solid var(--accent); outline-offset: -3px; }
+
+.deck { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 620px) { .deck { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.clue {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+  padding: 12px; text-align: left; cursor: pointer; display: grid; gap: 6px; align-content: start; min-height: 96px;
+}
+.clue .cname { font-family: var(--f-display); font-weight: 700; font-size: 1rem; }
+.clue .act { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+.clue.closed {
+  background:
+    repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in srgb, var(--line) 55%, transparent) 9px 10px),
+    var(--surface);
+}
+.clue.closed .res { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+.clue.open { cursor: default; background: var(--paper); border-color: var(--ink); }
+.clue .res { font-weight: 700; }
+.res.pos { color: var(--pos); }
+.res.neg { color: var(--muted); }
+.res.num { font-family: var(--f-mono); font-size: 1.1rem; }
+.products { display: flex; flex-wrap: wrap; gap: 6px; }
+.prod { flex: 1 1 110px; min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 4px; }
+.prod .pn { font-size: 0.75rem; text-align: center; color: var(--muted); }
+.clue.wide { grid-column: 1 / -1; }
+
+.dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter: blur(8px); border-top: 1px solid var(--line);
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+}
+.dock-in { max-width: 760px; margin: 0 auto; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.dock-in .hint { flex: 1; }
+
+/* ---------- Result ---------- */
+.verdict { display: grid; gap: 4px; padding: 16px; border-radius: 14px; }
+.verdict.ok { background: var(--ok-soft); color: var(--ok); }
+.verdict.ng { background: var(--pos-soft); color: var(--pos); }
+.verdict h2 { font-size: 1.6rem; font-weight: 900; }
+.verdict .score { font-family: var(--f-mono); font-size: 1rem; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.molcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
+.molcard .cap { font-size: 0.8rem; padding: 0 6px 4px; }
+.molcard .cap b { display: block; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
+.notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.notes li { border-left: 3px solid var(--pos); background: var(--surface); padding: 8px 12px; border-radius: 0 8px 8px 0; font-size: 0.92rem; }
+.notes li.warn { border-left-color: var(--warn); }
+.notes li.good { border-left-color: var(--ok); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table.key { border-collapse: collapse; font-size: 0.82rem; min-width: 100%; }
+table.key th, table.key td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+table.key thead th { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+table.key tr.ans td:first-child { font-weight: 700; color: var(--ok); }
+table.key td.bad { background: var(--pos-soft); color: var(--pos); font-weight: 700; }
+table.key td.hid { color: var(--muted); }
+
+/* ---------- Big / Count ---------- */
+.progress { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; }
+.step { border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); }
+.step.done { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.step.now { background: var(--ink); color: var(--ground); border-color: var(--ink); font-weight: 700; }
+.arrow { color: var(--muted); font-size: 0.75rem; }
+.story { margin: 0; max-width: 40em; }
+.solved { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 8px 12px; }
+.solved summary { cursor: pointer; font-weight: 700; font-size: 0.9rem; min-height: 32px; display: flex; align-items: center; }
+.solved-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; padding-top: 8px; }
+.btn.right { background: var(--ok); border-color: var(--ok); color: var(--paper); }
+.btn.wrong { background: var(--pos); border-color: var(--pos); color: var(--paper); }
+#opts .btn { min-width: 52px; font-family: var(--f-mono); font-size: 1.1rem; }
+.eq { font-size: 0.95rem; overflow-wrap: anywhere; }
+.xcard { max-width: 420px; }
+.stepper { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line); padding-block: 8px; }
+.stepper output { font-size: 1.6rem; min-width: 2.2em; text-align: center; font-variant-numeric: tabular-nums; }
+.stepper .btn { min-width: 48px; font-size: 1.2rem; }
+.conds { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.cands.one { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
+.cand.hit { border-color: var(--ok); box-shadow: 0 0 0 2px var(--ok-soft); }
+.cand.miss { opacity: 0.55; }
+.cap2 { gap: 6px; font-size: 0.78rem; align-items: flex-start; }
+.why { color: var(--muted); font-size: 0.72rem; text-align: right; }
+.plist .sub { font-size: .8rem; margin-left: 6px; }
+
+/* ---------- Online ---------- */
+table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
+.composer { display: grid; gap: 8px; }
+.composer textarea { width: 100%; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; resize: vertical; }
+.posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.posts li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.posts p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-head { display: flex; gap: 10px; align-items: center; font-size: 0.85rem; }
+.post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
+.codein { font: inherit; font-family: var(--f-mono); font-size: 1.1rem; width: 9em; padding: 10px 12px; min-height: 44px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); text-transform: lowercase; }
+.codebox { display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.big { font-size: 1.8rem; letter-spacing: 0.1em; }
+.lobby { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.board { display: grid; gap: 6px; }
+.racer { display: grid; grid-template-columns: 1.5em minmax(0, 7em) 1fr auto; gap: 8px; align-items: center; font-size: 0.85rem; }
+.racer.me .rname { font-weight: 700; }
+.rname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rbar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.rbar span { display: block; height: 100%; background: var(--accent); transition: width 0.2s ease; }
+.countdown { font-size: 5rem; text-align: center; padding-block: 40px; color: var(--accent); }
+.cand.pick { cursor: pointer; text-align: left; padding: 0; font: inherit; color: inherit; }
+.cand.pick:disabled { cursor: not-allowed; }
+
+/* ---------- Night lock ---------- */
+.night {
+  position: fixed; inset: 0; z-index: 50; background: #0b0f14; color: #c9d3dc;
+  display: grid; place-items: center; padding: 24px;
+}
+.night div { max-width: 26em; display: grid; gap: 12px; }
+.night h2 { color: #f0f3f6; font-size: 1.5rem; }
+.night p { margin: 0; }
+.night .clock { font-family: var(--f-mono); font-size: 2.4rem; color: #7d8fa3; }
+
+@media (prefers-reduced-motion: reduce) { .cand { transition: none; } }
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="night" id="night" hidden>
+  <div>
+    <span class="clock mono" id="night-clock">23:00</span>
+    <h2>23時を過ぎた。今日はここまで。</h2>
+    <p>寝る前に画面を見ると寝付きが悪くなる。明日の頭のほうが構造決定は速い。</p>
+    <p class="muted">5時以降にまた開ける。</p>
+  </div>
+</div>
+
+<script>
+const DATA = /*__PUZZLE_DATA__*/null;
+const PER_CARD = 10;      // 最少枚数を超えて開いた手がかり1枚ごとの減点
+const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
+const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
+const STORE_KEY = 'jouzoukettei.v1';
+const MODES = [
+  { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
+  { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
+  { key: 'count', name: '数え上げ型', note: '異性体を数える' },
+  { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
+];
+
+// ---------- 記録 ----------
+function loadStore() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (s && s.stats && s.weak && s.history) return s;
+  } catch (e) {}
+  return { stats: {}, weak: {}, history: [] };
+}
+function saveStore() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {}
+}
+let store = loadStore();
+
+function record(id, correct, score) {
+  const st = store.stats[id] || { tries: 0, correct: 0, best: 0, everCorrect: false };
+  st.tries++;
+  if (correct) { st.correct++; st.everCorrect = true; st.best = Math.max(st.best, score); }
+  st.lastCorrect = correct;
+  store.stats[id] = st;
+  store.history.push({ id, correct, score, at: Date.now() });
+  store.history = store.history.slice(-200);
+  saveStore();
+  if (correct) syncScore();
+}
+const bump = (card, d) => { store.weak[card] = Math.max(0, (store.weak[card] || 0) + d); };
+
+// ---------- 小道具 ----------
+const $ = (sel, root = document) => root.querySelector(sel);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtFormula = (f) => esc(f).replace(/(\d+)/g, '<sub>$1</sub>');
+const stars = (n) => '★'.repeat(n) + '☆'.repeat(3 - n);
+const molName = (s) => (DATA.molecules[s] && DATA.molecules[s].name) || s;
+const molSvg = (s) => DATA.molecules[s].svg;
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const letter = (i) => String.fromCharCode(0x2460 + i); // ① ② ③ …
+const unit = (card) => (card === 'chiral' ? '個' : '種類');
+const byId = (id) => DATA.problems.find((p) => p.id === id);
+
+function resultText(card, r) {
+  const c = DATA.cards[card];
+  if (c.kind === 'bool') return r ? c.yes : c.no;
+  if (c.kind === 'count') return `${r} ${unit(card)}`;
+  if (c.kind === 'contains') return r ? `${molName(r)} ${c.yes}` : `その化合物${c.no}`;
+  if (!r.length) return c.none;
+  return r.map(molName).join(' ＋ ');
+}
+function resultHtml(card, r) {
+  const c = DATA.cards[card];
+  if (c.kind === 'bool') return `<span class="res ${r ? 'pos' : 'neg'}">${esc(r ? c.yes : c.no)}</span>`;
+  if (c.kind === 'count') return `<span class="res num">${r} ${unit(card)}</span>`;
+  if (c.kind === 'contains') {
+    return `<span class="res">次の化合物${esc(c.yes)}</span><div class="products"><div class="prod"><div class="mol">${molSvg(r)}</div><div class="pn">${esc(molName(r))}</div></div></div>`;
+  }
+  if (!r.length) return `<span class="res neg">${esc(c.none)}</span>`;
+  return `<span class="res">生成物</span><div class="products">${r.map((s) =>
+    `<div class="prod"><div class="mol">${molSvg(s)}</div><div class="pn">${esc(molName(s))}</div></div>`).join('')}</div>`;
+}
+
+function isNight(d = new Date()) {
+  const h = d.getHours();
+  return h >= NIGHT_FROM || h < NIGHT_UNTIL;
+}
+function checkNight() {
+  const now = new Date();
+  $('#night-clock').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  $('#night').hidden = !isNight(now);
+}
+
+// ---------- 出題 ----------
+let view = { screen: 'home', level: 0, mode: 'narrow' };
+let game = null;
+
+function accuracy(n = 20) {
+  const h = store.history.slice(-n);
+  if (!h.length) return null;
+  return Math.round((100 * h.filter((x) => x.correct).length) / h.length);
+}
+
+function cardsOf(p) {
+  if (p.stages) return p.stages.flatMap((s) => s.clues || []).map((c) => c.card);
+  return p.clues.map((c) => c.card);
+}
+
+function pickProblem(level, avoidId) {
+  const inMode = DATA.problems.filter((p) => p.mode === view.mode);
+  const pool = inMode.filter((p) => (!level || p.level === level) && p.id !== avoidId);
+  const list = pool.length ? pool : inMode;
+  const weights = list.map((p) => {
+    const st = store.stats[p.id];
+    let w = 1;
+    if (!st) w += 2;
+    else if (!st.lastCorrect) w += 3;
+    else w *= 0.4;
+    for (const c of new Set(cardsOf(p))) w += Math.min(3, store.weak[c] || 0);
+    return w;
+  });
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < list.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return list[i];
+  }
+  return list[list.length - 1];
+}
+
+function show(screen) {
+  view.screen = screen;
+  render();
+  window.scrollTo(0, 0);
+}
+
+function startProblem(p) {
+  if (isNight()) { checkNight(); return; }
+  if (p.mode === 'big' || p.mode === 'polymer') {
+    game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
+    goStage();
+  } else if (p.mode === 'count') {
+    game = { count: { P: p, nStruct: 0, nStereo: 0, done: null } };
+    show('count');
+  } else {
+    startNarrow(p);
+  }
+}
+
+function startNarrow(p, big) {
+  game = { p, struck: new Set(), opened: [], done: false, big };
+  show('play');
+}
+
+// ---------- 大問の進行 ----------
+function goStage() {
+  const b = game.big;
+  const st = b.P.stages[b.idx];
+  if (!st) { show('bigdone'); return; }
+  if (st.type === 'split') { game = { big: b, split: { answer: null } }; show('split'); }
+  else if (st.type === 'given') { game = { big: b }; show('given'); }
+  else if (st.type === 'calc') { game = { big: b, calc: { answer: null } }; show('calc'); }
+  else startNarrow(st, b);
+}
+function nextStage(score, correct) {
+  const b = game.big;
+  if (score !== null) b.scores.push(score);
+  if (!correct) b.allCorrect = false;
+  b.idx++;
+  goStage();
+}
+
+function bigProgress() {
+  if (!game || !game.big) return '';
+  const b = game.big;
+  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? (s.key === 'dp' ? '重合度' : '計算') : s.label === 'X' ? '組み立て' : s.label);
+  return `<div class="progress" aria-label="大問の進み具合">
+    <span class="muted mono" style="font-size:.8rem">${esc(b.P.id)}</span>
+    ${b.P.stages.map((s, i) => `<span class="step ${i < b.idx ? 'done' : i === b.idx ? 'now' : ''}">${esc(label(s))}</span>`).join('<span class="arrow">→</span>')}
+  </div>`;
+}
+
+// これまでに決まった断片（大問の途中で見返す用）
+function solvedSoFar() {
+  if (!game || !game.big) return '';
+  const b = game.big;
+  const done = b.P.stages.slice(0, b.idx).filter((s) => s.type === 'narrow' || s.type === 'given');
+  if (!done.length) return '';
+  const smiles = (s) => (s.type === 'given' ? s.smiles : s.candidates[s.answer]);
+  return `<details class="solved"><summary>決まった構造（${done.map((s) => s.label).join('・')}）</summary>
+    <div class="solved-grid">${done.map((s) => `<div class="molcard"><div class="mol">${molSvg(smiles(s))}</div>
+      <div class="cap"><b>${esc(s.label)}</b>${esc(molName(smiles(s)))}</div></div>`).join('')}</div></details>`;
+}
+
+// ---------- 画面: ホーム ----------
+function renderHome() {
+  const acc = accuracy();
+  const inMode = DATA.problems.filter((p) => p.mode === view.mode);
+  const solved = DATA.problems.filter((p) => store.stats[p.id] && store.stats[p.id].everCorrect).length;
+  const weak = Object.entries(store.weak).filter(([c, n]) => n > 0 && DATA.cards[c]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const list = inMode.filter((p) => !view.level || p.level === view.level);
+  $('#app').innerHTML = `
+    <div class="stack">
+      <header class="masthead">
+        <span class="eyebrow">京大化学 大問3・4 対策</span>
+        <h1>有機構造決定パズル</h1>
+        <p>分子式から始めて手がかりを集め、構造を自分の手で決める。カードは少ないほど高得点。</p>
+      </header>
+      <section class="stats" aria-label="成績">
+        <div class="stat"><b>${acc === null ? '—' : acc + '%'}</b><span>直近20問の正答率</span></div>
+        <div class="stat"><b>${solved}<small class="muted">/${DATA.problems.length}</small></b><span>正解した問題</span></div>
+        <div class="stat"><b>${store.history.length}</b><span>挑戦回数</span></div>
+      </section>
+      <section class="panel">
+        <h2>友達と</h2>
+        <div class="row">
+          <button class="btn" id="go-rank">ランキング</button>
+          <button class="btn" id="go-posts">みんなの意見</button>
+          <button class="btn" id="go-race">早解き対戦</button>
+        </div>
+        <div id="online-status">${onlineStatusHtml()}</div>
+      </section>
+      <section class="panel">
+        <h2>モード</h2>
+        <div class="row" id="modes">
+          ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
+        </div>
+        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : '。'}</p>
+      </section>
+      <section class="panel">
+        <h2>難易度</h2>
+        <div class="row" id="levels">
+          ${[0, 1, 2, 3].map((l) => `<button class="chip" data-level="${l}" aria-pressed="${view.level === l}">${l ? stars(l) : 'すべて'}</button>`).join('')}
+        </div>
+        <div class="row"><button class="btn primary" id="auto">おまかせで1問</button>
+          <span class="hint">苦手なカードを含む問題と未正解の問題が多めに出る</span></div>
+      </section>
+      <section class="panel">
+        <h2>復習リスト</h2>
+        ${weak.length
+          ? `<div class="weak-list">${weak.map(([c, n]) => `<span class="weak">${esc(DATA.cards[c].name)} ×${n}</span>`).join('')}</div>
+             <p class="hint">間違えた手がかりの種類。教科書と問題集で先に確認してから解く。</p>`
+          : '<p class="hint">まだ記録がない。間違えた手がかりの種類がここに溜まる。</p>'}
+      </section>
+      <section class="panel">
+        <h2>問題一覧</h2>
+        ${list.length ? `<ul class="plist">
+          ${list.map((p) => {
+            const st = store.stats[p.id];
+            const badge = !st ? '<span class="badge new">未挑戦</span>'
+              : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
+              : '<span class="badge ng">要復習</span>';
+            const sub = p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
+            return `<li><button data-id="${p.id}">
+              <span class="num">#${p.id.split('-')[1]}</span>
+              <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
+                <span class="muted sub">${sub}</span></span>
+              ${badge}</button></li>`;
+          }).join('')}
+        </ul>` : '<p class="hint">この難易度の問題はない。</p>'}
+      </section>
+      <p class="hint">23時以降はプレイできない。週1回は京大過去問の構造決定を紙で解くこと。</p>
+    </div>`;
+  $('#go-rank').onclick = () => show('rank');
+  $('#go-posts').onclick = () => show('posts');
+  $('#go-race').onclick = () => show('race');
+  $('#modes').onclick = (e) => {
+    const b = e.target.closest('[data-mode]');
+    if (!b) return;
+    view.mode = b.dataset.mode;
+    render();
+  };
+  $('#levels').onclick = (e) => {
+    const b = e.target.closest('[data-level]');
+    if (!b) return;
+    view.level = +b.dataset.level;
+    render();
+  };
+  $('#auto').onclick = () => startProblem(pickProblem(view.level));
+  const pl = $('.plist');
+  if (pl) pl.onclick = (e) => {
+    const b = e.target.closest('[data-id]');
+    if (b) startProblem(byId(b.dataset.id));
+  };
+}
+
+// ---------- 画面: 盤面（絞り込み） ----------
+function renderPlay() {
+  const p = game.p;
+  const rest = remaining();
+  const n = p.candidates.length;
+  const heading = game.big
+    ? (p.label === 'X' ? '組み立て: 化合物 X の構造' : game.big.P.mode === 'polymer' ? `単量体 ${esc(p.label)} の構造` : `断片 ${esc(p.label)} の構造`)
+    : '';
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem">${esc(p.id)} <span class="lv">${stars(p.level)}</span></span>
+      </div>
+      ${bigProgress()}
+      <div class="board-head">
+        <div><span class="eyebrow">${heading || '分子式'}</span><div class="formula">${fmtFormula(p.formula)}</div></div>
+        <div class="meter">候補 <b>${rest.length}</b>/${n}<br>持ち点 <b>${liveScore()}</b></div>
+      </div>
+      ${solvedSoFar()}
+      <p class="hint">手がかりを開いて、矛盾する候補を自分で消す。左右にスワイプか「消す」で消し、もう一度押すと戻る。</p>
+      <section class="cands ${game.big && p.label === 'X' ? 'one' : ''}" id="cands">
+        ${p.candidates.map((s, i) => `
+          <div class="cand ${game.struck.has(i) ? 'struck' : ''}" data-i="${i}">
+            <div class="mol">${molSvg(s)}</div>
+            <div class="bar"><span class="tag">${letter(i)}</span>
+              <button class="x-btn" data-x="${i}" aria-label="候補${letter(i)}を${game.struck.has(i) ? '戻す' : '消す'}">${game.struck.has(i) ? '戻す' : '消す'}</button></div>
+          </div>`).join('')}
+      </section>
+      <section class="panel">
+        <h2>手がかりカード</h2>
+        <p class="hint">最少 <b>${p.minCards}</b> 枚で決まる。それより多く開くと1枚ごとに −${PER_CARD}。どのカードを開けば足りるかを考えてからめくる。</p>
+        <div class="deck" id="deck">
+          ${p.clues.map((c, ci) => {
+            const meta = DATA.cards[c.card];
+            const open = game.opened.includes(ci);
+            const wide = open && ((meta.kind === 'products' && c.result.length) || meta.kind === 'contains');
+            return `<button class="clue ${open ? 'open' : 'closed'} ${wide ? 'wide' : ''}" data-ci="${ci}" ${open ? 'aria-disabled="true"' : ''}>
+              <span class="cname">${esc(meta.name)}</span>
+              <span class="act">${esc(meta.action)}</span>
+              ${open ? resultHtml(c.card, c.result) : '<span class="res">タップして結果を見る</span>'}
+            </button>`;
+          }).join('')}
+        </div>
+      </section>
+    </div>
+    <div class="dock"><div class="dock-in">
+      <p class="hint">${rest.length === 1 ? `残りは ${letter(rest[0])}。これで確定するか？` : rest.length === 0 ? '全部消えている。どれかを戻す。' : `あと ${rest.length - 1} つ消すと確定できる`}</p>
+      <button class="btn primary" id="submit" ${rest.length === 1 ? '' : 'disabled'}>確定</button>
+    </div></div>`;
+
+  $('#back').onclick = () => show('home');
+  $('#deck').onclick = (e) => {
+    const b = e.target.closest('[data-ci]');
+    if (!b) return;
+    const ci = +b.dataset.ci;
+    if (game.opened.includes(ci)) return;
+    game.opened.push(ci);
+    render();
+  };
+  $('#submit').onclick = () => {
+    const r = remaining();
+    if (r.length === 1) finish(r[0]);
+  };
+  bindCandidates();
+}
+
+function remaining() {
+  return game.p.candidates.map((_, i) => i).filter((i) => !game.struck.has(i));
+}
+function liveScore() {
+  const extra = Math.max(0, game.opened.length - (game.p.minCards || 0));
+  return Math.max(0, 100 - PER_CARD * extra);
+}
+
+function toggleStrike(i) {
+  if (game.struck.has(i)) game.struck.delete(i);
+  else game.struck.add(i);
+  render();
+}
+
+function bindCandidates() {
+  const box = $('#cands');
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-x]');
+    if (b) toggleStrike(+b.dataset.x);
+  });
+  box.querySelectorAll('.cand').forEach((el) => {
+    let x0 = null, y0 = 0, dx = 0, horiz = false;
+    el.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('[data-x]')) return;
+      x0 = e.clientX; y0 = e.clientY; dx = 0; horiz = false;
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (x0 === null) return;
+      dx = e.clientX - x0;
+      const dy = e.clientY - y0;
+      if (!horiz && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+        horiz = true;
+        el.classList.add('dragging');
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      if (horiz) el.style.transform = `translateX(${dx}px) rotate(${dx / 30}deg)`;
+    });
+    const end = () => {
+      if (x0 === null) return;
+      x0 = null;
+      el.classList.remove('dragging');
+      el.style.transform = '';
+      if (horiz && Math.abs(dx) > 70) toggleStrike(+el.dataset.i);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  });
+}
+
+// ---------- 判定（絞り込み） ----------
+function finish(chosen) {
+  const p = game.p;
+  const correct = chosen === p.answer;
+  // 手がかりのうち、その候補を除外できるもの
+  const excludedBy = (k, clueIdx) => clueIdx.filter((ci) => !same(p.clues[ci].byCandidate[k], p.clues[ci].result));
+  const all = p.clues.map((_, ci) => ci);
+  const guesses = [...game.struck].filter((k) => k !== p.answer && excludedBy(k, game.opened).length === 0);
+  const contradictions = correct ? [] : excludedBy(chosen, all);
+  const score = correct ? Math.max(0, liveScore() - PER_GUESS * guesses.length) : 0;
+
+  // 復習リスト
+  contradictions.forEach((ci) => bump(p.clues[ci].card, 1));
+  guesses.forEach((k) => excludedBy(k, all).forEach((ci) => bump(p.clues[ci].card, 1)));
+  if (correct && !guesses.length) game.opened.forEach((ci) => bump(p.clues[ci].card, -1));
+  if (game.big) saveStore();
+  else record(p.id, correct && !guesses.length, score);
+
+  game.done = { chosen, correct, guesses, contradictions, score, excludedBy };
+  show('result');
+}
+
+function molCardHtml(smiles, cap) {
+  return `<div class="molcard"><div class="mol">${molSvg(smiles)}</div>
+    <div class="cap"><b>${cap}</b>${esc(molName(smiles))}</div></div>`;
+}
+
+function renderResult() {
+  const p = game.p;
+  const r = game.done;
+  const all = p.clues.map((_, ci) => ci);
+  const notes = [];
+  if (!r.correct) {
+    r.contradictions.forEach((ci) => {
+      const c = p.clues[ci];
+      notes.push(`<li><b>${esc(DATA.cards[c.card].name)}</b>${game.opened.includes(ci) ? '' : '（未開封）'}:
+        ${letter(r.chosen)} なら「${esc(resultText(c.card, c.byCandidate[r.chosen]))}」になるはず。実際は「${esc(resultText(c.card, c.result))}」。</li>`);
+    });
+  }
+  if (game.struck.has(p.answer)) notes.push(`<li>正解の ${letter(p.answer)} を一度消している。</li>`);
+  r.guesses.forEach((k) => {
+    const cards = r.excludedBy(k, all).map((ci) => DATA.cards[p.clues[ci].card].name);
+    notes.push(`<li class="warn">${letter(k)}（${esc(molName(p.candidates[k]))}）は開いたカードでは消せない。根拠なしで消した（−${PER_GUESS}）。消すなら <b>${esc(cards.join('・'))}</b> を開く。</li>`);
+  });
+  if (r.correct && !r.guesses.length) {
+    const extra = game.opened.length - p.minCards;
+    notes.push(extra <= 0
+      ? `<li class="good">全部の消去に根拠があり、最少の ${p.minCards} 枚で決めた。</li>`
+      : `<li class="good">全部の消去に根拠がある。開いたのは ${game.opened.length} 枚で、最少 ${p.minCards} 枚より ${extra} 枚多い（−${PER_CARD * extra}）。</li>`);
+  }
+
+  const inBig = !!game.big;
+  const last = inBig && game.big.idx === game.big.P.stages.length - 1;
+  $('#app').innerHTML = `
+    <div class="stack">
+      ${bigProgress()}
+      <div class="verdict ${r.correct ? 'ok' : 'ng'}">
+        <span class="eyebrow" style="color:inherit">${esc(p.id)} ・ <span class="formula">${fmtFormula(p.formula)}</span></span>
+        <h2>${r.correct ? '正解' : '不正解'}</h2>
+        <span class="score">${r.score} 点</span>
+      </div>
+      <div class="pair">
+        ${molCardHtml(p.candidates[r.chosen], 'あなたの答え ' + letter(r.chosen))}
+        ${r.correct ? '' : molCardHtml(p.candidates[p.answer], '正解 ' + letter(p.answer))}
+      </div>
+      ${inBig && !r.correct ? '<p class="hint">大問では正解の構造を使って次の段階へ進む。</p>' : ''}
+      ${notes.length ? `<ul class="notes">${notes.join('')}</ul>` : ''}
+      <section class="panel">
+        <h2>答え合わせ表</h2>
+        <p class="hint">各候補にカードを当てたときの結果。赤は実際の結果と矛盾するところ。</p>
+        <div class="tbl-wrap"><table class="key">
+          <thead><tr><th>候補</th>${p.clues.map((c) => `<th>${esc(DATA.cards[c.card].name)}</th>`).join('')}</tr></thead>
+          <tbody>
+            <tr><td class="hid">実際の結果</td>${p.clues.map((c) => `<td><b>${esc(resultText(c.card, c.result))}</b></td>`).join('')}</tr>
+            ${p.candidates.map((s, k) => `<tr class="${k === p.answer ? 'ans' : ''}">
+              <td>${letter(k)} ${esc(molName(s))}</td>
+              ${p.clues.map((c) => `<td class="${same(c.byCandidate[k], c.result) ? '' : 'bad'}">${esc(resultText(c.card, c.byCandidate[k]))}</td>`).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table></div>
+      </section>
+      <div class="row">
+        ${inBig
+          ? `<button class="btn primary" id="next">${last ? '大問の結果へ' : '次の段階へ'}</button>`
+          : `<button class="btn primary" id="next">次の問題（おまかせ）</button>
+             <button class="btn" id="retry">もう一度</button>`}
+        <button class="btn ghost" id="home">問題一覧</button>
+      </div>
+    </div>`;
+  $('#next').onclick = () => (inBig ? nextStage(r.score, r.correct) : startProblem(pickProblem(view.level, p.id)));
+  if (!inBig) $('#retry').onclick = () => startProblem(p);
+  $('#home').onclick = () => show('home');
+}
+
+// ---------- 画面: 大問（分解） ----------
+function renderSplit() {
+  const P = game.big.P;
+  const st = P.stages[0];
+  const ans = game.split.answer;
+  const opts = [1, 2, 3, 4, 5];
+  const water = (n) => (n === 1 ? 'H₂O' : `${n} H₂O`);
+  const rhs = st.products.map((x) => (x.count > 1 ? `${x.count} ` : '') + fmtFormula(x.formula)).join(' ＋ ');
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+      </div>
+      ${bigProgress()}
+      <div class="board-head">
+        <div><span class="eyebrow">化合物 X ・ ${esc(P.title)}</span><div class="formula">${fmtFormula(P.formula)}</div></div>
+      </div>
+      <p class="story">${esc(P.story)}</p>
+      <div class="tbl-wrap"><table class="key">
+        <thead><tr><th>生成物</th><th>分子式</th><th>得られた量</th></tr></thead>
+        <tbody>${st.products.map((x) => `<tr><td><b>${esc(x.label)}</b></td><td class="formula">${fmtFormula(x.formula)}</td><td>X 1分子から ${x.count} 分子</td></tr>`).join('')}</tbody>
+      </table></div>
+      <section class="panel">
+        <h2>X 1分子の加水分解で切れた結合（エステル・アミド）はいくつか</h2>
+        <p class="hint">H と O の数の収支で決まる。反応した水の分子数と同じ。</p>
+        <div class="row" id="opts">
+          ${opts.map((n) => `<button class="btn ${ans === n ? (n === st.bonds ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}</button>`).join('')}
+        </div>
+        ${ans === null ? '' : `
+          <div class="verdict ${ans === st.bonds ? 'ok' : 'ng'}">
+            <h2>${ans === st.bonds ? '正解' : '不正解'}</h2>
+            <span class="formula eq">${fmtFormula(P.formula)} ＋ ${water(st.bonds)} → ${rhs}</span>
+          </div>
+          <div class="row"><button class="btn primary" id="next">断片の構造を決める</button></div>`}
+      </section>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#opts').onclick = (e) => {
+    const b = e.target.closest('[data-n]');
+    if (!b || game.split.answer !== null) return;
+    game.split.answer = +b.dataset.n;
+    render();
+  };
+  const nx = $('#next');
+  if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
+}
+
+// ---------- 画面: 高分子（計算） ----------
+function renderCalc() {
+  const b = game.big;
+  const P = b.P;
+  const st = P.stages[b.idx];
+  const ans = game.calc.answer;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+      </div>
+      ${bigProgress()}
+      <div class="board-head">
+        <div><span class="eyebrow">${esc(P.title)} ・ 繰り返し単位</span><div class="formula">${fmtFormula(P.unitFormula)}</div></div>
+      </div>
+      <div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>
+      <p class="story">${esc(P.story)}</p>
+      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16</p>
+      <section class="panel">
+        <h2>${esc(st.prompt)}</h2>
+        <div class="row" id="opts">
+          ${st.choices.map((n) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
+        </div>
+        ${ans === null ? '<p class="hint">紙で計算してから選ぶ。</p>' : `
+          <div class="verdict ${ans === st.answer ? 'ok' : 'ng'}">
+            <h2>${ans === st.answer ? '正解' : '不正解'}</h2>
+            <span class="eq">${esc(st.explain)}</span>
+          </div>
+          <div class="row"><button class="btn primary" id="next">次へ</button></div>`}
+      </section>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#opts').onclick = (e) => {
+    const t = e.target.closest('[data-n]');
+    if (!t || game.calc.answer !== null) return;
+    game.calc.answer = +t.dataset.n;
+    render();
+  };
+  const nx = $('#next');
+  if (nx) nx.onclick = () => nextStage(ans === st.answer ? 100 : 0, ans === st.answer);
+}
+
+function renderGiven() {
+  const b = game.big;
+  const st = b.P.stages[b.idx];
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+      </div>
+      ${bigProgress()}
+      <div class="board-head"><div><span class="eyebrow">断片 ${esc(st.label)}（与えられている）</span>
+        <div class="formula">${esc(st.note)}</div></div></div>
+      <div class="pair">${molCardHtml(st.smiles, st.label)}</div>
+      <p class="hint">この断片は問題文で与えられている。次へ進む。</p>
+      <div class="row"><button class="btn primary" id="next">次へ</button></div>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  $('#next').onclick = () => nextStage(null, true);
+}
+
+function renderBigDone() {
+  const b = game.big;
+  const P = b.P;
+  const total = b.scores.length ? Math.round(b.scores.reduce((a, c) => a + c, 0) / b.scores.length) : 0;
+  if (!b.recorded) {
+    record(P.id, b.allCorrect, total);
+    b.recorded = true;
+  }
+  const scored = P.stages.filter((s) => s.type !== 'given');
+  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? (s.key === 'dp' ? '重合度の計算' : '結合・分子の数') : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="verdict ${b.allCorrect ? 'ok' : 'ng'}">
+        <span class="eyebrow" style="color:inherit">${esc(P.id)} ・ ${esc(P.title)}</span>
+        <h2>${b.allCorrect ? '完答' : 'どこかで間違えた'}</h2>
+        <span class="score">${total} 点（各段階の平均）</span>
+      </div>
+      <div class="xcard">${molCardHtml(P.answerSmiles, (P.mode === 'polymer' ? '繰り返し単位 ・ ' : '化合物 X ・ ') + P.formula)}</div>
+      <div class="tbl-wrap"><table class="key">
+        <thead><tr><th>段階</th><th>得点</th></tr></thead>
+        <tbody>${scored.map((s, i) => `<tr><td>${esc(label(s))}</td><td class="mono">${b.scores[i] ?? '—'}</td></tr>`).join('')}</tbody>
+      </table></div>
+      <p class="hint">同じ流れを本番の問題文でもたどれるか、京大の過去問で確かめる。</p>
+      <div class="row">
+        <button class="btn primary" id="next">次の大問（おまかせ）</button>
+        <button class="btn" id="retry">もう一度</button>
+        <button class="btn ghost" id="home">問題一覧</button>
+      </div>
+    </div>`;
+  $('#next').onclick = () => startProblem(pickProblem(view.level, P.id));
+  $('#retry').onclick = () => startProblem(P);
+  $('#home').onclick = () => show('home');
+}
+
+// ---------- 画面: 数え上げ ----------
+function stepper(id, label, value) {
+  return `<div class="stepper"><span>${label}</span>
+    <div class="row"><button class="btn" data-step="${id}" data-d="-1" aria-label="${label}を1減らす">−</button>
+    <output class="mono" id="${id}">${value}</output>
+    <button class="btn" data-step="${id}" data-d="1" aria-label="${label}を1増やす">＋</button></div></div>`;
+}
+
+function renderCount() {
+  const g = game.count;
+  const P = g.P;
+  const d = g.done;
+  const cond = P.clues.map((c) => `<li><b>${esc(DATA.cards[c.card].name)}</b>: ${esc(resultText(c.card, c.result))}<br><span class="muted">${esc(DATA.cards[c.card].action)}</span></li>`).join('');
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${stars(P.level)}</span></span>
+      </div>
+      <div class="board-head">
+        <div><span class="eyebrow">${esc(P.scope)}</span><div class="formula">${fmtFormula(P.formula)}</div></div>
+      </div>
+      <section class="panel">
+        <h2>条件</h2>
+        <ul class="conds">${cond}</ul>
+        <p class="hint">この条件を満たす異性体を、紙にすべて書き出してから数を入れる。</p>
+      </section>
+      <section class="panel">
+        ${stepper('n1', '構造異性体の数', g.nStruct)}
+        ${stepper('n2', '立体異性体も含めた数', g.nStereo)}
+        ${d ? '' : '<div class="row"><button class="btn primary" id="check">答え合わせ</button></div>'}
+      </section>
+      ${d ? countResultHtml() : ''}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  if (!d) {
+    $('#app').querySelectorAll('[data-step]').forEach((b) => {
+      b.onclick = () => {
+        const key = b.dataset.step === 'n1' ? 'nStruct' : 'nStereo';
+        g[key] = Math.max(0, Math.min(40, g[key] + +b.dataset.d));
+        $('#' + b.dataset.step).textContent = g[key];
+      };
+    });
+    $('#check').onclick = () => {
+      const ok1 = g.nStruct === P.answers.length;
+      const ok2 = g.nStereo === P.nStereo;
+      const score = (ok1 ? 50 : 0) + (ok2 ? 50 : 0);
+      if (!ok1) P.clues.forEach((c) => bump(c.card, 1));
+      record(P.id, ok1 && ok2, score);
+      g.done = { ok1, ok2, score };
+      render();
+    };
+  } else {
+    $('#app').querySelectorAll('[data-step]').forEach((b) => { b.disabled = true; });
+    $('#next').onclick = () => startProblem(pickProblem(view.level, P.id));
+    $('#retry').onclick = () => startProblem(P);
+    $('#home').onclick = () => show('home');
+  }
+}
+
+function countResultHtml() {
+  const g = game.count;
+  const P = g.P;
+  const d = g.done;
+  const failing = (k) => P.clues.filter((c) => !same(c.byCandidate[k], c.result)).map((c) => `${DATA.cards[c.card].name}: ${resultText(c.card, c.byCandidate[k])}`);
+  return `
+    <div class="verdict ${d.ok1 && d.ok2 ? 'ok' : 'ng'}">
+      <h2>${d.ok1 && d.ok2 ? '正解' : '不正解'}</h2>
+      <span class="score">${d.score} 点 ・ 構造異性体 ${P.answers.length}（あなた ${g.nStruct}）・ 立体異性体を含め ${P.nStereo}（あなた ${g.nStereo}）</span>
+    </div>
+    <section class="panel">
+      <h2>全異性体の答え合わせ</h2>
+      <p class="hint">緑が条件を満たすもの。数字は立体異性体を含めた数。</p>
+      <div class="cands">
+        ${P.pool.map((s, k) => {
+          const hit = P.answers.includes(k);
+          return `<div class="cand ${hit ? 'hit' : 'miss'}">
+            <div class="mol">${molSvg(s)}</div>
+            <div class="bar cap2"><span>${esc(molName(s))}</span>
+              ${hit ? `<span class="badge ok">${P.stereo[k]} 種</span>` : `<span class="why">${esc(failing(k).join(' / '))}</span>`}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </section>
+    <div class="row">
+      <button class="btn primary" id="next">次の問題（おまかせ）</button>
+      <button class="btn" id="retry">もう一度</button>
+      <button class="btn ghost" id="home">問題一覧</button>
+    </div>`;
+}
+
+// ---------- オンライン（claude.ai で開いたときだけ動く） ----------
+// A: ランキング   db の scores/<自分のid> に解いた問題の一覧を書き、全員分を読んで並べる
+// B: 意見投稿欄   db の posts/<自分のid> に自分の投稿（最新50件）を持つ
+// C: 早解き対戦   room の名前付き部屋で同じ問題を同時に解き、進み具合を presence で共有する
+const RACE_LEN = 5;
+const RACE_PENALTY = 10000;
+const POST_MAX = 300;
+const online = { ready: false, off: false, user: null, db: null, room: null, uid: null, scores: [], posts: [], writeErr: null };
+let writeChain = Promise.resolve();
+
+async function initOnline() {
+  if (!window.claude || typeof window.claude.use !== 'function') {
+    online.ready = true;
+    online.off = true;
+    return;
+  }
+  const [user, db, room] = await Promise.all([
+    window.claude.use('user'), window.claude.use('db'), window.claude.use('room'),
+  ]);
+  Object.assign(online, { user, db, room });
+  online.uid = user ? await user.id() : null;
+  online.ready = true;
+  if (db) {
+    db.collection('scores').orderBy('solved', 'desc').limit(200).onSnapshot((s) => {
+      online.scores = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.scores = []; });
+    db.collection('posts').onSnapshot((s) => {
+      online.posts = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.posts = []; });
+    if (online.uid) mergeRemoteScore();
+  }
+  refreshOnline();
+}
+
+// 画面全体ではなく一覧だけ描き直す（入力中の文字を消さないため）
+function refreshOnline() {
+  if (view.screen === 'rank') { const el = $('#rank-list'); if (el) { el.innerHTML = rankListHtml(); fillNames(el); } }
+  if (view.screen === 'posts') { const el = $('#post-list'); if (el) { el.innerHTML = postListHtml(); fillNames(el); bindPostDeletes(); } }
+  if (view.screen === 'home') { const el = $('#online-status'); if (el) el.innerHTML = onlineStatusHtml(); }
+}
+
+// data-uid を持つ要素に名前を入れる。名前は保存せず、表示のたびに引く
+async function fillNames(root) {
+  if (!online.user) return;
+  const els = [...root.querySelectorAll('[data-uid]')];
+  const ids = [...new Set(els.map((e) => e.dataset.uid).filter(Boolean))];
+  if (!ids.length) return;
+  const ps = await online.user.profiles(ids);
+  els.forEach((e) => {
+    const p = ps[e.dataset.uid];
+    e.textContent = (p && p.name) || '名前のない参加者';
+    if (e.dataset.uid === online.uid) e.textContent += '（あなた）';
+  });
+}
+
+function mySolvedIds() {
+  return Object.keys(store.stats).filter((id) => store.stats[id].everCorrect && byId(id));
+}
+
+// 自分の成績を scores/<id> に書く。同じ文書への書き込みは1つずつ
+function syncScore() {
+  if (!online.db || !online.uid) return;
+  const ids = mySolvedIds();
+  const body = {
+    solved: ids.length,
+    ids,
+    points: ids.reduce((a, id) => a + (store.stats[id].best || 0), 0),
+    wins: store.wins || 0,
+    updatedAt: Date.now(),
+  };
+  writeChain = writeChain
+    .then(() => online.db.doc('scores/' + online.uid).set(body))
+    .then(() => { online.writeErr = null; })
+    .catch((e) => { online.writeErr = e && e.code; refreshOnline(); });
+}
+
+// 別の端末で解いた分を取り込む（和集合）
+async function mergeRemoteScore() {
+  try {
+    const snap = await online.db.doc('scores/' + online.uid).get();
+    let changed = false;
+    if (snap.exists) {
+      const d = snap.data();
+      (Array.isArray(d.ids) ? d.ids : []).forEach((id) => {
+        if (typeof id !== 'string' || !byId(id)) return;
+        const st = store.stats[id];
+        if (!st || !st.everCorrect) {
+          store.stats[id] = { tries: st ? st.tries : 0, correct: st ? st.correct : 0, best: st ? st.best : 0, ...st, everCorrect: true };
+        }
+      });
+      if (typeof d.wins === 'number' && d.wins > (store.wins || 0)) store.wins = d.wins;
+      saveStore();
+      changed = !snap.exists || mySolvedIds().length !== d.solved || (store.wins || 0) !== d.wins;
+    } else {
+      changed = mySolvedIds().length > 0;
+    }
+    if (changed) syncScore();
+  } catch (e) {}
+}
+
+function onlineStatusHtml() {
+  if (!online.ready) return '<p class="hint">接続中…</p>';
+  if (online.off || !online.db) return '<p class="hint">ランキング・投稿・対戦は claude.ai でこのページを開いたときに使える。</p>';
+  if (!online.uid) return '<p class="hint">サインインすると成績がランキングに載る。</p>';
+  const i = online.scores.findIndex((s) => s.id === online.uid);
+  return `<p class="hint">${i >= 0 ? `あなたは ${i + 1} 位（${online.scores.length} 人中）` : 'まだランキングに載っていない。1問正解すると載る。'}${online.writeErr ? ' ・ 成績を保存できなかった（書き込み権限がない可能性がある）' : ''}</p>`;
+}
+
+// ---- A: ランキング ----
+function rankListHtml() {
+  if (!online.scores.length) return '<p class="hint">まだ誰も載っていない。</p>';
+  const rows = [...online.scores].sort((a, b) => (b.solved || 0) - (a.solved || 0) || (b.points || 0) - (a.points || 0));
+  let rank = 0, prev = null;
+  return `<div class="tbl-wrap"><table class="key rank">
+    <thead><tr><th>順位</th><th>名前</th><th>解いた問題</th><th>得点</th><th>対戦勝利</th></tr></thead>
+    <tbody>${rows.map((r, i) => {
+      const key = `${r.solved}/${r.points}`;
+      if (key !== prev) { rank = i + 1; prev = key; }
+      return `<tr class="${r.id === online.uid ? 'me' : ''}"><td class="mono">${rank}</td>
+        <td><span data-uid="${esc(r.id)}">…</span></td>
+        <td class="mono">${Number(r.solved) || 0}<span class="muted">/${DATA.problems.length}</span></td>
+        <td class="mono">${Number(r.points) || 0}</td><td class="mono">${Number(r.wins) || 0}</td></tr>`;
+    }).join('')}</tbody></table></div>`;
+}
+
+function renderRank() {
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>ランキング</h1>
+      <p class="hint">正解したことのある問題の数で並べる（同数なら各問題の最高点の合計）。</p>
+      ${online.db ? '<div id="rank-list"></div>' : onlineStatusHtml()}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const el = $('#rank-list');
+  if (el) { el.innerHTML = rankListHtml(); fillNames(el); }
+}
+
+// ---- B: 意見投稿欄 ----
+function allPosts() {
+  const out = [];
+  online.posts.forEach((d) => (Array.isArray(d.items) ? d.items : []).forEach((it) => {
+    if (it && typeof it.text === 'string' && typeof it.at === 'number') out.push({ by: d.id, id: String(it.id), text: it.text.slice(0, POST_MAX), at: it.at });
+  }));
+  return out.sort((a, b) => b.at - a.at).slice(0, 200);
+}
+
+function postListHtml() {
+  const ps = allPosts();
+  if (!ps.length) return '<p class="hint">まだ投稿はない。</p>';
+  const fmt = (t) => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  return `<ul class="posts">${ps.map((p) => `<li>
+    <div class="post-head"><b data-uid="${esc(p.by)}">…</b><span class="muted mono">${fmt(p.at)}</span>
+      ${p.by === online.uid ? `<button class="btn ghost small" data-del="${esc(p.id)}">削除</button>` : ''}</div>
+    <p>${esc(p.text)}</p></li>`).join('')}</ul>`;
+}
+
+let postDraft = '';
+function renderPosts() {
+  const canPost = online.db && online.uid;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>みんなの意見</h1>
+      <p class="hint">問題の感想、間違いの指摘、欲しい問題など。名前つきで全員に見える。</p>
+      ${canPost ? `<div class="composer">
+        <label for="post-text" class="eyebrow">投稿する（${POST_MAX}字まで）</label>
+        <textarea id="post-text" maxlength="${POST_MAX}" rows="3"></textarea>
+        <div class="row" style="justify-content:space-between"><span class="hint" id="post-msg"></span>
+          <button class="btn primary" id="post-send">投稿</button></div>
+      </div>` : onlineStatusHtml()}
+      <div id="post-list"></div>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const ta = $('#post-text');
+  if (ta) {
+    ta.value = postDraft;
+    ta.oninput = () => { postDraft = ta.value; };
+    $('#post-send').onclick = sendPost;
+  }
+  const el = $('#post-list');
+  el.innerHTML = postListHtml();
+  fillNames(el);
+  bindPostDeletes();
+}
+
+function myItems() {
+  const d = online.posts.find((p) => p.id === online.uid);
+  return d && Array.isArray(d.items) ? d.items.filter((it) => it && typeof it.text === 'string') : [];
+}
+
+async function writeMyPosts(items, msgOk) {
+  const btn = $('#post-send');
+  if (btn) btn.disabled = true;
+  try {
+    await (writeChain = writeChain.then(() => online.db.doc('posts/' + online.uid).set({ items })));
+    if ($('#post-msg')) $('#post-msg').textContent = msgOk;
+    return true;
+  } catch (e) {
+    if ($('#post-msg')) $('#post-msg').textContent = '保存できなかった。このページへの書き込み権限がない可能性がある。';
+    writeChain = Promise.resolve();
+    return false;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function sendPost() {
+  const text = postDraft.trim();
+  if (!text) { $('#post-msg').textContent = '何か書いてから投稿する。'; return; }
+  const items = myItems().slice(-49);
+  items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text: text.slice(0, POST_MAX), at: Date.now() });
+  if (await writeMyPosts(items, '投稿した。')) {
+    postDraft = '';
+    const ta = $('#post-text');
+    if (ta) ta.value = '';
+  }
+}
+
+function bindPostDeletes() {
+  document.querySelectorAll('[data-del]').forEach((b) => {
+    b.onclick = () => writeMyPosts(myItems().filter((it) => String(it.id) !== b.dataset.del), '削除した。');
+  });
+}
+
+// ---- C: 早解き対戦 ----
+const race = { rm: null, code: '', peers: [], round: null, ids: [], idx: 0, startAt: 0, penalty: 0, wrong: new Set(), finished: null, counted: false, msg: '' };
+
+function raceCode() {
+  const cs = 'abcdefghjkmnpqrstuvwxyz23456789';
+  return Array.from({ length: 4 }, () => cs[Math.floor(Math.random() * cs.length)]).join('');
+}
+
+async function joinRace(code) {
+  code = String(code || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
+  if (!code) { race.msg = '部屋コードを入れる。'; render(); return; }
+  if (isNight()) { checkNight(); return; }
+  try {
+    if (race.rm) await race.rm.leave();
+    const rm = await online.room.join('race-' + code);
+    Object.assign(race, { rm, code, round: null, peers: rm.peers(), msg: '' });
+    rm.onPeers((ch) => { race.peers = ch.peers; racePeersChanged(); });
+    rm.on('start', (m) => onRaceStart(m.data));
+    rm.presence({ uid: online.uid, round: null, idx: 0, done: null, pen: 0 });
+    show('race');
+  } catch (e) {
+    race.msg = '部屋に入れなかった。少し待ってからもう一度。';
+    render();
+  }
+}
+
+async function leaveRace() {
+  if (race.rm) { try { await race.rm.leave(); } catch (e) {} }
+  race.rm = null;
+  race.round = null;
+  show('home');
+}
+
+function startRace() {
+  const pool = DATA.problems.filter((p) => p.mode === 'narrow');
+  const ids = [];
+  while (ids.length < RACE_LEN && ids.length < pool.length) {
+    const p = pool[Math.floor(Math.random() * pool.length)];
+    if (!ids.includes(p.id)) ids.push(p.id);
+  }
+  // 自分の画面も、戻ってきた自分の発信（エコー）で始める
+  race.rm.emit('start', { round: Date.now().toString(36), ids }).catch(() => {
+    race.msg = '開始の合図を送れなかった。';
+    render();
+  });
+}
+
+function onRaceStart(data) {
+  if (!data || typeof data.round !== 'string' || !Array.isArray(data.ids)) return;
+  const ids = data.ids.filter((id) => typeof id === 'string' && byId(id) && byId(id).mode === 'narrow').slice(0, 10);
+  if (!ids.length || isNight()) return;
+  Object.assign(race, { round: data.round.slice(0, 20), ids, idx: 0, startAt: Date.now() + 3000, penalty: 0, wrong: new Set(), finished: null, counted: false });
+  race.rm.presence({ uid: online.uid, round: race.round, idx: 0, done: null, pen: 0 });
+  show('raceplay');
+}
+
+function raceElapsed() {
+  return Math.max(0, (race.finished !== null ? race.finished : Date.now() - race.startAt + race.penalty));
+}
+const fmtSec = (ms) => (ms / 1000).toFixed(1) + ' 秒';
+
+function racePlayers() {
+  return race.peers.filter((p) => p.kind === 'viewer').map((p) => ({
+    peer: p.peer,
+    uid: p.by || (typeof p.presence.uid === 'string' ? p.presence.uid : ''),
+    isMe: p.sameTab,
+    round: p.presence.round,
+    idx: Number(p.presence.idx) || 0,
+    done: typeof p.presence.done === 'number' ? p.presence.done : null,
+  }));
+}
+
+function raceBoardHtml() {
+  const ps = racePlayers().filter((p) => p.round === race.round);
+  ps.sort((a, b) => (a.done ?? Infinity) - (b.done ?? Infinity) || b.idx - a.idx);
+  return ps.map((p, i) => `<div class="racer ${p.isMe ? 'me' : ''}">
+    <span class="mono">${p.done !== null ? i + 1 : '–'}</span>
+    <span class="rname" data-uid="${esc(p.uid)}">…</span>
+    <span class="rbar"><span style="width:${Math.min(100, (100 * (p.done !== null ? race.ids.length : p.idx)) / race.ids.length)}%"></span></span>
+    <span class="mono">${p.done !== null ? fmtSec(p.done) : `${p.idx}/${race.ids.length}`}</span></div>`).join('');
+}
+
+function racePeersChanged() {
+  if (view.screen === 'race') { const el = $('#lobby'); if (el) { el.innerHTML = lobbyHtml(); fillNames(el); } }
+  if (view.screen === 'raceplay') { const el = $('#board'); if (el) { el.innerHTML = raceBoardHtml(); fillNames(el); } checkRaceWin(); }
+}
+
+function lobbyHtml() {
+  const ps = racePlayers();
+  return `<ul class="lobby">${ps.map((p) => `<li><span data-uid="${esc(p.uid)}">…</span>${p.isMe ? '' : ''}</li>`).join('')}</ul>
+    <p class="hint">${ps.length} 人がこの部屋にいる。</p>`;
+}
+
+function renderRaceHome() {
+  const can = online.room && online.uid;
+  if (!race.rm) {
+    $('#app').innerHTML = `
+      <div class="stack">
+        <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+        <h1>早解き対戦</h1>
+        <p class="hint">同じ ${RACE_LEN} 問を同時に解き、全問正解までの時間を競う。手がかりは最初から全部見えている。誤答は +${RACE_PENALTY / 1000} 秒。</p>
+        ${can ? `<section class="panel">
+          <button class="btn primary" id="create">部屋を作る</button>
+          <div class="row"><input id="code" class="codein" inputmode="latin" autocomplete="off" maxlength="8" placeholder="部屋コード">
+            <button class="btn" id="join">参加</button></div>
+          <p class="hint">${esc(race.msg)}</p>
+        </section>` : onlineStatusHtml()}
+      </div>`;
+    $('#back').onclick = () => show('home');
+    if (can) {
+      $('#create').onclick = () => joinRace(raceCode());
+      $('#join').onclick = () => joinRace($('#code').value);
+    }
+    return;
+  }
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="leave">← 部屋を出る</button></div>
+      <h1>対戦の部屋</h1>
+      <div class="codebox"><span class="eyebrow">部屋コード</span><span class="mono big">${esc(race.code)}</span>
+        <span class="hint">友達にこのコードを伝える</span></div>
+      <div id="lobby"></div>
+      <div class="row"><button class="btn primary" id="go">${RACE_LEN}問でスタート</button></div>
+      <p class="hint">誰が押してもこの部屋の全員が同時に始まる。 ${esc(race.msg)}</p>
+    </div>`;
+  $('#leave').onclick = leaveRace;
+  $('#go').onclick = startRace;
+  const el = $('#lobby');
+  el.innerHTML = lobbyHtml();
+  fillNames(el);
+}
+
+function renderRacePlay() {
+  const wait = Date.now() < race.startAt;
+  const p = byId(race.ids[race.idx]);
+  const done = race.finished !== null;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="leave">← 部屋に戻る</button>
+        <span class="mono big" id="race-timer">${wait ? '' : fmtSec(raceElapsed())}</span>
+      </div>
+      <div id="board" class="board"></div>
+      ${wait ? `<div class="countdown mono" id="count">${Math.ceil((race.startAt - Date.now()) / 1000)}</div>`
+      : done ? `<div class="verdict ok"><h2>完走</h2><span class="score">${fmtSec(race.finished)}（誤答 ${race.penalty / RACE_PENALTY} 回を含む）</span></div>
+          <div class="row"><button class="btn primary" id="again">部屋に戻る</button></div>`
+      : `<div class="board-head"><div><span class="eyebrow">${race.idx + 1} / ${race.ids.length} 問目</span>
+            <div class="formula">${fmtFormula(p.formula)}</div></div></div>
+          <div class="deck">${p.clues.map((c) => `<div class="clue open"><span class="cname">${esc(DATA.cards[c.card].name)}</span>${resultHtml(c.card, c.result)}</div>`).join('')}</div>
+          <p class="hint">正解の構造をタップ。</p>
+          <section class="cands" id="rcands">${p.candidates.map((s, i) => `
+            <button class="cand pick ${race.wrong.has(i) ? 'struck' : ''}" data-pick="${i}" ${race.wrong.has(i) ? 'disabled' : ''}>
+              <div class="mol">${molSvg(s)}</div><div class="bar"><span class="tag">${letter(i)}</span></div></button>`).join('')}</section>`}
+    </div>`;
+  $('#leave').onclick = () => show('race');
+  const ag = $('#again');
+  if (ag) ag.onclick = () => show('race');
+  const rc = $('#rcands');
+  if (rc) rc.onclick = (e) => { const b = e.target.closest('[data-pick]'); if (b) racePick(+b.dataset.pick); };
+  const el = $('#board');
+  el.innerHTML = raceBoardHtml();
+  fillNames(el);
+}
+
+function racePick(i) {
+  const p = byId(race.ids[race.idx]);
+  if (i === p.answer) {
+    race.idx++;
+    race.wrong = new Set();
+    if (race.idx >= race.ids.length) race.finished = Date.now() - race.startAt + race.penalty;
+  } else {
+    race.penalty += RACE_PENALTY;
+    race.wrong.add(i);
+  }
+  race.rm.presence({ uid: online.uid, round: race.round, idx: race.idx, done: race.finished, pen: race.penalty });
+  render();
+  checkRaceWin();
+}
+
+// 部屋の全員が完走し、自分が最速なら勝利を1つ数える（1ラウンド1回）
+function checkRaceWin() {
+  if (race.counted || race.finished === null) return;
+  const ps = racePlayers().filter((p) => p.round === race.round);
+  if (ps.length < 2 || ps.some((p) => p.done === null)) return;
+  race.counted = true;
+  const best = Math.min(...ps.map((p) => p.done));
+  if (race.finished <= best) {
+    store.wins = (store.wins || 0) + 1;
+    saveStore();
+    syncScore();
+  }
+}
+
+setInterval(() => {
+  if (view.screen !== 'raceplay') return;
+  if (Date.now() < race.startAt) { const c = $('#count'); if (c) c.textContent = Math.ceil((race.startAt - Date.now()) / 1000); return; }
+  if ($('#count')) { render(); return; }
+  const t = $('#race-timer');
+  if (t && race.finished === null) t.textContent = fmtSec(raceElapsed());
+}, 100);
+
+function render() {
+  const s = view.screen;
+  if (s === 'play' && game && game.p) renderPlay();
+  else if (s === 'result' && game && game.done) renderResult();
+  else if (s === 'split' && game && game.split) renderSplit();
+  else if (s === 'given' && game && game.big) renderGiven();
+  else if (s === 'bigdone' && game && game.big) renderBigDone();
+  else if (s === 'calc' && game && game.calc) renderCalc();
+  else if (s === 'rank') renderRank();
+  else if (s === 'posts') renderPosts();
+  else if (s === 'race') renderRaceHome();
+  else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();
+  else if (s === 'count' && game && game.count) renderCount();
+  else renderHome();
+}
+
+if (!DATA) {
+  $('#app').innerHTML = '<p>問題データがない。<code>npm run build</code> で dist/index.html を作る。</p>';
+} else {
+  checkNight();
+  setInterval(checkNight, 30000);
+  render();
+  initOnline().catch(() => { online.ready = true; online.off = true; refreshOnline(); });
+}
+</script>

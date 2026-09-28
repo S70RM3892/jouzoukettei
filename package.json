@@ -1,0 +1,14 @@
+{
+  "name": "jouzoukettei",
+  "version": "0.1.0",
+  "private": true,
+  "description": "京大化学の構造決定を鍛える絞り込みパズル",
+  "scripts": {
+    "validate": "node scripts/validate.js",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test-rules.js && node scripts/validate.js"
+  },
+  "devDependencies": {
+    "@rdkit/rdkit": "latest"
+  }
+}

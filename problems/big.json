@@ -1,0 +1,351 @@
+[
+  {
+    "id": "big-001",
+    "mode": "big",
+    "level": 2,
+    "title": "ジオールのジエステル",
+    "story": "化合物 X は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+    "formula": "C12H14O4",
+    "answer": "CC(OC(C)=O)COC(=O)c1ccccc1",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "O=C(O)c1ccccc1",
+        "candidates": ["O=C(O)c1ccccc1", "O=Cc1ccccc1O", "O=Cc1ccc(O)cc1", "O=COc1ccccc1"],
+        "clues": [
+          {"card": "fecl3", "result": false},
+          {"card": "nahco3", "result": true}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CC(O)CO",
+        "candidates": ["CC(O)CO", "OCCCO", "COCCO", "COCOC"],
+        "clues": [
+          {"card": "sodium", "result": true},
+          {"card": "iodoform", "result": true}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "CC(=O)O",
+        "candidates": ["CC(=O)O", "COC=O", "OCC=O"],
+        "clues": [
+          {"card": "nahco3", "result": true}
+        ]
+      }
+    ],
+    "assemble": {
+      "candidates": ["CC(OC(C)=O)COC(=O)c1ccccc1", "CC(OC(=O)c1ccccc1)COC(C)=O"],
+      "clues": [
+        {"card": "partial_hydrolysis", "result": "CC(O)COC(=O)c1ccccc1"}
+      ]
+    }
+  },
+  {
+    "id": "big-002",
+    "mode": "big",
+    "level": 2,
+    "title": "フェノール性エステルと脱水",
+    "story": "化合物 X はエステル結合をもち、NaHCO₃ 水溶液とは反応しない。X を完全に加水分解すると、芳香族化合物 A と、化合物 B・C が得られた。",
+    "formula": "C16H20O4",
+    "answer": "C=C(C)C(=O)Oc1ccc(C(=O)OC(C)CCC)cc1",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "O=C(O)c1ccc(O)cc1",
+        "candidates": ["O=C(O)c1ccccc1O", "O=C(O)c1cccc(O)c1", "O=C(O)c1ccc(O)cc1", "O=Cc1ccc(O)c(O)c1", "O=Cc1cc(O)ccc1O"],
+        "clues": [
+          {"card": "silver_mirror", "result": false},
+          {"card": "ring_cl", "result": 2}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CCCC(C)O",
+        "candidates": ["CCCCCO", "CCCC(C)O", "CCC(O)CC", "CCC(C)CO", "CC(C)CCO", "CCC(C)(C)O", "CC(C)C(C)O"],
+        "clues": [
+          {"card": "iodoform", "result": true},
+          {"card": "dehydration_count", "result": 3}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "C=C(C)C(=O)O",
+        "candidates": ["CC=CC(=O)O", "C=C(C)C(=O)O", "C=CCC(=O)O", "C=CC(=O)OC", "O=C(O)C1CC1"],
+        "clues": [
+          {"card": "bromine", "result": true},
+          {"card": "nahco3", "result": true},
+          {"card": "ozonolysis", "result": ["C=O", "CC(=O)C(=O)O"]}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "big-003",
+    "mode": "big",
+    "level": 3,
+    "title": "2価カルボン酸のジエステル",
+    "story": "化合物 X は中性のエステルである。X を完全に加水分解すると、2価カルボン酸 A と、アルコール B・C が得られた。",
+    "formula": "C16H22O4",
+    "answer": "CCC(C)OC(=O)C(C)CC(=O)OCc1ccccc1",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "OC(=O)CC(C)C(=O)O",
+        "candidates": ["OC(=O)CC(C)C(=O)O", "OC(=O)CCCC(=O)O", "CC(C)(C(=O)O)C(=O)O", "CCC(C(=O)O)C(=O)O"],
+        "clues": [
+          {"card": "chiral", "result": 1},
+          {"card": "anhydride", "result": true}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CCC(C)O",
+        "candidates": ["CCCCO", "CCC(C)O", "CC(C)CO", "CC(C)(C)O", "CCOCC", "CCCOC", "COC(C)C"],
+        "clues": [
+          {"card": "sodium", "result": true},
+          {"card": "dehydration_count", "result": 3}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "OCc1ccccc1",
+        "candidates": ["OCc1ccccc1", "Cc1ccccc1O", "Cc1cccc(O)c1", "Cc1ccc(O)cc1", "COc1ccccc1"],
+        "clues": [
+          {"card": "fecl3", "result": false},
+          {"card": "sodium", "result": true}
+        ]
+      }
+    ],
+    "assemble": {
+      "candidates": ["CCC(C)OC(=O)C(C)CC(=O)OCc1ccccc1", "CCC(C)OC(=O)CC(C)C(=O)OCc1ccccc1"],
+      "clues": [
+        {"card": "partial_hydrolysis", "result": "CC(CC(=O)OCc1ccccc1)C(=O)O"}
+      ]
+    }
+  },
+  {
+    "id": "big-004",
+    "mode": "big",
+    "level": 3,
+    "title": "C₂₀ のフタル酸ジエステル",
+    "story": "化合物 X（C₂₀）は中性のエステルで、臭素水を脱色する。X を完全に加水分解すると、芳香族化合物 A と、アルコール B・C が得られた。",
+    "formula": "C20H28O4",
+    "answer": "CC(C)=CC(C)OC(=O)c1ccccc1C(=O)OC(C)(CC)CC",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "O=C(O)c1ccccc1C(=O)O",
+        "candidates": ["O=C(O)c1ccccc1C(=O)O", "O=C(O)c1cccc(C(=O)O)c1", "O=C(O)c1ccc(C(=O)O)cc1"],
+        "clues": [
+          {"card": "anhydride", "result": true},
+          {"card": "ring_cl", "result": 2}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CC(C)=CC(C)O",
+        "candidates": ["CC(C)=CC(C)O", "C=C(C)CC(C)O", "CC=CCC(C)O", "C=CCC(C)(C)O", "CC(C)=CCCO", "CCC(O)C=CC", "OC1CCCCC1"],
+        "clues": [
+          {"card": "iodoform", "result": true},
+          {"card": "cis_trans", "result": false},
+          {"card": "ozonolysis", "result": ["CC(C)=O", "CC(O)C=O"]}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "CCC(C)(O)CC",
+        "candidates": ["CCCCCCO", "CCCCC(C)O", "CCCC(O)CC", "CCCC(C)(C)O", "CCC(C)(O)CC", "CC(C)C(C)(C)O", "CC(O)C(C)(C)C"],
+        "clues": [
+          {"card": "kmno4", "result": []},
+          {"card": "dehydration_count", "result": 3}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "big-005",
+    "mode": "big",
+    "level": 3,
+    "title": "アミドとエステルをもつ化合物",
+    "story": "化合物 X は窒素を含む中性の化合物で、希塩酸にも NaOH 水溶液にも溶けない。X を完全に加水分解すると、芳香族化合物 A と、化合物 B・C が得られた。",
+    "formula": "C16H23NO3",
+    "answer": "CC(C)C(=O)Nc1ccc(C(=O)OCCC(C)C)cc1",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "Nc1ccc(C(=O)O)cc1",
+        "candidates": ["Nc1ccccc1C(=O)O", "Nc1cccc(C(=O)O)c1", "Nc1ccc(C(=O)O)cc1", "NC(=O)c1ccc(O)cc1"],
+        "clues": [
+          {"card": "nahco3", "result": true},
+          {"card": "ring_cl", "result": 2}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CC(C)CCO",
+        "candidates": ["CCCCCO", "CCCC(C)O", "CCC(O)CC", "CCC(C)CO", "CC(C)CCO", "CCC(C)(C)O", "CC(C)C(C)O"],
+        "clues": [
+          {"card": "iodoform", "result": false},
+          {"card": "chiral", "result": 0},
+          {"card": "dehydration_count", "result": 1},
+          {"card": "dehydration_ozonolysis", "result": ["C=O", "CC(C)C=O"]}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "CC(C)C(=O)O",
+        "candidates": ["CCCC(=O)O", "CC(C)C(=O)O", "CCC(=O)OC", "CCOC(C)=O"],
+        "clues": [
+          {"card": "nahco3", "result": true},
+          {"card": "cl_sub", "result": 2}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "big-006",
+    "mode": "big",
+    "level": 3,
+    "title": "グリセリンのトリエステル",
+    "story": "化合物 X はグリセリンの3つのヒドロキシ基がすべてエステル化された化合物である。X を完全に加水分解すると、グリセリン B と、カルボン酸 A・C・D が得られた。",
+    "formula": "C16H20O6",
+    "answer": "CCCC(=O)OCC(COC(=O)c1ccccc1)OC(C)=O",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "O=C(O)c1ccccc1",
+        "candidates": ["O=C(O)c1ccccc1", "O=Cc1ccccc1O", "O=Cc1cccc(O)c1", "O=COc1ccccc1"],
+        "clues": [
+          {"card": "silver_mirror", "result": false},
+          {"card": "fecl3", "result": false}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "OCC(O)CO",
+        "given": true,
+        "note": "グリセリン（1,2,3-プロパントリオール）"
+      },
+      {
+        "label": "C",
+        "answer": "CC(=O)O",
+        "given": true,
+        "note": "酢酸"
+      },
+      {
+        "label": "D",
+        "answer": "CCCC(=O)O",
+        "candidates": ["CCCC(=O)O", "CC(C)C(=O)O", "CCC(=O)OC", "CCOC(C)=O", "CCCOC=O"],
+        "clues": [
+          {"card": "nahco3", "result": true},
+          {"card": "cl_sub", "result": 3}
+        ]
+      }
+    ],
+    "assemble": {
+      "candidates": [
+        "CCCC(=O)OCC(COC(=O)c1ccccc1)OC(C)=O",
+        "CCCC(=O)OCC(COC(C)=O)OC(=O)c1ccccc1",
+        "CCCC(=O)OC(COC(C)=O)COC(=O)c1ccccc1"
+      ],
+      "clues": [
+        {"card": "partial_hydrolysis", "result": "CC(=O)OC(CO)CO"}
+      ]
+    }
+  },
+  {
+    "id": "big-007",
+    "mode": "big",
+    "level": 3,
+    "title": "トリペプチドの配列",
+    "story": "ペプチド X（鎖状）を完全に加水分解すると、3種類のアミノ酸 A・B・C が1分子ずつ得られた。",
+    "formula": "C14H19N3O4",
+    "answer": "pep:Ala-Phe-Gly",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "NCC(=O)O",
+        "candidates": ["NCC(=O)O", "COC(N)=O", "NC(=O)CO"],
+        "clues": [
+          {"card": "nahco3", "result": true}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "CC(N)C(=O)O",
+        "candidates": ["CC(N)C(=O)O", "NCCC(=O)O", "CNCC(=O)O", "CC(O)C(N)=O"],
+        "clues": [
+          {"card": "alpha_amino", "result": true},
+          {"card": "ninhydrin", "result": true}
+        ]
+      },
+      {
+        "label": "C",
+        "answer": "NC(Cc1ccccc1)C(=O)O",
+        "candidates": ["NC(Cc1ccccc1)C(=O)O", "NC(CC(=O)O)c1ccccc1", "CNC(C(=O)O)c1ccccc1", "CCOC(=O)c1ccc(N)cc1"],
+        "clues": [
+          {"card": "nahco3", "result": true},
+          {"card": "alpha_amino", "result": true},
+          {"card": "ninhydrin", "result": true}
+        ]
+      }
+    ],
+    "assemble": {
+      "candidates": ["pep:Gly-Ala-Phe", "pep:Gly-Phe-Ala", "pep:Ala-Gly-Phe", "pep:Ala-Phe-Gly", "pep:Phe-Gly-Ala", "pep:Phe-Ala-Gly"],
+      "clues": [
+        {"card": "partial_hydrolysis", "result": "pep:Ala-Phe"},
+        {"card": "partial_hydrolysis", "result": "pep:Phe-Gly"}
+      ]
+    }
+  },
+  {
+    "id": "big-008",
+    "mode": "big",
+    "level": 3,
+    "title": "テトラペプチドの配列",
+    "story": "ペプチド X（鎖状）を完全に加水分解すると、3種類のアミノ酸 A・B・C が得られた。B は2分子得られた。",
+    "formula": "C16H22N4O6S",
+    "answer": "pep:Tyr-Gly-Gly-Cys",
+    "fragments": [
+      {
+        "label": "A",
+        "answer": "NC(Cc1ccc(O)cc1)C(=O)O",
+        "candidates": ["NC(Cc1ccc(O)cc1)C(=O)O", "NC(Cc1cccc(O)c1)C(=O)O", "NC(Cc1ccccc1O)C(=O)O", "NC(CC(=O)O)c1ccc(O)cc1"],
+        "clues": [
+          {"card": "ring_cl", "result": 2},
+          {"card": "alpha_amino", "result": true}
+        ]
+      },
+      {
+        "label": "B",
+        "answer": "NCC(=O)O",
+        "given": true,
+        "note": "グリシン"
+      },
+      {
+        "label": "C",
+        "answer": "NC(CS)C(=O)O",
+        "candidates": ["NC(CS)C(=O)O", "CSC(N)C(=O)O", "NCC(S)C(=O)O"],
+        "clues": [
+          {"card": "sulfur", "result": true},
+          {"card": "alpha_amino", "result": true}
+        ]
+      }
+    ],
+    "assemble": {
+      "candidates": [
+        "pep:Tyr-Gly-Gly-Cys", "pep:Tyr-Gly-Cys-Gly", "pep:Tyr-Cys-Gly-Gly",
+        "pep:Gly-Tyr-Gly-Cys", "pep:Gly-Tyr-Cys-Gly", "pep:Gly-Gly-Tyr-Cys",
+        "pep:Gly-Gly-Cys-Tyr", "pep:Gly-Cys-Tyr-Gly", "pep:Gly-Cys-Gly-Tyr",
+        "pep:Cys-Tyr-Gly-Gly", "pep:Cys-Gly-Tyr-Gly", "pep:Cys-Gly-Gly-Tyr"
+      ],
+      "clues": [
+        {"card": "partial_hydrolysis", "result": "pep:Tyr-Gly"},
+        {"card": "partial_hydrolysis", "result": "pep:Gly-Gly"},
+        {"card": "partial_hydrolysis", "result": "pep:Gly-Cys"}
+      ]
+    }
+  }
+]
