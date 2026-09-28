@@ -302,7 +302,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 
 <script>
 const DATA = /*__PUZZLE_DATA__*/null;
-const PER_CARD = 10;      // 手がかり1枚ごとの減点
+const PER_CARD = 10;      // 最少枚数を超えて開いた手がかり1枚ごとの減点
 const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
 const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
 const STORE_KEY = 'jouzoukettei.v1';
@@ -603,7 +603,8 @@ function renderPlay() {
           </div>`).join('')}
       </section>
       <section class="panel">
-        <h2>手がかりカード <span class="muted" style="font-weight:400;font-size:.85rem">1枚開くごとに −${PER_CARD}</span></h2>
+        <h2>手がかりカード</h2>
+        <p class="hint">最少 <b>${p.minCards}</b> 枚で決まる。それより多く開くと1枚ごとに −${PER_CARD}。どのカードを開けば足りるかを考えてからめくる。</p>
         <div class="deck" id="deck">
           ${p.clues.map((c, ci) => {
             const meta = DATA.cards[c.card];
@@ -643,7 +644,8 @@ function remaining() {
   return game.p.candidates.map((_, i) => i).filter((i) => !game.struck.has(i));
 }
 function liveScore() {
-  return Math.max(0, 100 - PER_CARD * game.opened.length);
+  const extra = Math.max(0, game.opened.length - (game.p.minCards || 0));
+  return Math.max(0, 100 - PER_CARD * extra);
 }
 
 function toggleStrike(i) {
@@ -731,7 +733,12 @@ function renderResult() {
     const cards = r.excludedBy(k, all).map((ci) => DATA.cards[p.clues[ci].card].name);
     notes.push(`<li class="warn">${letter(k)}（${esc(molName(p.candidates[k]))}）は開いたカードでは消せない。根拠なしで消した（−${PER_GUESS}）。消すなら <b>${esc(cards.join('・'))}</b> を開く。</li>`);
   });
-  if (r.correct && !r.guesses.length) notes.push(`<li class="good">全部の消去に根拠がある。開いたカード ${game.opened.length} 枚 / 全 ${p.clues.length} 枚。</li>`);
+  if (r.correct && !r.guesses.length) {
+    const extra = game.opened.length - p.minCards;
+    notes.push(extra <= 0
+      ? `<li class="good">全部の消去に根拠があり、最少の ${p.minCards} 枚で決めた。</li>`
+      : `<li class="good">全部の消去に根拠がある。開いたのは ${game.opened.length} 枚で、最少 ${p.minCards} 枚より ${extra} 枚多い（−${PER_CARD * extra}）。</li>`);
+  }
 
   const inBig = !!game.big;
   const last = inBig && game.big.idx === game.big.P.stages.length - 1;

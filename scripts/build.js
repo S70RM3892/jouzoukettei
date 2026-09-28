@@ -42,6 +42,20 @@ function drawSvg(RDKit, smiles) {
   }
 }
 
+// 正解を1つに決めるのに最低限必要な手がかりの枚数（総当たり）
+function minCards(r, n) {
+  const ai = r.cands.indexOf(r.answer);
+  for (let k = 1; k <= n; k++) {
+    for (let mask = 1; mask < 1 << n; mask++) {
+      const pick = [...Array(n).keys()].filter((i) => mask & (1 << i));
+      if (pick.length !== k) continue;
+      const left = r.cands.map((_, c) => c).filter((c) => pick.every((ci) => r.ok(ci, c)));
+      if (left.length === 1 && left[0] === ai) return k;
+    }
+  }
+  return n;
+}
+
 // 問題データ中の "pep:Gly-Ala" 表記を集めて、配列をそのまま名前にする
 function collectPeptideNames(RDKit, node, names) {
   if (typeof node === 'string') {
@@ -87,7 +101,7 @@ async function main() {
   });
   const narrowData = (r, clues, extra) => {
     r.cands.forEach(addMol);
-    return { ...extra, candidates: r.cands, answer: r.cands.indexOf(r.answer), clues: shapeClues(clues, r) };
+    return { ...extra, candidates: r.cands, answer: r.cands.indexOf(r.answer), minCards: minCards(r, clues.length), clues: shapeClues(clues, r) };
   };
 
   const out = [];
