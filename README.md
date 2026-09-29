@@ -39,11 +39,11 @@ Pages 版は端末（ブラウザ）ごとに匿名の参加者になり、ホ�
 1. [Firebase コンソール](https://console.firebase.google.com/)でプロジェクトを作り、「ウェブアプリを追加」して表示される `firebaseConfig` を控える
 2. Authentication →「ログイン方法」で **匿名** を有効にする。「設定」→「承認済みドメイン」に `s70rm3892.github.io` を足す
 3. Firestore Database を作り、「ルール」にこのリポジトリの `firestore.rules` を貼って公開する（書けるのは自分の文書だけ）
-4. GitHub のリポジトリの Settings → Secrets and variables → Actions → **Variables** に `FIREBASE_CONFIG` を作り、控えた `firebaseConfig` の `{ ... }` を貼る（JSON でも、コンソールの書き方のままでもよい。ウェブ用の設定は公開して問題ない値）
+4. 控えた `firebaseConfig` を `firebase.config.json` に書いてコミットする（今はプロジェクト `minhaya-3e7ee` の設定が入っている）。リポジトリ変数 `FIREBASE_CONFIG` があればそちらが優先。ウェブ用の設定は公開して問題ない値
 5. Actions の pages を手動で走らせる（または main に push）
 
 設定がないと、オンラインの3つは「使えない」と表示されるだけで、ほかは今まで通り動く。
-手元で試すときは `firebase.config.json` に同じ設定を置いて `npm run build`。`"emulator": "127.0.0.1"` を足すと Firebase Emulator Suite（auth 9099・firestore 8080）につなぐ。
+手元で試すときも `npm run build` でこの設定が入る。`"emulator": "127.0.0.1"` を足すと Firebase Emulator Suite（auth 9099・firestore 8080）につなぐ。
 
 ## 京大形式（大問）
 
