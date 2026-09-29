@@ -5,6 +5,8 @@
 const fs = require('fs');
 const path = require('path');
 const chem = require('../src/chem');
+const { buildExam } = require('../src/exam');
+const { infer } = require('../src/inference');
 const { loadRDKit, loadProblems, checkAny } = require('./validate');
 
 const ROOT = path.join(__dirname, '..');
@@ -132,11 +134,12 @@ async function main() {
       r.expected[ci].forEach(addMol);
       r.table[ci].forEach((list) => list.forEach(addMol));
     }
+    const why = infer(c.card, r.expected[ci], chem.CARDS);
     if (kind === 'contains') {
       addMol(r.expected[ci]);
-      return { card: c.card, result: r.expected[ci], byCandidate: r.table[ci].map((v) => (chem.consistent(c.card, v, r.expected[ci]) ? r.expected[ci] : false)) };
+      return { card: c.card, result: r.expected[ci], infer: why, byCandidate: r.table[ci].map((v) => (chem.consistent(c.card, v, r.expected[ci]) ? r.expected[ci] : false)) };
     }
-    return { card: c.card, result: r.expected[ci], byCandidate: r.table[ci] };
+    return { card: c.card, result: r.expected[ci], infer: why, byCandidate: r.table[ci] };
   });
   const narrowData = (r, clues, extra) => {
     r.cands.forEach(addMol);
@@ -174,11 +177,18 @@ async function main() {
       if (r.assemble) {
         stages.push(narrowData(r.assemble.r, r.assemble.clues, { type: 'narrow', label: 'X', id: `${p.id}/X`, formula: p.formula, level: p.level }));
       }
+      // 京大形式（問題文と実験を全部見せて、問1〜に答える）
+      let exam = null;
+      try {
+        const e = buildExam(RDKit, p);
+        e.mols.forEach(addMol);
+        exam = { intro: e.intro, experiments: e.experiments, questions: e.questions, total: e.total };
+      } catch (err) { console.warn(`exam skipped for ${p.id}: ${err.message}`); }
       if (p.generated) {
         // 京大の過去問の再現と自動生成は「京大レベル」モードにまとめる
         out.push({ ...base, mode: 'gen', title: p.title, story: p.story, answerSmiles: r.X, stages,
-          difficulty: p.meta.difficulty, kyoto: p.meta.kyoto || null, band: p.meta.band, seed: p.meta.seed, hideFormula: !!p.hideFormula });
-      } else out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages });
+          difficulty: p.meta.difficulty, kyoto: p.meta.kyoto || null, band: p.meta.band, seed: p.meta.seed, hideFormula: !!p.hideFormula, exam });
+      } else out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages, exam });
     } else if (p.mode === 'polymer') {
       const unit = addMol(chem.canonical(RDKit, p.unit));
       const choices = (a) => [...new Set([Math.round(a / 2), a, a * 2, a * 4])].sort((x, y) => x - y);

@@ -210,6 +210,35 @@ button { font: inherit; color: inherit; }
 .verdict h2 { font-size: 1.6rem; font-weight: 900; }
 .verdict .score { font-family: var(--f-mono); font-size: 1rem; }
 .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.clue .infer { display: block; margin-top: 6px; padding: 6px 8px; border-radius: 8px; background: var(--accent-soft); color: var(--ink); font-size: 0.82rem; line-height: 1.5; text-align: left; }
+.clue .infer b { display: block; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.06em; }
+.exam .sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.exam .grp { font-size: 0.9rem; margin: 14px 0 4px; color: var(--muted); letter-spacing: 0.04em; }
+.exam .exps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.exam .exps li { line-height: 1.7; }
+.exam .lab { font-weight: 700; margin-right: 2px; }
+.exam .figs { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.exam .fig { width: 132px; border: 1px solid var(--line); border-radius: 10px; padding: 4px; background: var(--surface); }
+.exam .fig .pn, .exam .opt .pn { display: block; font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.3; min-height: 1.3em; }
+.exam .hintbtn { margin-top: 4px; font: inherit; font-size: 0.78rem; color: var(--accent); background: none; border: 1px dashed var(--accent); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+.exam .hinttx { margin: 6px 0 0; padding: 8px 10px; background: var(--accent-soft); border-radius: 8px; font-size: 0.86rem; line-height: 1.6; }
+.exam .q { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.exam .q.ok { border-color: var(--ok); background: var(--ok-soft); }
+.exam .q.part { border-color: var(--warn); background: var(--warn-soft); }
+.exam .q.ng { border-color: var(--pos); background: var(--pos-soft); }
+.exam .qhead { display: flex; justify-content: space-between; align-items: baseline; }
+.exam .qhead .pts { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
+.exam .qp { margin: 6px 0 10px; line-height: 1.7; }
+.exam input.ans { font: inherit; font-size: 1.05rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); width: 11em; max-width: 100%; }
+.exam .numrow input.ans { width: 6em; }
+.exam .optgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
+.exam .opt { font: inherit; background: var(--paper); border: 2px solid var(--line); border-radius: 10px; padding: 3px; cursor: pointer; color: var(--ink); }
+.exam .opt.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.exam .opt.right { border-color: var(--ok); }
+.exam .opt.wrong { border-color: var(--pos); }
+.exam .chip.right { border-color: var(--ok); }
+.exam .expl { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 0.88rem; line-height: 1.7; }
+.exam .expl p { margin: 4px 0; }
 .molcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
 .molcard .cap { font-size: 0.8rem; padding: 0 6px 4px; }
 .molcard .cap b { display: block; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
@@ -308,10 +337,10 @@ const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
 const STORE_KEY = 'jouzoukettei.v1';
 const MODES = [
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
-  { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
+  { key: 'big', name: '京大形式（基本）', note: '問題文と実験を全部読んでから、問1〜に答える。構造の選択・分子式や数の記述・すべて選べ・生成物の予測' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
-  { key: 'gen', name: '京大レベル', note: '京大の過去問の答えを同じ物差しで測り、その難易度帯に入るものだけを採った自動生成の大問' },
+  { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答えを同じ物差しで測り、その難易度帯に入るものだけを採った自動生成の大問' },
 ];
 
 // ---------- 記録 ----------
@@ -383,7 +412,7 @@ function checkNight() {
 }
 
 // ---------- 出題 ----------
-let view = { screen: 'home', level: 0, mode: 'narrow' };
+let view = { screen: 'home', level: 0, mode: 'gen' };
 let game = null;
 
 function accuracy(n = 20) {
@@ -426,7 +455,10 @@ function show(screen) {
 
 function startProblem(p) {
   if (isNight()) { checkNight(); return; }
-  if (p.mode === 'big' || p.mode === 'polymer' || p.mode === 'gen') {
+  if (p.exam) {
+    game = { exam: { P: p, ans: {}, hints: new Set(), graded: false } };
+    show('exam');
+  } else if (p.mode === 'big' || p.mode === 'polymer' || p.mode === 'gen') {
     game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
     goStage();
   } else if (p.mode === 'count') {
@@ -515,7 +547,7 @@ function renderHome() {
         <div class="row" id="modes">
           ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
         </div>
-        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : view.mode === 'gen' ? genNote() : '。'}</p>
+        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。各実験の「わかること」を開くと、その結果で決まる部分構造が出る（1回 −1点）。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : view.mode === 'gen' ? genNote() : '。'}</p>
       </section>
       <section class="panel">
         <h2>難易度</h2>
@@ -615,6 +647,7 @@ function renderPlay() {
               <span class="cname">${esc(meta.name)}</span>
               <span class="act">${esc(meta.action)}</span>
               ${open ? resultHtml(c.card, c.result) : '<span class="res">タップして結果を見る</span>'}
+              ${open && c.infer ? `<span class="infer"><b>わかること</b>${esc(c.infer)}</span>` : ''}
             </button>`;
           }).join('')}
         </div>
@@ -1461,7 +1494,131 @@ setInterval(() => {
   if (t && race.finished === null) t.textContent = fmtSec(raceElapsed());
 }, 100);
 
+// ---------- 画面: 京大形式（問題文と実験を全部読んでから、問1〜に答える） ----------
+const HINT_COST = 1;
+// 分子式を「C8H10O」の形にそろえる（小文字・下付き・空白・順序の違いを吸収）
+function normFormula(t) {
+  let x = String(t || '').replace(/[₀-₉]/g, (d) => '₀₁₂₃₄₅₆₇₈₉'.indexOf(d)).replace(/[\s　]/g, '')
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
+  // 小文字だけで書かれたら（c4h8o）元素記号に直す
+  if (!/[A-Z]/.test(x)) x = x.replace(/cl/g, 'Cl').replace(/br/g, 'Br').replace(/[chonsfi]/g, (c) => c.toUpperCase());
+  const c = {};
+  const re = /([A-Z][a-z]?)(\d*)/g;
+  let m, used = 0;
+  while ((m = re.exec(x))) { if (!m[0]) break; c[m[1]] = (c[m[1]] || 0) + (m[2] ? +m[2] : 1); used += m[0].length; }
+  if (used !== x.length || !Object.keys(c).length) return null;
+  const order = ['C', 'H', ...Object.keys(c).filter((e) => e !== 'C' && e !== 'H').sort()];
+  return order.filter((e) => c[e]).map((e) => e + (c[e] > 1 ? c[e] : '')).join('');
+}
+function examScore(q, a) {
+  if (a === undefined || a === null || a === '' || (Array.isArray(a) && !a.length)) return 0;
+  if (q.type === 'formula') return normFormula(a) === normFormula(q.answer) ? q.points : 0;
+  if (q.type === 'number') return Number(a) === Number(q.answer) ? q.points : 0;
+  if (q.type === 'multi') {
+    const hit = a.filter((x) => q.answer.includes(x)).length;
+    const miss = a.length - hit;
+    return Math.max(0, Math.round((q.points * (hit - miss)) / q.answer.length));
+  }
+  return a.length === 1 && a[0] === q.answer[0] ? q.points : 0;
+}
+const GROUP = (g) => (g === 'X' ? '化合物 X について' : `化合物 ${g} について`);
+// 選択肢の名前は採点後にだけ出す（名前で選べないようにする）
+function molOpt(s, sel, cls = '', named = false) {
+  return `<button class="opt ${sel ? 'sel' : ''} ${cls}" data-v="${esc(s)}" aria-pressed="${sel}"><span class="mol">${molSvg(s)}</span><span class="pn">${named ? esc(molName(s)) : ''}</span></button>`;
+}
+function renderExam() {
+  const E = game.exam;
+  const P = E.P;
+  const X = P.exam;
+  const graded = E.graded;
+  const scores = graded ? X.questions.map((q) => examScore(q, E.ans[q.no])) : [];
+  const got = scores.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
+  const groups = [];
+  X.experiments.forEach((e, i) => { if (!groups.length || groups[groups.length - 1].g !== e.group) groups.push({ g: e.group, items: [] }); groups[groups.length - 1].items.push({ e, i }); });
+  const qHtml = (q) => {
+    const a = E.ans[q.no];
+    const sc = graded ? examScore(q, a) : null;
+    let input = '';
+    if (q.type === 'formula') input = `<input class="ans" data-q="${q.no}" inputmode="text" autocomplete="off" placeholder="例: C8H10O" value="${esc(a || '')}" ${graded ? 'disabled' : ''}>`;
+    else if (q.type === 'number') input = `<span class="numrow"><input class="ans" data-q="${q.no}" type="number" inputmode="numeric" value="${esc(a ?? '')}" ${graded ? 'disabled' : ''}> ${esc(q.unit || '')}</span>`;
+    else if (q.type === 'choice') input = `<div class="row" data-qopts="${q.no}">${q.options.map((o) => `<button class="chip ${graded && q.answer.includes(o) ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || []).includes(o)}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>`;
+    else input = `<div class="optgrid" data-qopts="${q.no}" data-multi="${q.type === 'multi'}">${q.options.map((o) => molOpt(o, (a || []).includes(o), graded ? (q.answer.includes(o) ? 'right' : (a || []).includes(o) ? 'wrong' : '') : '', graded)).join('')}</div>`;
+    const answerText = q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0]) : q.answer.map((s) => esc(molName(s))).join('、');
+    return `<section class="q ${graded ? (sc === q.points ? 'ok' : sc > 0 ? 'part' : 'ng') : ''}" id="q${q.no}">
+      <div class="qhead"><b>問${q.no}</b><span class="pts">${graded ? `${sc} / ` : ''}${q.points} 点</span></div>
+      <p class="qp">${esc(q.prompt)}${q.type === 'multi' ? '<span class="muted">（複数選択）</span>' : ''}</p>
+      ${input}
+      ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p></div>` : ''}
+    </section>`;
+  };
+  $('#app').innerHTML = `
+    <div class="stack exam">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${stars(P.level)}</span></span>
+      </div>
+      <header><span class="eyebrow">京大形式 ・ ${esc(P.title || '')}</span></header>
+      <section class="sheet">
+        <p class="story">${esc(X.intro)}</p>
+        ${groups.map((gr) => `<h3 class="grp">${GROUP(gr.g)}</h3>
+          <ol class="exps">${gr.items.map(({ e, i }) => `<li>
+            <span class="lab">${esc(e.label)}</span><span class="tx">${esc(e.text)}</span>
+            ${e.figs && e.figs.length ? `<div class="figs">${e.figs.map((f) => `<div class="fig"><span class="mol">${molSvg(f)}</span><span class="pn">${esc(molName(f))}</span></div>`).join('')}</div>` : ''}
+            ${e.hint ? `<button class="hintbtn" data-h="${i}" aria-expanded="${E.hints.has(i)}">${E.hints.has(i) ? 'わかること' : `わかること（−${HINT_COST}点）`}</button>${E.hints.has(i) ? `<p class="hinttx">${esc(e.hint)}</p>` : ''}` : ''}
+          </li>`).join('')}</ol>`).join('')}
+        <p class="hint">原子量: H = 1.0, C = 12, N = 14, O = 16。気体 1 mol = 22.4 L（標準状態）。構造は紙に書いてから選ぶ。</p>
+      </section>
+      ${X.questions.map(qHtml).join('')}
+      ${graded ? `<div class="verdict ${got >= X.total * 0.8 ? 'ok' : 'ng'}"><h2>${got} / ${X.total} 点</h2>
+        <span class="score">${E.hints.size ? `ヒント ${E.hints.size} 回で −${E.hints.size * HINT_COST}` : 'ヒントなし'}</span></div>
+        <div class="row"><button class="btn primary" id="next">次の問題（おまかせ）</button><button class="btn" id="retry">解き直す</button><button class="btn ghost" id="home">問題一覧</button></div>` : ''}
+    </div>
+    ${graded ? '' : `<div class="dock"><div class="dock-in"><p class="hint">${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答</p><button class="btn primary" id="grade">採点する</button></div></div>`}`;
+  $('#back').onclick = () => show('home');
+  const app = $('#app');
+  app.oninput = (e) => {
+    const t = e.target.closest('input.ans');
+    if (!t || graded) return;
+    E.ans[+t.dataset.q] = t.value;
+    const dock = document.querySelector('.dock .hint');
+    if (dock) dock.textContent = `${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答`;
+  };
+  app.onclick = (e) => {
+    const h = e.target.closest('[data-h]');
+    if (h) { E.hints.add(+h.dataset.h); const y = window.scrollY; renderExam(); window.scrollTo(0, y); return; }
+    const opt = e.target.closest('[data-qopts] [data-v]');
+    if (opt && !graded) {
+      const box = opt.closest('[data-qopts]');
+      const no = +box.dataset.qopts;
+      const multi = box.dataset.multi === 'true';
+      const v = opt.dataset.v;
+      let cur = E.ans[no] || [];
+      cur = multi ? (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]) : (cur[0] === v ? [] : [v]);
+      E.ans[no] = cur;
+      box.querySelectorAll('[data-v]').forEach((b) => { const on = cur.includes(b.dataset.v); b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
+      const dock = document.querySelector('.dock .hint');
+      if (dock) dock.textContent = `${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答`;
+      return;
+    }
+    if (e.target.id === 'grade') {
+      const empty = X.questions.filter((q) => { const a = E.ans[q.no]; return a === undefined || a === '' || (Array.isArray(a) && !a.length); }).length;
+      if (empty && !confirm(`${empty} 問が未解答。採点するか？`)) return;
+      E.graded = true;
+      const sc = X.questions.map((q) => examScore(q, E.ans[q.no]));
+      const total = sc.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
+      record(P.id, sc.every((v, i) => v === X.questions[i].points), Math.max(0, Math.round((100 * total) / X.total)));
+      render(); window.scrollTo(0, 0);
+      return;
+    }
+    if (e.target.id === 'next') { app.onclick = null; app.oninput = null; startProblem(pickProblem(view.level, P.id)); return; }
+    if (e.target.id === 'retry') { app.onclick = null; app.oninput = null; startProblem(P); return; }
+    if (e.target.id === 'home') { app.onclick = null; app.oninput = null; show('home'); }
+  };
+}
+
 function render() {
+  const app0 = document.getElementById('app');
+  if (view.screen !== 'exam' && app0) { app0.onclick = null; app0.oninput = null; }
   const s = view.screen;
   if (s === 'play' && game && game.p) renderPlay();
   else if (s === 'result' && game && game.done) renderResult();
@@ -1474,6 +1631,7 @@ function render() {
   else if (s === 'race') renderRaceHome();
   else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();
   else if (s === 'count' && game && game.count) renderCount();
+  else if (s === 'exam' && game && game.exam) renderExam();
   else renderHome();
 }
 

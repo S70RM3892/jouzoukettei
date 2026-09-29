@@ -571,4 +571,4 @@ function templateFor(classes) {
   return null;
 }
 
-module.exports = { CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };
+module.exports = { fragmentInfo, allAssembliesWithVariants, CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };
