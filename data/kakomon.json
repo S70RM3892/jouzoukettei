@@ -1,5 +1,5 @@
 {
-  "note": "京大 理系化学 大問III・IV（有機）の出題要素を、問題文を写さずにタグと短い要約にしたもの。2009・2020・2023〜2025年度は手元に資料がないため空き。maxC は構造決定の対象になった最大の化合物の炭素数（おおよそ）。",
+  "note": "京大 理系化学 大問III・IV（有機）の出題要素を、問題文を写さずにタグと短い要約にしたもの。2000〜2026年度の27年分。maxC は構造決定の対象になった最大の化合物の炭素数（おおよそ）。",
   "tags": {
     "ester_hydrolysis": "エステルの加水分解で断片に分ける",
     "amide_hydrolysis": "アミド（ペプチド・イミドを含む）の加水分解",
@@ -33,51 +33,503 @@
     "glycerol_ester": "グリセリンのエステル（油脂・トリエステル）",
     "enol_tautomer": "ビニルエステル・アルキン水和のケト–エノール互変",
     "nucleic_acid": "核酸・塩基",
-    "lipid": "脂質・脂肪酸"
+    "lipid": "脂質・脂肪酸",
+    "ring_compound": "環状化合物（シクロアルカン・シクロアルケン・ラクトン・環状エーテル・小員環のひずみ）",
+    "heteroaromatic": "ベンゼン以外の芳香環（ピリジンなど）をベンゼンになぞらえて扱う",
+    "addition_selectivity": "付加反応の向き・立体（マルコフニコフ則、臭素のアンチ付加、水素のシン付加）"
   },
   "structures_note": "大問IIIで構造決定の対象になった化合物 X（自分で解いた答えを SMILES にしたもの。問題文は写していない）。自動出題の型の当てる練習と難易度の物差しに使う。",
   "structures": {
+    "2003": "CC(=O)OC1=C(C)CCCC1",
     "2006": "C=C(C)C(=O)Nc1ccc(C(=O)NCC(C)C)cc1",
     "2007": "O=C(OCC(COC(=O)c1ccc(O)cc1)OC(=O)c1cccc(O)c1)c1ccccc1O",
     "2008": "Cc1ccc(OC(=O)c2ccccc2C(=O)Oc2ccc(C)cc2)cc1",
+    "2009": "O=C(Oc1ccccc1)c1cc(C(=O)Oc2ccccc2)cc(C(=O)Nc2c(C)cc(C)cc2C)c1",
     "2010": "O=C(OCCC(C)OC(=O)c1ccc2ccccc2c1)c1ccc2ccccc2c1",
     "2013": "C=CCCOC(=O)c1ccccc1C(=O)OC=CCC",
     "2016": "CC(C)OC(=O)C=CC(=O)OC(C)CC",
     "2016B": "CCOC(=O)C=CC(=O)OCC(C)CC",
-    "2017": "CC(=O)OCC(COC(C)=O)OC(=O)C=Cc1ccccc1"
+    "2017": "CC(=O)OCC(COC(C)=O)OC(=O)C=Cc1ccccc1",
+    "2020": "Cc1ccc(COC(=O)/C=C/C(=O)OCC(=O)OC(C)C(C)C)cc1"
   },
   "years": {
-    "2006": { "maxC": 15, "tags": ["amide_hydrolysis", "extraction", "hydrogenation", "isomer_enumeration", "mole_calc", "sugar", "stereo_3d", "nucleic_acid"],
-      "summary": "III: C₁₅ のジアミドを加水分解し、不飽和カルボン酸・芳香族アミン・C₄H₁₁N のアミンに分ける。抽出と候補の列挙。IV: 糖の環状構造と立体、リボースとリン酸ジエステル。" },
-    "2007": { "maxC": 24, "tags": ["symmetry_carbons", "nitration_reduction", "side_chain_oxidation", "anhydride", "glycerol_ester", "ester_hydrolysis", "isomer_enumeration", "chiral", "fecl3", "extraction", "sugar", "mole_calc", "combustion_analysis", "lipid", "hydrogenation"],
-      "summary": "III: C₈H₁₀ を等価でない炭素の数で分類。C₂₄ のグリセリントリエステル（芳香族カルボン酸）と脱炭酸、抽出。IV: 二糖、発酵の量的計算、油脂の不飽和度。" },
-    "2008": { "maxC": 22, "tags": ["hydrogenation", "alcohol_oxidation", "chiral", "isomer_enumeration", "mole_calc", "polymer", "ester_hydrolysis", "anhydride", "side_chain_oxidation", "sulfonation_fusion", "amino_acid"],
-      "summary": "III: 鎖状 C₄H₈O の3物質を臭素付加・Na・酸化・不斉炭素で決定し、混合物の組成を計算。クレゾール2分子とフタル酸のジエステル。IV: 塩析・透析・等電点。" },
-    "2010": { "maxC": 26, "tags": ["ester_hydrolysis", "anhydride", "side_chain_oxidation", "chiral", "novel_rule", "alcohol_oxidation", "iodoform", "mole_calc", "nucleic_acid", "sugar", "lipid", "amino_acid"],
-      "summary": "III: C₂₆ のジエステル（ナフタレンカルボン酸2分子とジオール）。第一級OHの選択的アセチル化という与えられた規則。置換基効果の速度計算。IV: DNA、グリセロリン脂質、滴定曲線。" },
-    "2011": { "maxC": 17, "tags": ["hydrogenation", "isomer_enumeration", "cis_trans", "iodoform", "side_chain_oxidation", "anhydride", "partial_hydrolysis", "mole_calc", "chiral", "silver_mirror", "symmetry_carbons", "sugar", "polymer"],
-      "summary": "III: C₉H₁₀ 芳香族の水素化と異性体、ヨードホルムでテレフタル酸、フタルイミド類。途中まで加水分解したエステル混合物への水素付加量から加水分解率。IV: 多糖、浸透圧から重合度、酵素。" },
-    "2012": { "maxC": 27, "tags": ["combustion_analysis", "kmno4_cleavage", "ozonolysis", "polymer", "enol_tautomer", "iodoform", "hydrogenation", "silver_mirror", "chiral", "ester_hydrolysis", "glycerol_ester", "side_chain_oxidation", "mole_calc", "peptide_sequence", "partial_hydrolysis", "amino_acid", "fecl3"],
-      "summary": "III: 燃焼の O₂ 量から C₆H₁₀、KMnO₄ 開裂でアジピン酸、アルキン水和。C₂₇ の四エステル（グリセリン・安息香酸・2-プロパノール・環状ジカルボン酸）。IV: ペンタペプチドの部分加水分解と配列。" },
-    "2013": { "maxC": 16, "tags": ["hydrogenation", "ester_hydrolysis", "dehydration", "alcohol_oxidation", "anhydride", "enol_tautomer", "chiral", "novel_rule", "isomer_enumeration", "amino_acid", "sugar", "mole_calc"],
-      "summary": "III: C₁₆H₁₈O₄ のフタル酸ジエステル（ビニルエステルを含む）。水素付加量、脱水で1-ブテン。ヘミケタールを含む C₉H₁₀O。IV: ペプチドグリカン、等電点、側鎖のアミド結合。" },
-    "2014": { "maxC": 33, "tags": ["kmno4_cleavage", "hydrogenation", "nitration_reduction", "diazo", "sulfonation_fusion", "polymer", "cis_trans", "ester_hydrolysis", "amide_hydrolysis", "isomer_enumeration", "amino_acid", "peptide_sequence", "silver_mirror", "chiral", "sugar"],
-      "summary": "III: C₃₃ のエステル・アミドを1:1:1に加水分解（テレフタル酸・芳香族アミン・フェノール類）。オゾン分解＋酸化、ニトロ化・還元・ジアゾ化。アセトアルデヒド合成実験。IV: グルタチオン、セレブロシド。" },
-    "2015": { "maxC": 12, "tags": ["fecl3", "extraction", "alcohol_oxidation", "nitration_reduction", "hydrogenation", "chiral", "mole_calc", "dehydration", "polymer", "sugar", "nucleic_acid"],
-      "summary": "III: 炭素7・六員環の5物質を FeCl₃・アセチル化・NaHCO₃ 抽出・酸化関係で決定。ヒドロキシ酸の2分子環状エステルと、Na・NaHCO₃・NaOH の量から官能基を数える。IV: 配糖体、核酸。" },
-    "2016": { "maxC": 14, "tags": ["ester_hydrolysis", "combustion_analysis", "cis_trans", "anhydride", "iodoform", "chiral", "alcohol_oxidation", "novel_rule", "isomer_enumeration", "sugar", "amino_acid", "peptide_sequence", "stereo_3d"],
-      "summary": "III: 同じ分子式のジエステル2つ（マレイン酸とフマル酸、2-プロパノール、燃焼分析で決める C₄H₁₀O）。ジアリールエーテルの水素化分解（与えられた反応）と配向性。IV: 甘味物質の判別、環状ペプチド。" },
-    "2017": { "maxC": 16, "tags": ["glycerol_ester", "hydrogenation", "ozonolysis", "cis_trans", "silver_mirror", "ester_hydrolysis", "stereo_3d", "polymer", "nucleic_acid", "diazo", "sugar"],
-      "summary": "III: C₁₆H₁₈O₆ のグリセリントリエステル（酢酸2と桂皮酸型の酸1）。水素付加量とオゾン分解。ラクチドの立体とポリ乳酸。IV: DNA塩基、脱アミノ、いす形配座。" },
-    "2018": { "maxC": 14, "tags": ["nitration_reduction", "diazo", "sulfonation_fusion", "extraction", "combustion_analysis", "kmno4_cleavage", "novel_rule", "dehydration", "amino_acid", "peptide_sequence"],
-      "summary": "III: 配向性と m-ブロモトルエンの合成経路、アリザリン（スルホン化・抽出）。IV: 不飽和脂肪酸の KMnO₄ 開裂から二重結合の位置、酵素による水和とラクトン、等電点と電気泳動。" },
-    "2019": { "maxC": 23, "tags": ["symmetry_carbons", "side_chain_oxidation", "polymer", "nitration_reduction", "novel_rule", "amide_hydrolysis", "isomer_enumeration", "sugar", "stereo_3d", "lipid"],
-      "summary": "III: C₉H₁₂ 芳香族8種を等価でない炭素の数で分類。イミドの穏やかな加水分解（与えられた規則）、C₂₀ のイミド。IV: アルドースのフィッシャー投影とメソ、炭素を減らす反応、ナイロン11、糖脂質。" },
-    "2021": { "maxC": 16, "tags": ["novel_rule", "fecl3", "side_chain_oxidation", "ozonolysis", "silver_mirror", "mole_calc", "anhydride", "amide_hydrolysis", "amino_acid", "peptide_sequence", "polymer"],
-      "summary": "III: リグニンの熱分解生成物（アニソール類）、側鎖酸化と脱炭酸、オゾン分解でバニリン。IV: アスパルテーム（酸無水物から位置異性体）、ラクタムを含むペプチドの構造。" },
-    "2022": { "maxC": 12, "tags": ["amide_hydrolysis", "isomer_enumeration", "chiral", "partial_hydrolysis", "novel_rule", "polymer", "sugar", "stereo_3d"],
-      "summary": "III: 酸クロリドとアミンからアミド（与えられた反応）、候補をすべて書く、部分加水分解とフェノールエステル。IV: 糖の異性化、過ヨウ素酸開裂（与えられた反応）。" },
-    "2026": { "maxC": 18, "tags": ["novel_rule", "iodoform", "chiral", "stereo_3d", "mole_calc", "sugar", "lipid", "hydrogenation"],
-      "summary": "III: アセタール交換の平衡（与えられた規則）、酵素的な光学分割の量的計算。IV: スフィンゴ糖脂質、メチル化分析、不飽和脂肪酸の水素付加量。" }
+    "2000": {
+      "maxC": 25,
+      "tags": [
+        "combustion_analysis",
+        "hydrogenation",
+        "kmno4_cleavage",
+        "novel_rule",
+        "polymer",
+        "chiral",
+        "mole_calc",
+        "sugar",
+        "stereo_3d",
+        "silver_mirror"
+      ],
+      "summary": "III: 質量百分率とヨウ素の付加量から、イソプレン単位が連なった鎖状アルコールを決める。KMnO₄ 開裂の生成物（アセトン・ジカルボン酸・ケト酸）の数から重合度。IV: 再生繊維、グルコースの α・β 形の結晶と平衡、フェーリング反応。"
+    },
+    "2001": {
+      "maxC": 15,
+      "tags": [
+        "ester_hydrolysis",
+        "nitration_reduction",
+        "diazo",
+        "isomer_enumeration",
+        "extraction",
+        "polymer",
+        "lipid",
+        "mole_calc"
+      ],
+      "summary": "III: C₁₅ のエステルを加水分解してニトロサリチル酸・アミノサリチル酸・メタノールに分ける。スズと塩酸での還元、ジアゾ化とカップリング、CO₂ を吹き込んだときの電離状態、X として考えられる構造の数。IV: 生分解性高分子（ポリ乳酸・ラクチド・ヒドロキシ基をもつポリアミド）。"
+    },
+    "2002": {
+      "maxC": 5,
+      "tags": [
+        "isomer_enumeration",
+        "cis_trans",
+        "stereo_3d",
+        "hydrogenation",
+        "alcohol_oxidation",
+        "iodoform",
+        "addition_selectivity",
+        "ring_compound",
+        "sugar",
+        "amino_acid"
+      ],
+      "summary": "III: C₅H₁₀ の鎖状異性体5つを水素付加・水の付加（2種類のアルコール）・二クロム酸酸化・ヨードホルムで区別。環状異性体の数と 1,2-ジメチルシクロプロパンの立体異性体。IV: マルトース、酵素、アミノ酸とタンパク質。"
+    },
+    "2003": {
+      "maxC": 9,
+      "tags": [
+        "enol_tautomer",
+        "ester_hydrolysis",
+        "chiral",
+        "dehydration",
+        "alcohol_oxidation",
+        "silver_mirror",
+        "isomer_enumeration",
+        "ring_compound",
+        "amino_acid",
+        "peptide_sequence"
+      ],
+      "summary": "III: ケト–エノール互変（フェノールのケト形も）。六員環をもつ C₉H₁₄O₂ の酢酸エノールエステル3つを、加水分解で出るケトン・アルデヒド、還元したアルコールの脱水生成物、不斉炭素の有無で決める。IV: グルタチオンとジスルフィド、アミノ酸の電離。"
+    },
+    "2004": {
+      "maxC": 8,
+      "tags": [
+        "hydrogenation",
+        "combustion_analysis",
+        "chiral",
+        "symmetry_carbons",
+        "sulfonation_fusion",
+        "ring_compound",
+        "sugar",
+        "mole_calc",
+        "polymer",
+        "stereo_3d",
+        "silver_mirror"
+      ],
+      "summary": "III: 三重結合をもつ芳香族化合物への段階的な水素付加（常圧では側鎖だけ、高圧で環まで）、燃焼分析、水の付加で不斉炭素をもつアルコール、スルホン化とアルカリ融解、臭素置換体の数が最少の異性体。IV: 二糖、転化糖の加水分解率、メチルセルロースの置換度、アノマー。"
+    },
+    "2005": {
+      "maxC": 4,
+      "tags": [
+        "enol_tautomer",
+        "silver_mirror",
+        "mole_calc",
+        "novel_rule",
+        "addition_selectivity",
+        "chiral",
+        "polymer",
+        "amino_acid",
+        "peptide_sequence"
+      ],
+      "summary": "III: エチレン・アセチレン・メタンからの工業製法（酢酸ビニルの加水分解でアセトアルデヒド、ギ酸の還元性）、混合気体の燃焼の体積計算、マルコフニコフ則（与えられた規則）と分子量比からアルケン。IV: ジペプチド3種を検出反応・中和滴定・電離状態で決める。"
+    },
+    "2006": {
+      "maxC": 15,
+      "tags": [
+        "amide_hydrolysis",
+        "extraction",
+        "hydrogenation",
+        "isomer_enumeration",
+        "mole_calc",
+        "sugar",
+        "stereo_3d",
+        "nucleic_acid"
+      ],
+      "summary": "III: C₁₅ のジアミドを加水分解し、不飽和カルボン酸・芳香族アミン・C₄H₁₁N のアミンに分ける。抽出と候補の列挙。IV: 糖の環状構造と立体、リボースとリン酸ジエステル。"
+    },
+    "2007": {
+      "maxC": 24,
+      "tags": [
+        "symmetry_carbons",
+        "nitration_reduction",
+        "side_chain_oxidation",
+        "anhydride",
+        "glycerol_ester",
+        "ester_hydrolysis",
+        "isomer_enumeration",
+        "chiral",
+        "fecl3",
+        "extraction",
+        "sugar",
+        "mole_calc",
+        "combustion_analysis",
+        "lipid",
+        "hydrogenation"
+      ],
+      "summary": "III: C₈H₁₀ を等価でない炭素の数で分類。C₂₄ のグリセリントリエステル（芳香族カルボン酸）と脱炭酸、抽出。IV: 二糖、発酵の量的計算、油脂の不飽和度。"
+    },
+    "2008": {
+      "maxC": 22,
+      "tags": [
+        "hydrogenation",
+        "alcohol_oxidation",
+        "chiral",
+        "isomer_enumeration",
+        "mole_calc",
+        "polymer",
+        "ester_hydrolysis",
+        "anhydride",
+        "side_chain_oxidation",
+        "sulfonation_fusion",
+        "amino_acid"
+      ],
+      "summary": "III: 鎖状 C₄H₈O の3物質を臭素付加・Na・酸化・不斉炭素で決定し、混合物の組成を計算。クレゾール2分子とフタル酸のジエステル。IV: 塩析・透析・等電点。"
+    },
+    "2009": {
+      "maxC": 30,
+      "tags": [
+        "ester_hydrolysis",
+        "amide_hydrolysis",
+        "side_chain_oxidation",
+        "nitration_reduction",
+        "extraction",
+        "fecl3",
+        "anhydride",
+        "isomer_enumeration",
+        "chiral",
+        "symmetry_carbons",
+        "hydrogenation",
+        "lipid",
+        "glycerol_ester",
+        "sugar",
+        "mole_calc"
+      ],
+      "summary": "III: C₃₀ の化合物をフェノール2・ベンゼントリカルボン酸・トリメチルアニリンに加水分解（クメン法、KMnO₄ 酸化、ニトロ化で位置異性体が1つだけ）。C₆H₁₂ のアルケンの水素付加と塩素置換体の数、臭素付加での不斉炭素。IV: 脂肪酸の融点、界面活性剤、グリセロ糖脂質のけん化と水素付加の量的計算。"
+    },
+    "2010": {
+      "maxC": 26,
+      "tags": [
+        "ester_hydrolysis",
+        "anhydride",
+        "side_chain_oxidation",
+        "chiral",
+        "novel_rule",
+        "alcohol_oxidation",
+        "iodoform",
+        "mole_calc",
+        "nucleic_acid",
+        "sugar",
+        "lipid",
+        "amino_acid"
+      ],
+      "summary": "III: C₂₆ のジエステル（ナフタレンカルボン酸2分子とジオール）。第一級OHの選択的アセチル化という与えられた規則。置換基効果の速度計算。IV: DNA、グリセロリン脂質、滴定曲線。"
+    },
+    "2011": {
+      "maxC": 17,
+      "tags": [
+        "hydrogenation",
+        "isomer_enumeration",
+        "cis_trans",
+        "iodoform",
+        "side_chain_oxidation",
+        "anhydride",
+        "partial_hydrolysis",
+        "mole_calc",
+        "chiral",
+        "silver_mirror",
+        "symmetry_carbons",
+        "sugar",
+        "polymer",
+        "ring_compound"
+      ],
+      "summary": "III: C₉H₁₀ 芳香族の水素化と異性体、ヨードホルムでテレフタル酸、フタルイミド類。途中まで加水分解したエステル混合物への水素付加量から加水分解率。IV: 多糖、浸透圧から重合度、酵素。"
+    },
+    "2012": {
+      "maxC": 27,
+      "tags": [
+        "combustion_analysis",
+        "kmno4_cleavage",
+        "ozonolysis",
+        "polymer",
+        "enol_tautomer",
+        "iodoform",
+        "hydrogenation",
+        "silver_mirror",
+        "chiral",
+        "ester_hydrolysis",
+        "glycerol_ester",
+        "side_chain_oxidation",
+        "mole_calc",
+        "peptide_sequence",
+        "partial_hydrolysis",
+        "amino_acid",
+        "fecl3",
+        "ring_compound"
+      ],
+      "summary": "III: 燃焼の O₂ 量から C₆H₁₀、KMnO₄ 開裂でアジピン酸、アルキン水和。C₂₇ の四エステル（グリセリン・安息香酸・2-プロパノール・環状ジカルボン酸）。IV: ペンタペプチドの部分加水分解と配列。"
+    },
+    "2013": {
+      "maxC": 16,
+      "tags": [
+        "hydrogenation",
+        "ester_hydrolysis",
+        "dehydration",
+        "alcohol_oxidation",
+        "anhydride",
+        "enol_tautomer",
+        "chiral",
+        "novel_rule",
+        "isomer_enumeration",
+        "amino_acid",
+        "sugar",
+        "mole_calc",
+        "ring_compound"
+      ],
+      "summary": "III: C₁₆H₁₈O₄ のフタル酸ジエステル（ビニルエステルを含む）。水素付加量、脱水で1-ブテン。ヘミケタールを含む C₉H₁₀O。IV: ペプチドグリカン、等電点、側鎖のアミド結合。"
+    },
+    "2014": {
+      "maxC": 33,
+      "tags": [
+        "kmno4_cleavage",
+        "hydrogenation",
+        "nitration_reduction",
+        "diazo",
+        "sulfonation_fusion",
+        "polymer",
+        "cis_trans",
+        "ester_hydrolysis",
+        "amide_hydrolysis",
+        "isomer_enumeration",
+        "amino_acid",
+        "peptide_sequence",
+        "silver_mirror",
+        "chiral",
+        "sugar"
+      ],
+      "summary": "III: C₃₃ のエステル・アミドを1:1:1に加水分解（テレフタル酸・芳香族アミン・フェノール類）。オゾン分解＋酸化、ニトロ化・還元・ジアゾ化。アセトアルデヒド合成実験。IV: グルタチオン、セレブロシド。"
+    },
+    "2015": {
+      "maxC": 12,
+      "tags": [
+        "fecl3",
+        "extraction",
+        "alcohol_oxidation",
+        "nitration_reduction",
+        "hydrogenation",
+        "chiral",
+        "mole_calc",
+        "dehydration",
+        "polymer",
+        "sugar",
+        "nucleic_acid",
+        "ring_compound"
+      ],
+      "summary": "III: 炭素7・六員環の5物質を FeCl₃・アセチル化・NaHCO₃ 抽出・酸化関係で決定。ヒドロキシ酸の2分子環状エステルと、Na・NaHCO₃・NaOH の量から官能基を数える。IV: 配糖体、核酸。"
+    },
+    "2016": {
+      "maxC": 14,
+      "tags": [
+        "ester_hydrolysis",
+        "combustion_analysis",
+        "cis_trans",
+        "anhydride",
+        "iodoform",
+        "chiral",
+        "alcohol_oxidation",
+        "novel_rule",
+        "isomer_enumeration",
+        "sugar",
+        "amino_acid",
+        "peptide_sequence",
+        "stereo_3d"
+      ],
+      "summary": "III: 同じ分子式のジエステル2つ（マレイン酸とフマル酸、2-プロパノール、燃焼分析で決める C₄H₁₀O）。ジアリールエーテルの水素化分解（与えられた反応）と配向性。IV: 甘味物質の判別、環状ペプチド。"
+    },
+    "2017": {
+      "maxC": 16,
+      "tags": [
+        "glycerol_ester",
+        "hydrogenation",
+        "ozonolysis",
+        "cis_trans",
+        "silver_mirror",
+        "ester_hydrolysis",
+        "stereo_3d",
+        "polymer",
+        "nucleic_acid",
+        "diazo",
+        "sugar",
+        "ring_compound"
+      ],
+      "summary": "III: C₁₆H₁₈O₆ のグリセリントリエステル（酢酸2と桂皮酸型の酸1）。水素付加量とオゾン分解。ラクチドの立体とポリ乳酸。IV: DNA塩基、脱アミノ、いす形配座。"
+    },
+    "2018": {
+      "maxC": 14,
+      "tags": [
+        "nitration_reduction",
+        "diazo",
+        "sulfonation_fusion",
+        "extraction",
+        "combustion_analysis",
+        "kmno4_cleavage",
+        "novel_rule",
+        "dehydration",
+        "amino_acid",
+        "peptide_sequence"
+      ],
+      "summary": "III: 配向性と m-ブロモトルエンの合成経路、アリザリン（スルホン化・抽出）。IV: 不飽和脂肪酸の KMnO₄ 開裂から二重結合の位置、酵素による水和とラクトン、等電点と電気泳動。"
+    },
+    "2019": {
+      "maxC": 23,
+      "tags": [
+        "symmetry_carbons",
+        "side_chain_oxidation",
+        "polymer",
+        "nitration_reduction",
+        "novel_rule",
+        "amide_hydrolysis",
+        "isomer_enumeration",
+        "sugar",
+        "stereo_3d",
+        "lipid",
+        "ring_compound"
+      ],
+      "summary": "III: C₉H₁₂ 芳香族8種を等価でない炭素の数で分類。イミドの穏やかな加水分解（与えられた規則）、C₂₀ のイミド。IV: アルドースのフィッシャー投影とメソ、炭素を減らす反応、ナイロン11、糖脂質。"
+    },
+    "2020": {
+      "maxC": 19,
+      "tags": [
+        "ester_hydrolysis",
+        "partial_hydrolysis",
+        "combustion_analysis",
+        "cis_trans",
+        "chiral",
+        "side_chain_oxidation",
+        "addition_selectivity",
+        "sugar",
+        "stereo_3d",
+        "novel_rule"
+      ],
+      "summary": "III: 燃焼分析で C₁₉H₂₄O₆ の多価エステル。部分加水分解物の組成式、フマル酸（マレイン酸より溶けにくい）、グリコール酸のつなぎ、アルケンへの水付加で得られるアルコール、テレフタル酸になる芳香族アルコール。IV: フィッシャー投影、アスコルビン酸の合成、アセトンによるヒドロキシ基の保護（与えられた規則）。"
+    },
+    "2021": {
+      "maxC": 16,
+      "tags": [
+        "novel_rule",
+        "fecl3",
+        "side_chain_oxidation",
+        "ozonolysis",
+        "silver_mirror",
+        "mole_calc",
+        "anhydride",
+        "amide_hydrolysis",
+        "amino_acid",
+        "peptide_sequence",
+        "polymer"
+      ],
+      "summary": "III: リグニンの熱分解生成物（アニソール類）、側鎖酸化と脱炭酸、オゾン分解でバニリン。IV: アスパルテーム（酸無水物から位置異性体）、ラクタムを含むペプチドの構造。"
+    },
+    "2022": {
+      "maxC": 12,
+      "tags": [
+        "amide_hydrolysis",
+        "isomer_enumeration",
+        "chiral",
+        "partial_hydrolysis",
+        "novel_rule",
+        "polymer",
+        "sugar",
+        "stereo_3d"
+      ],
+      "summary": "III: 酸クロリドとアミンからアミド（与えられた反応）、候補をすべて書く、部分加水分解とフェノールエステル。IV: 糖の異性化、過ヨウ素酸開裂（与えられた反応）。"
+    },
+    "2023": {
+      "maxC": 9,
+      "tags": [
+        "novel_rule",
+        "heteroaromatic",
+        "isomer_enumeration",
+        "nitration_reduction",
+        "side_chain_oxidation",
+        "ester_hydrolysis",
+        "iodoform",
+        "dehydration",
+        "alcohol_oxidation",
+        "chiral",
+        "ring_compound",
+        "amino_acid",
+        "peptide_sequence",
+        "mole_calc"
+      ],
+      "summary": "III: ピリジン環をベンゼン環になぞらえる（与えられた規則）。C₇H₉N の異性体の数、隣接二置換体のニトロ化・酸化・還元・エステル化、エステル G〜I を加水分解生成物（アセトンになるアルコール、脱水と酸化、C₃H₆O₃）で決める。IV: β-アミノ酸を含むジペプチド・トリペプチド、ケルダール法で窒素の数。"
+    },
+    "2024": {
+      "maxC": 5,
+      "tags": [
+        "combustion_analysis",
+        "silver_mirror",
+        "iodoform",
+        "symmetry_carbons",
+        "hydrogenation",
+        "dehydration",
+        "alcohol_oxidation",
+        "ring_compound",
+        "chiral",
+        "cis_trans",
+        "stereo_3d",
+        "addition_selectivity",
+        "novel_rule",
+        "amino_acid",
+        "peptide_sequence",
+        "mole_calc"
+      ],
+      "summary": "III: 非等価な炭素の数を定義し、燃焼分析で C₅H₁₀O、銀鏡・ヨードホルム・水素付加で非等価炭素が減る・脱水と水素付加で全炭素が等価、から鎖状と環状の5物質を決める。臭素のアンチ付加と水素のシン付加の立体（与えられた規則）。IV: 環状ペプチド（グラミシジンS）の構成と配列。"
+    },
+    "2025": {
+      "maxC": 10,
+      "tags": [
+        "ring_compound",
+        "novel_rule",
+        "hydrogenation",
+        "ester_hydrolysis",
+        "side_chain_oxidation",
+        "anhydride",
+        "polymer",
+        "sugar",
+        "mole_calc",
+        "amino_acid",
+        "peptide_sequence",
+        "combustion_analysis"
+      ],
+      "summary": "III: 小員環のひずみと水素化による開環（与えられた規則）、ラクトン C₈H₆O₂ の加水分解と酸化で酸無水物、テレフタル酸と PET、一官能性の不純物による分子量の低下。IV: 過ヨウ素酸によるデンプンの開裂と分岐の数（与えられた規則）、シクロデキストリン、燃焼と加水分解の量からトリペプチド。"
+    },
+    "2026": {
+      "maxC": 18,
+      "tags": [
+        "novel_rule",
+        "iodoform",
+        "chiral",
+        "stereo_3d",
+        "mole_calc",
+        "sugar",
+        "lipid",
+        "hydrogenation"
+      ],
+      "summary": "III: アセタール交換の平衡（与えられた規則）、酵素的な光学分割の量的計算。IV: スフィンゴ糖脂質、メチル化分析、不飽和脂肪酸の水素付加量。"
+    }
   }
 }

@@ -543,7 +543,7 @@ function renderHome() {
             const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
             return `<li><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
-              <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
+              <span><span class="formula fm">${p.hideFormula ? '分子式は計算で' : fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
                 <span class="muted sub">${sub}</span></span>
               ${badge}</button></li>`;
           }).join('')}
@@ -832,8 +832,8 @@ function renderSplit() {
   if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
 }
 
-const CALC_SHORT = { dp: '重合度', per: '計算', h2: 'H₂付加', combustion: '燃焼' };
-const CALC_LONG = { dp: '重合度の計算', per: '結合・分子の数', h2: '水素付加量の計算', combustion: '燃焼分析' };
+const CALC_SHORT = { dp: '重合度', per: '計算', h2: 'H₂付加', combustion: '燃焼', combustion_x: 'Xの分子式', n_x: '候補の数' };
+const CALC_LONG = { dp: '重合度の計算', per: '結合・分子の数', h2: '水素付加量の計算', combustion: '燃焼分析', combustion_x: 'X の分子式（燃焼分析）', n_x: 'つなぎ方の候補の数' };
 
 // 京大レベルの説明（何年度の何題を物差しにしたか・いつの種か）
 function genNote() {
@@ -860,7 +860,7 @@ function renderCalc() {
       </div>
       ${bigProgress()}
       <div class="board-head">
-        <div><span class="eyebrow">${esc(P.title)} ・ ${isPolymer ? '繰り返し単位' : '化合物 X'}</span><div class="formula">${fmtFormula(isPolymer ? P.unitFormula : P.formula)}</div></div>
+        <div><span class="eyebrow">${esc(P.title)} ・ ${isPolymer ? '繰り返し単位' : '化合物 X'}</span><div class="formula">${st.key === 'combustion_x' ? '分子式 ?' : fmtFormula(isPolymer ? P.unitFormula : P.formula)}</div></div>
       </div>
       ${isPolymer ? `<div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>` : ''}
       <p class="story">${esc(P.story)}</p>

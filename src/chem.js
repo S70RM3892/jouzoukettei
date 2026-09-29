@@ -629,6 +629,30 @@ function hydrogenate(RDKit, g0) {
   return changed ? graphToSmilesList(RDKit, g) : [];
 }
 
+// 酸触媒による水の付加。H は H の多い炭素に、OH は H の少ない炭素につく（マルコフニコフ則。京大2005・2002で問題文に与えられた規則）。
+// H の数が同じなら両方の生成物ができる。C=C が1つだけの化合物に限る
+function markovnikov(RDKit, g0) {
+  const dbl = g0.bonds.filter((b) => b.order === 2 && !isAromBond(g0, b) && g0.atoms[b.a].el === 'C' && g0.atoms[b.b].el === 'C');
+  if (g0.bonds.some((b) => b.order === 3)) throw new Unsupported('alkyne hydration');
+  if (dbl.length !== 1) throw new Unsupported(dbl.length ? 'several C=C' : 'no C=C');
+  const b0 = dbl[0];
+  for (const c of [b0.a, b0.b]) {
+    if (neighbors(g0, c).some((x) => g0.atoms[x.atom].el !== 'C')) throw new Unsupported('heteroatom on C=C');
+  }
+  const ha = hCount(g0, b0.a), hb = hCount(g0, b0.b);
+  const targets = ha === hb ? [b0.a, b0.b] : [ha < hb ? b0.a : b0.b];
+  const out = [];
+  for (const t of targets) {
+    const g = cloneGraph(g0);
+    const bi = g0.bonds.indexOf(b0);
+    g.bonds[bi].order = 1;
+    g.atoms.push({ el: 'O' });
+    g.bonds.push({ a: t, b: g.atoms.length - 1, order: 1 });
+    out.push(...graphToSmilesList(RDKit, g));
+  }
+  return [...new Set(out)];
+}
+
 // 二クロム酸カリウムによる穏やかな酸化: 第一級アルコール → アルデヒド、第二級 → ケトン
 function mildOxidize(RDKit, g0) {
   const g = cloneGraph(g0);
@@ -857,6 +881,12 @@ const CARDS = {
     action: '白金触媒の存在下で水素を十分に付加させる',
     kind: 'products', none: '水素は付加しなかった',
     transform: hydrogenate,
+  },
+  markovnikov: {
+    name: '水の付加（マルコフニコフ則）',
+    action: '酸触媒で C=C に水を付加させる。H は H の多い側の炭素に、OH は H の少ない側の炭素につく（同じなら両方できる）',
+    kind: 'products', none: '付加しなかった',
+    transform: markovnikov,
   },
   mild_oxidation: {
     name: '二クロム酸酸化',

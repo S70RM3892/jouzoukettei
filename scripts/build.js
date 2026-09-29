@@ -157,7 +157,8 @@ async function main() {
     } else if (p.mode === 'big') {
       addMol(r.X);
       // 自動生成の大問: 水素付加量・燃焼分析の計算段階を先に解く（分解の表で断片の分子式が見える前に）
-      const stages = r.calcs.map((c) => ({ type: 'calc', key: c.key, prompt: c.prompt, answer: c.answer, choices: c.choices, unit: c.unit, explain: c.explain }));
+      const calcStage = (c) => ({ type: 'calc', key: c.key, prompt: c.prompt, answer: c.answer, choices: c.choices, unit: c.unit, explain: c.explain });
+      const stages = r.calcs.filter((c) => !c.at).map(calcStage);
       stages.push({
         type: 'split',
         bonds: r.bonds,
@@ -168,13 +169,15 @@ async function main() {
         if (f.given) stages.push({ type: 'given', label: f.label, smiles: f.answer, note: f.note });
         else stages.push(narrowData(f.r, f.clues, { type: 'narrow', label: f.label, id: `${p.id}/${f.label}`, formula: f.formula, level: p.level }));
       }
+      // 組み立ての直前に解く計算（つなぎ方の候補の数）
+      r.calcs.filter((c) => c.at === 'assemble').forEach((c) => stages.push(calcStage(c)));
       if (r.assemble) {
         stages.push(narrowData(r.assemble.r, r.assemble.clues, { type: 'narrow', label: 'X', id: `${p.id}/X`, formula: p.formula, level: p.level }));
       }
       if (p.generated) {
         // 京大の過去問の再現と自動生成は「京大レベル」モードにまとめる
         out.push({ ...base, mode: 'gen', title: p.title, story: p.story, answerSmiles: r.X, stages,
-          difficulty: p.meta.difficulty, kyoto: p.meta.kyoto || null, band: p.meta.band, seed: p.meta.seed });
+          difficulty: p.meta.difficulty, kyoto: p.meta.kyoto || null, band: p.meta.band, seed: p.meta.seed, hideFormula: !!p.hideFormula });
       } else out.push({ ...base, title: p.title, story: p.story, answerSmiles: r.X, stages });
     } else if (p.mode === 'polymer') {
       const unit = addMol(chem.canonical(RDKit, p.unit));

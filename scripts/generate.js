@@ -126,6 +126,7 @@ async function main() {
   const cap = Math.ceil(N / 4);
   const seenX = new Set(kyoto.map((k) => k.p.answer));
   const stats = { tried: 0, invalid: 0, band: 0, dup: 0 };
+  const seenSig = new Set();
   for (let i = 0; i < N * 60 && out.length < N; i++) {
     const spec = G.sampleSpec(r, lib, finalW);
     if (!spec || (perTpl[spec.template] || 0) >= cap) continue;
@@ -135,10 +136,14 @@ async function main() {
     try { p = G.buildProblem(RDKit, r, lib, weights, spec); } catch (e) { p = null; }
     if (!p) { stats.invalid++; continue; }
     if (seenX.has(p.answer)) { stats.dup++; continue; }
+    // 多様性: 同じ型で同じ分類の組み合わせ（例: フタル酸＋アルコール2つ）は1日1問まで
+    const sig = spec.template + ':' + p.fragments.map((f) => (f.given ? 'g' : f.kind)).sort().join('+');
+    if (seenSig.has(sig)) { stats.dup++; continue; }
     if (p.meta.difficulty < lo || p.meta.difficulty > hi) { stats.band++; continue; }
     const v = checkBig(RDKit, p);
     if (v.errors.length) { stats.invalid++; console.log('  検証で落とした: ' + v.errors[0]); continue; }
     seenX.add(p.answer);
+    seenSig.add(sig);
     perTpl[spec.template] = (perTpl[spec.template] || 0) + 1;
     out.push(p);
   }

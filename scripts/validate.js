@@ -179,9 +179,14 @@ function checkBig(RDKit, P) {
       const M = calc.mass(P.formula);
       const n = Math.round((c.data.V / 22.4) / (c.data.m / M));
       if (n !== c.answer || n !== chem.h2Uptake(chem.graphFromSmiles(RDKit, X))) err(`calc h2: data gives ${n}, answer ${c.answer}`);
-    } else if (c.key === 'combustion') {
+    } else if (c.key === 'combustion' || c.key === 'combustion_x') {
       const f = calc.molecularFromEmpirical(calc.empiricalFromCombustion(c.data.sample, c.data.co2, c.data.h2o), { mw: c.data.M });
-      if (f !== c.answer || !frags.some((fr) => fr.formula === f)) err(`calc combustion: data gives ${f}, answer ${c.answer}`);
+      const target = c.key === 'combustion_x' ? f === P.formula : frags.some((fr) => fr.formula === f);
+      if (f !== c.answer || !target) err(`calc ${c.key}: data gives ${f}, answer ${c.answer}`);
+      // 選択肢の中で、データから一意に決まること
+      if (c.choices.filter((x) => x === f).length !== 1) err(`calc ${c.key}: answer not uniquely among choices`);
+    } else if (c.key === 'n_x') {
+      if (!P.assemble || c.answer !== P.assemble.candidates.length) err(`calc n_x: answer ${c.answer} but ${P.assemble ? P.assemble.candidates.length : 0} assembly candidates`);
     } else err(`unknown calc ${c.key}`);
   }
   return { errors, X, bonds, frags, assemble, calcs: P.calcs || [] };

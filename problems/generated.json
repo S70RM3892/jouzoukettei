@@ -1,11 +1,82 @@
 [
  {
+  "id": "kyoto-2003",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "京大2003年度型の再現",
+  "story": "分子式 C₉H₁₄O₂ の化合物 Xは NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、複数のエステル結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B が得られた。",
+  "formula": "C9H14O2",
+  "answer": "CC(=O)OC1=C(C)CCCC1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "CC(=O)O",
+    "given": true,
+    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "B",
+    "answer": "CC1CCCCC1=O",
+    "given": true,
+    "note": "環状のカルボニル化合物（名称が与えられる）"
+   }
+  ],
+  "assemble": {
+   "candidates": [
+    "CC(=O)OC1=CCCCC1C",
+    "CC(=O)OC1=C(C)CCCC1"
+   ],
+   "clues": [
+    {
+     "card": "chiral",
+     "result": 0
+    }
+   ]
+  },
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 18.9,
+     "V": 2.75
+    },
+    "prompt": "X 18.9 g に白金触媒で水素を付加させると、標準状態で 2.75 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 154。18.9 ÷ 154 = 0.1227 mol、2.75 ÷ 22.4 = 0.1228 mol なので、1 mol あたり 1 mol の H₂。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 1,
+   "template": "enol_ring",
+   "frags": [
+    "acid",
+    "cyclocarbonyl"
+   ],
+   "difficulty": 7.2,
+   "kyoto": "2003",
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
   "id": "kyoto-2006",
   "mode": "big",
   "level": 3,
   "generated": true,
   "title": "京大2006年度型の再現",
-  "story": "化合物 X（分子式 C₁₅H₂₀N₂O₂）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "分子式 C₁₅H₂₀N₂O₂ の化合物 Xは NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、エステル結合とアミド結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C15H20N2O2",
   "answer": "C=C(C)C(=O)Nc1ccc(C(=O)NCC(C)C)cc1",
   "fragments": [
@@ -19,8 +90,8 @@
     ],
     "clues": [
      {
-      "card": "cis_trans",
-      "result": false
+      "card": "cl_sub",
+      "result": 2
      },
      {
       "card": "hydrogenation",
@@ -51,8 +122,8 @@
       "result": 2
      },
      {
-      "card": "ring_cl",
-      "result": 2
+      "card": "carbon_env",
+      "result": 5
      }
     ],
     "kind": "芳香族アミノ酸"
@@ -63,10 +134,10 @@
    {
     "key": "h2",
     "data": {
-     "m": 12,
-     "V": 1.03
+     "m": 25.9,
+     "V": 2.23
     },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 1.03 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "prompt": "X 25.9 g に白金触媒で水素を付加させると、標準状態で 2.23 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
     "answer": 1,
     "choices": [
      1,
@@ -75,29 +146,10 @@
      4
     ],
     "unit": "個",
-    "explain": "X の分子量は 260。12.0 ÷ 260 = 0.0462 mol、1.03 ÷ 22.4 = 0.0460 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 25,
-     "co2": 51.2,
-     "h2o": 15.7,
-     "M": 86,
-     "formula": "C4H6O2"
-    },
-    "prompt": "加水分解で得た化合物 A 25.0 mg を完全燃焼させると CO₂ 51.2 mg と H₂O 15.7 mg が得られた（分子量は 86）。化合物 A の分子式はどれか",
-    "answer": "C4H6O2",
-    "choices": [
-     "C4H6O",
-     "C4H6O2",
-     "C4H6O3",
-     "C4H8O2"
-    ],
-    "unit": "",
-    "explain": "C = 51.2 × 12/44 = 13.96 mg、H = 15.7 × 2/18 = 1.74 mg、O = 25.0 − 13.96 − 1.74 = 9.29 mg。C : H : O = 13.96/12 : 1.74/1.0 : 9.29/16 = 2.00 : 3.00 : 1.00 より組成式 C₂H₃O。分子量 86 から C₄H₆O₂。"
+    "explain": "X の分子量は 260。25.9 ÷ 260 = 0.0996 mol、2.23 ÷ 22.4 = 0.0996 mol なので、1 mol あたり 1 mol の H₂。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diamide",
@@ -106,12 +158,12 @@
     "amine",
     "aminoaracid"
    ],
-   "difficulty": 15.6,
+   "difficulty": 13,
    "kyoto": "2006",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -121,7 +173,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2007年度型の再現",
-  "story": "化合物 X（分子式 C₂₄H₂₀O₉）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
+  "story": "化合物 X（分子式 C₂₄H₂₀O₉）は NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
   "formula": "C24H20O9",
   "answer": "O=C(OCC(COC(=O)c1ccccc1O)OC(=O)c1cccc(O)c1)c1ccc(O)cc1",
   "fragments": [
@@ -179,26 +231,24 @@
   },
   "calcs": [
    {
-    "key": "combustion",
+    "key": "n_x",
+    "at": "assemble",
     "data": {
-     "sample": 25,
-     "co2": 55.8,
-     "h2o": 9.78,
-     "M": 138,
-     "formula": "C7H6O3"
+     "n": 3
     },
-    "prompt": "加水分解で得た化合物 A 25.0 mg を完全燃焼させると CO₂ 55.8 mg と H₂O 9.78 mg が得られた（分子量は 138）。化合物 A の分子式はどれか",
-    "answer": "C7H6O3",
+    "prompt": "断片 A・B・C・D の構造がすべて決まった。つなぎ方だけが違う X の候補は何種類あるか（立体異性体は区別しない）",
+    "answer": 3,
     "choices": [
-     "C7H6O2",
-     "C7H6O3",
-     "C7H6O4",
-     "C7H8O3"
+     1,
+     2,
+     3,
+     4
     ],
-    "unit": "",
-    "explain": "C = 55.8 × 12/44 = 15.22 mg、H = 9.78 × 2/18 = 1.09 mg、O = 25.0 − 15.22 − 1.09 = 8.70 mg。C : H : O = 15.22/12 : 1.09/1.0 : 8.70/16 = 2.33 : 2.00 : 1.00 より組成式 C₇H₆O₃。分子量 138 から C₇H₆O₃。"
+    "unit": "種類",
+    "explain": "酸の側（カルボキシ基）と、アルコール・フェノール・アミン・エノールの側を1対1に対応させる組み合わせを、同じ化合物になるものを除いて数えると 3 種類。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 3,
    "template": "triester",
@@ -212,8 +262,8 @@
    "kyoto": "2007",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -223,7 +273,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2008年度型の再現",
-  "story": "化合物 X（分子式 C₂₂H₁₈O₄）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B が得られた。",
+  "story": "化合物 X（分子式 C₂₂H₁₈O₄）は NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、複数のエステル結合をもつ。X を完全に加水分解すると、化合物 A・B が得られた。",
   "formula": "C22H18O4",
   "answer": "Cc1ccc(OC(=O)c2ccccc2C(=O)Oc2ccc(C)cc2)cc1",
   "fragments": [
@@ -269,28 +319,8 @@
    }
   ],
   "assemble": null,
-  "calcs": [
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 25,
-     "co2": 71.3,
-     "h2o": 16.7,
-     "M": 108,
-     "formula": "C7H8O"
-    },
-    "prompt": "加水分解で得た化合物 A 25.0 mg を完全燃焼させると CO₂ 71.3 mg と H₂O 16.7 mg が得られた（分子量は 108）。化合物 A の分子式はどれか",
-    "answer": "C7H8O",
-    "choices": [
-     "C7H10O",
-     "C7H8",
-     "C7H8O",
-     "C8H10O"
-    ],
-    "unit": "",
-    "explain": "C = 71.3 × 12/44 = 19.45 mg、H = 16.7 × 2/18 = 1.86 mg、O = 25.0 − 19.45 − 1.86 = 3.70 mg。C : H : O = 19.45/12 : 1.86/1.0 : 3.70/16 = 7.01 : 8.03 : 1.00 より組成式 C₇H₈O。分子量 108 から C₇H₈O。"
-   }
-  ],
+  "calcs": [],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diester_diacid",
@@ -299,12 +329,132 @@
     "phenol",
     "ardiacid"
    ],
-   "difficulty": 14.1,
+   "difficulty": 13.1,
    "kyoto": "2008",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "kyoto-2009",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "京大2009年度型の再現",
+  "story": "化合物 X（分子式 C₃₀H₂₅NO₅）は NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色しない。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C30H25NO5",
+  "answer": "Cc1cc(C)c(NC(=O)c2cc(C(=O)Oc3ccccc3)cc(C(=O)Oc3ccccc3)c2)c(C)c1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "Cc1cc(C)c(N)c(C)c1",
+    "candidates": [
+     "CC(C)c1ccc(N)cc1",
+     "CC(C)c1cccc(N)c1",
+     "CC(C)c1ccccc1N",
+     "CCCc1ccc(N)cc1",
+     "CCCc1cccc(N)c1",
+     "CCCc1ccccc1N",
+     "CCc1c(C)cccc1N",
+     "CCc1cc(C)cc(N)c1",
+     "CCc1cc(C)ccc1N",
+     "CCc1cc(N)ccc1C",
+     "CCc1ccc(C)c(N)c1",
+     "CCc1ccc(C)cc1N",
+     "CCc1ccc(N)c(C)c1",
+     "CCc1ccc(N)cc1C",
+     "CCc1cccc(C)c1N",
+     "CCc1cccc(N)c1C",
+     "Cc1cc(C)c(C)c(N)c1",
+     "Cc1cc(C)c(N)c(C)c1",
+     "Cc1cc(C)c(N)cc1C",
+     "Cc1cc(N)cc(C)c1C",
+     "Cc1ccc(C)c(N)c1C",
+     "Cc1ccc(N)c(C)c1C"
+    ],
+    "clues": [
+     {
+      "card": "kmno4",
+      "result": [
+       "Nc1c(C(=O)O)cc(C(=O)O)cc1C(=O)O"
+      ]
+     },
+     {
+      "card": "carbon_env",
+      "result": 6
+     }
+    ],
+    "kind": "芳香族アミン"
+   },
+   {
+    "label": "B",
+    "answer": "O=C(O)c1cc(C(=O)O)cc(C(=O)O)c1",
+    "candidates": [
+     "O=C(O)c1cc(C(=O)O)cc(C(=O)O)c1",
+     "O=C(O)c1ccc(C(=O)O)c(C(=O)O)c1",
+     "O=C(O)c1cccc(C(=O)O)c1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "cl_sub",
+      "result": 1
+     },
+     {
+      "card": "carbon_env",
+      "result": 3
+     }
+    ],
+    "kind": "芳香族三価カルボン酸"
+   },
+   {
+    "label": "C",
+    "answer": "Oc1ccccc1",
+    "given": true,
+    "note": "フェノール類（この分子式では構造がほぼ1つに決まるので与える）"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 37.2,
+     "co2": 70.1,
+     "h2o": 9.57,
+     "M": 210,
+     "formula": "C9H6O6"
+    },
+    "prompt": "加水分解で得た化合物 B 37.2 mg を完全燃焼させると CO₂ 70.1 mg と H₂O 9.57 mg が得られた（分子量は 210）。化合物 B の分子式はどれか",
+    "answer": "C9H6O6",
+    "choices": [
+     "C10H10O5",
+     "C11H14O4",
+     "C8H2O7",
+     "C9H6O6"
+    ],
+    "unit": "",
+    "explain": "C = 70.1 × 12/44 = 19.12 mg、H = 9.57 × 2/18 = 1.06 mg、O = 37.2 − 19.12 − 1.06 = 17.02 mg。C : H : O = 19.12/12 : 1.06/1.0 : 17.02/16 = 1.50 : 1.00 : 1.00 より組成式 C₃H₂O₂。分子量 210 から C₉H₆O₆。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 3,
+   "template": "triacid",
+   "frags": [
+    "aniline",
+    "artriacid",
+    "phenol",
+    "phenol"
+   ],
+   "difficulty": 18.1,
+   "kyoto": "2009",
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
    ]
   }
  },
@@ -314,7 +464,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2010年度型の再現",
-  "story": "化合物 X（分子式 C₂₆H₂₂O₄）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B が得られた。",
+  "story": "分子式 C₂₆H₂₂O₄ の化合物 Xは水に溶けにくい中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B が得られた。",
   "formula": "C26H22O4",
   "answer": "CC(CCOC(=O)c1ccc2ccccc2c1)OC(=O)c1ccc2ccccc2c1",
   "fragments": [
@@ -353,7 +503,29 @@
    }
   ],
   "assemble": null,
-  "calcs": [],
+  "calcs": [
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 25.4,
+     "co2": 49.7,
+     "h2o": 25.4,
+     "M": 90,
+     "formula": "C4H10O2"
+    },
+    "prompt": "加水分解で得た化合物 A 25.4 mg を完全燃焼させると CO₂ 49.7 mg と H₂O 25.4 mg が得られた（分子量は 90）。化合物 A の分子式はどれか",
+    "answer": "C4H10O2",
+    "choices": [
+     "C2H2O4",
+     "C3H6O3",
+     "C4H10O2",
+     "C4H10O3"
+    ],
+    "unit": "",
+    "explain": "C = 49.7 × 12/44 = 13.55 mg、H = 25.4 × 2/18 = 2.82 mg、O = 25.4 − 13.55 − 2.82 = 9.02 mg。C : H : O = 13.55/12 : 2.82/1.0 : 9.02/16 = 2.00 : 5.00 : 1.00 より組成式 C₂H₅O。分子量 90 から C₄H₁₀O₂。"
+   }
+  ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diester_diol",
@@ -362,12 +534,12 @@
     "naphacid",
     "naphacid"
    ],
-   "difficulty": 14.9,
+   "difficulty": 15.9,
    "kyoto": "2010",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -377,7 +549,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2013年度型の再現",
-  "story": "化合物 X（分子式 C₁₆H₁₈O₄）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "分子式 C₁₆H₁₈O₄ の化合物 Xは中性の化合物で、複数のエステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C16H18O4",
   "answer": "C=CCCOC(=O)c1ccccc1C(=O)OC=CCC",
   "fragments": [
@@ -392,9 +564,10 @@
     ],
     "clues": [
      {
-      "card": "mild_oxidation",
+      "card": "ozonolysis",
       "result": [
-       "C=CCC=O"
+       "C=O",
+       "O=CCCO"
       ]
      },
      {
@@ -410,7 +583,7 @@
       "result": 0
      }
     ],
-    "kind": "アルコール"
+    "kind": "アルコール（不飽和または環状）"
    },
    {
     "label": "B",
@@ -458,10 +631,10 @@
    {
     "key": "h2",
     "data": {
-     "m": 12,
-     "V": 1.96
+     "m": 12.7,
+     "V": 2.08
     },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 1.96 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "prompt": "X 12.7 g に白金触媒で水素を付加させると、標準状態で 2.08 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
     "answer": 2,
     "choices": [
      1,
@@ -470,29 +643,10 @@
      4
     ],
     "unit": "個",
-    "explain": "X の分子量は 274。12.0 ÷ 274 = 0.0438 mol、1.96 ÷ 22.4 = 0.0875 mol なので、1 mol あたり 2 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 15,
-     "co2": 36.7,
-     "h2o": 15,
-     "M": 72,
-     "formula": "C4H8O"
-    },
-    "prompt": "加水分解で得た化合物 A 15.0 mg を完全燃焼させると CO₂ 36.7 mg と H₂O 15 mg が得られた（分子量は 72）。化合物 A の分子式はどれか",
-    "answer": "C4H8O",
-    "choices": [
-     "C3H6O",
-     "C4H10O",
-     "C4H6O",
-     "C4H8O"
-    ],
-    "unit": "",
-    "explain": "C = 36.7 × 12/44 = 10.01 mg、H = 15 × 2/18 = 1.67 mg、O = 15.0 − 10.01 − 1.67 = 3.32 mg。C : H : O = 10.01/12 : 1.67/1.0 : 3.32/16 = 4.01 : 8.02 : 1.00 より組成式 C₄H₈O。分子量 72 から C₄H₈O。"
+    "explain": "X の分子量は 274。12.7 ÷ 274 = 0.0464 mol、2.08 ÷ 22.4 = 0.0929 mol なので、1 mol あたり 2 mol の H₂。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "vinyl",
@@ -501,12 +655,12 @@
     "carbonyl",
     "ardiacid"
    ],
-   "difficulty": 26,
+   "difficulty": 25,
    "kyoto": "2013",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -516,7 +670,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2016年度型の再現",
-  "story": "化合物 X（分子式 C₁₁H₁₈O₄）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "分子式 C₁₁H₁₈O₄ の化合物 Xは水に溶けにくい中性の化合物で、エステル結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C11H18O4",
   "answer": "CCC(C)OC(=O)C=CC(=O)OC(C)C",
   "fragments": [
@@ -557,23 +711,27 @@
   "assemble": null,
   "calcs": [
    {
-    "key": "h2",
+    "key": "combustion",
     "data": {
-     "m": 15,
-     "V": 1.57
+     "sample": 25.4,
+     "co2": 60.4,
+     "h2o": 30.9,
+     "M": 74,
+     "formula": "C4H10O"
     },
-    "prompt": "X 15.0 g に白金触媒で水素を付加させると、標準状態で 1.57 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
+    "prompt": "加水分解で得た化合物 B 25.4 mg を完全燃焼させると CO₂ 60.4 mg と H₂O 30.9 mg が得られた（分子量は 74）。化合物 B の分子式はどれか",
+    "answer": "C4H10O",
     "choices": [
-     1,
-     2,
-     3,
-     4
+     "C2H2O3",
+     "C3H6O2",
+     "C4H10O",
+     "C4H10O2"
     ],
-    "unit": "個",
-    "explain": "X の分子量は 214。15.0 ÷ 214 = 0.0701 mol、1.57 ÷ 22.4 = 0.0701 mol なので、1 mol あたり 1 mol の H₂。"
+    "unit": "",
+    "explain": "C = 60.4 × 12/44 = 16.47 mg、H = 30.9 × 2/18 = 3.43 mg、O = 25.4 − 16.47 − 3.43 = 5.49 mg。C : H : O = 16.47/12 : 3.43/1.0 : 5.49/16 = 4.00 : 10.00 : 1.00 より組成式 C₄H₁₀O。分子量 74 から C₄H₁₀O。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diester_diacid",
@@ -586,8 +744,8 @@
    "kyoto": "2016",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -597,7 +755,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2017年度型の再現",
-  "story": "化合物 X（分子式 C₁₆H₁₈O₆）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "化合物 X（分子式 C₁₆H₁₈O₆）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C16H18O6",
   "answer": "CC(=O)OCC(COC(C)=O)OC(=O)C=Cc1ccccc1",
   "fragments": [
@@ -619,8 +777,10 @@
     ],
     "clues": [
      {
-      "card": "cis_trans",
-      "result": true
+      "card": "hydrogenation",
+      "result": [
+       "O=C(O)CCc1ccccc1"
+      ]
      }
     ],
     "kind": "芳香族カルボン酸"
@@ -646,43 +806,27 @@
   },
   "calcs": [
    {
-    "key": "h2",
-    "data": {
-     "m": 15,
-     "V": 1.1
-    },
-    "prompt": "X 15.0 g に白金触媒で水素を付加させると、標準状態で 1.1 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 306。15.0 ÷ 306 = 0.0490 mol、1.1 ÷ 22.4 = 0.0491 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
     "key": "combustion",
     "data": {
-     "sample": 25,
-     "co2": 66.9,
-     "h2o": 12.2,
+     "sample": 5.84,
+     "co2": 15.6,
+     "h2o": 2.84,
      "M": 148,
      "formula": "C9H8O2"
     },
-    "prompt": "加水分解で得た化合物 B 25.0 mg を完全燃焼させると CO₂ 66.9 mg と H₂O 12.2 mg が得られた（分子量は 148）。化合物 B の分子式はどれか",
+    "prompt": "加水分解で得た化合物 B 5.84 mg を完全燃焼させると CO₂ 15.6 mg と H₂O 2.84 mg が得られた（分子量は 148）。化合物 B の分子式はどれか",
     "answer": "C9H8O2",
     "choices": [
-     "C9H10O2",
-     "C9H8O",
-     "C9H8O2",
-     "C9H8O3"
+     "C10H12O",
+     "C11H16",
+     "C8H4O3",
+     "C9H8O2"
     ],
     "unit": "",
-    "explain": "C = 66.9 × 12/44 = 18.25 mg、H = 12.2 × 2/18 = 1.36 mg、O = 25.0 − 18.25 − 1.36 = 5.40 mg。C : H : O = 18.25/12 : 1.36/1.0 : 5.40/16 = 4.51 : 4.02 : 1.00 より組成式 C₉H₈O₂。分子量 148 から C₉H₈O₂。"
+    "explain": "C = 15.6 × 12/44 = 4.25 mg、H = 2.84 × 2/18 = 0.32 mg、O = 5.84 − 4.25 − 0.32 = 1.27 mg。C : H : O = 4.25/12 : 0.32/1.0 : 1.27/16 = 4.47 : 3.98 : 1.00 より組成式 C₉H₈O₂。分子量 148 から C₉H₈O₂。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 3,
    "template": "triester",
@@ -692,12 +836,138 @@
     "aracid",
     "glycerol"
    ],
-   "difficulty": 14.3,
+   "difficulty": 12.3,
    "kyoto": "2017",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "kyoto-2020",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "京大2020年度型の再現",
+  "story": "分子式 C₁₉H₂₄O₆ の化合物 Xは中性の化合物で、複数のエステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
+  "formula": "C19H24O6",
+  "answer": "Cc1ccc(COC(=O)C=CC(=O)OCC(=O)OC(C)C(C)C)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "CC(C)C(C)O",
+    "candidates": [
+     "CC(C)(C)CO",
+     "CC(C)C(C)O",
+     "CC(C)CCO",
+     "CCC(C)(C)O",
+     "CCC(C)CO",
+     "CCC(O)CC",
+     "CCCC(C)O",
+     "CCCCCO"
+    ],
+    "clues": [
+     {
+      "card": "mild_oxidation",
+      "result": [
+       "CC(=O)C(C)C"
+      ]
+     },
+     {
+      "card": "cl_sub",
+      "result": 4
+     },
+     {
+      "card": "chiral",
+      "result": 1
+     }
+    ],
+    "kind": "アルコール"
+   },
+   {
+    "label": "B",
+    "answer": "Cc1ccc(CO)cc1",
+    "candidates": [
+     "CC(O)c1ccccc1",
+     "Cc1ccc(CO)cc1",
+     "Cc1cccc(CO)c1",
+     "Cc1ccccc1CO",
+     "OCCc1ccccc1"
+    ],
+    "clues": [
+     {
+      "card": "ring_cl",
+      "result": 2
+     },
+     {
+      "card": "cl_sub",
+      "result": 4
+     }
+    ],
+    "kind": "アルコール"
+   },
+   {
+    "label": "C",
+    "answer": "O=C(O)C=CC(=O)O",
+    "given": true,
+    "note": "二価カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "D",
+    "answer": "O=C(O)CO",
+    "given": true,
+    "note": "ヒドロキシ酸（この分子式では構造がほぼ1つに決まるので与える）"
+   }
+  ],
+  "assemble": {
+   "candidates": [
+    "Cc1ccc(COC(=O)COC(=O)C=CC(=O)OC(C)C(C)C)cc1",
+    "Cc1ccc(COC(=O)C=CC(=O)OCC(=O)OC(C)C(C)C)cc1"
+   ],
+   "clues": [
+    {
+     "card": "partial_hydrolysis",
+     "result": "CC(C)C(C)OC(=O)COC(=O)C=CC(=O)O"
+    }
+   ]
+  },
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 12.7,
+     "V": 0.817
+    },
+    "prompt": "X 12.7 g に白金触媒で水素を付加させると、標準状態で 0.817 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 348。12.7 ÷ 348 = 0.0365 mol、0.817 ÷ 22.4 = 0.0365 mol なので、1 mol あたり 1 mol の H₂。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 3,
+   "template": "linker",
+   "frags": [
+    "alcohol",
+    "aralcohol",
+    "diacid",
+    "hydroxyacid"
+   ],
+   "difficulty": 22.4,
+   "kyoto": "2020",
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
    ]
   }
  },
@@ -707,7 +977,7 @@
   "level": 3,
   "generated": true,
   "title": "京大2016年度型の再現（その2）",
-  "story": "化合物 X（分子式 C₁₁H₁₈O₄）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "化合物 X（分子式 C₁₁H₁₈O₄）は水に溶けにくい中性の化合物で、エステル結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C11H18O4",
   "answer": "CCOC(=O)C=CC(=O)OCC(C)CC",
   "fragments": [
@@ -760,10 +1030,10 @@
    {
     "key": "h2",
     "data": {
-     "m": 12,
-     "V": 1.26
+     "m": 18.5,
+     "V": 1.94
     },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 1.26 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "prompt": "X 18.5 g に白金触媒で水素を付加させると、標準状態で 1.94 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
     "answer": 1,
     "choices": [
      1,
@@ -772,9 +1042,30 @@
      4
     ],
     "unit": "個",
-    "explain": "X の分子量は 214。12.0 ÷ 214 = 0.0561 mol、1.26 ÷ 22.4 = 0.0563 mol なので、1 mol あたり 1 mol の H₂。"
+    "explain": "X の分子量は 214。18.5 ÷ 214 = 0.0864 mol、1.94 ÷ 22.4 = 0.0866 mol なので、1 mol あたり 1 mol の H₂。"
+   },
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 20.2,
+     "co2": 50.5,
+     "h2o": 24.8,
+     "M": 88,
+     "formula": "C5H12O"
+    },
+    "prompt": "加水分解で得た化合物 A 20.2 mg を完全燃焼させると CO₂ 50.5 mg と H₂O 24.8 mg が得られた（分子量は 88）。化合物 A の分子式はどれか",
+    "answer": "C5H12O",
+    "choices": [
+     "C3H4O3",
+     "C4H8O2",
+     "C5H12O",
+     "C5H12O2"
+    ],
+    "unit": "",
+    "explain": "C = 50.5 × 12/44 = 13.77 mg、H = 24.8 × 2/18 = 2.76 mg、O = 20.2 − 13.77 − 2.76 = 3.67 mg。C : H : O = 13.77/12 : 2.76/1.0 : 3.67/16 = 5.00 : 12.01 : 1.00 より組成式 C₅H₁₂O。分子量 88 から C₅H₁₂O。"
    }
   ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diester_diacid",
@@ -783,12 +1074,12 @@
     "alcohol",
     "diacid"
    ],
-   "difficulty": 12,
+   "difficulty": 13.1,
    "kyoto": "2016B",
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -798,7 +1089,7 @@
   "level": 3,
   "generated": true,
   "title": "自動生成・ジカルボン酸のジエステル",
-  "story": "化合物 X（分子式 C₁₆H₂₂O₄）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "story": "化合物 X（分子式 C₁₆H₂₂O₄）は水に溶けにくい中性の化合物で、エステル結合をもつ。X は臭素水を脱色しない。X を完全に加水分解すると、化合物 A・B・C が得られた。",
   "formula": "C16H22O4",
   "answer": "CCCC(C(=O)OCC)C(=O)OC(C)c1ccccc1",
   "fragments": [
@@ -818,16 +1109,16 @@
     ],
     "clues": [
      {
-      "card": "carbon_env",
-      "result": 5
-     },
-     {
       "card": "anhydride",
       "result": false
      },
      {
       "card": "cl_sub",
       "result": 4
+     },
+     {
+      "card": "chiral",
+      "result": 0
      }
     ],
     "kind": "二価カルボン酸"
@@ -864,28 +1155,8 @@
    }
   ],
   "assemble": null,
-  "calcs": [
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 25,
-     "co2": 72.1,
-     "h2o": 18.4,
-     "M": 122,
-     "formula": "C8H10O"
-    },
-    "prompt": "加水分解で得た化合物 B 25.0 mg を完全燃焼させると CO₂ 72.1 mg と H₂O 18.4 mg が得られた（分子量は 122）。化合物 B の分子式はどれか",
-    "answer": "C8H10O",
-    "choices": [
-     "C7H8O",
-     "C8H10",
-     "C8H10O",
-     "C9H12O"
-    ],
-    "unit": "",
-    "explain": "C = 72.1 × 12/44 = 19.66 mg、H = 18.4 × 2/18 = 2.04 mg、O = 25.0 − 19.66 − 2.04 = 3.29 mg。C : H : O = 19.66/12 : 2.04/1.0 : 3.29/16 = 7.96 : 9.94 : 1.00 より組成式 C₈H₁₀O。分子量 122 から C₈H₁₀O。"
-   }
-  ],
+  "calcs": [],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "diester_diacid",
@@ -894,11 +1165,11 @@
     "aralcohol",
     "alcohol"
    ],
-   "difficulty": 18.9,
+   "difficulty": 17.3,
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
@@ -907,390 +1178,26 @@
   "mode": "big",
   "level": 3,
   "generated": true,
-  "title": "自動生成・ジカルボン酸のジエステル",
-  "story": "化合物 X（分子式 C₂₀H₂₀O₄）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C20H20O4",
-  "answer": "CC=CCOC(=O)c1ccc(C(=O)Oc2ccc(CC)cc2)cc1",
+  "title": "自動生成・ヒドロキシ酸でつないだエステル",
+  "story": "化合物 X（分子量 368）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
+  "formula": "C21H20O6",
+  "answer": "Cc1ccc(COC(=O)C=CC(=O)OCC(=O)OCc2ccccc2)cc1",
   "fragments": [
    {
     "label": "A",
-    "answer": "O=C(O)c1ccc(C(=O)O)cc1",
-    "candidates": [
-     "O=C(O)c1ccc(C(=O)O)cc1",
-     "O=C(O)c1cccc(C(=O)O)c1",
-     "O=C(O)c1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "anhydride",
-      "result": false
-     }
-    ],
-    "kind": "芳香族二価カルボン酸"
-   },
-   {
-    "label": "B",
-    "answer": "CCc1ccc(O)cc1",
-    "candidates": [
-     "CCc1ccc(O)cc1",
-     "CCc1cccc(O)c1",
-     "CCc1ccccc1O",
-     "Cc1cc(C)cc(O)c1",
-     "Cc1ccc(C)c(O)c1",
-     "Cc1ccc(O)c(C)c1",
-     "Cc1ccc(O)cc1C",
-     "Cc1cccc(C)c1O",
-     "Cc1cccc(O)c1C"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 6
-     }
-    ],
-    "kind": "フェノール類"
-   },
-   {
-    "label": "C",
-    "answer": "CC=CCO",
-    "candidates": [
-     "C=C(C)CO",
-     "C=CC(C)O",
-     "C=CCCO",
-     "CC=CCO"
-    ],
-    "clues": [
-     {
-      "card": "cis_trans",
-      "result": true
-     }
-    ],
-    "kind": "アルコール"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 12,
-     "V": 0.83
-    },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 0.83 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 324。12.0 ÷ 324 = 0.0370 mol、0.83 ÷ 22.4 = 0.0371 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 20,
-     "co2": 48.9,
-     "h2o": 20,
-     "M": 72,
-     "formula": "C4H8O"
-    },
-    "prompt": "加水分解で得た化合物 C 20.0 mg を完全燃焼させると CO₂ 48.9 mg と H₂O 20 mg が得られた（分子量は 72）。化合物 C の分子式はどれか",
-    "answer": "C4H8O",
-    "choices": [
-     "C3H6O",
-     "C4H10O",
-     "C4H8O",
-     "C4H8O2"
-    ],
-    "unit": "",
-    "explain": "C = 48.9 × 12/44 = 13.34 mg、H = 20 × 2/18 = 2.22 mg、O = 20.0 − 13.34 − 2.22 = 4.44 mg。C : H : O = 13.34/12 : 2.22/1.0 : 4.44/16 = 4.00 : 8.01 : 1.00 より組成式 C₄H₈O。分子量 72 から C₄H₈O。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "diester_diacid",
-   "frags": [
-    "ardiacid",
-    "phenol",
-    "alcohol"
-   ],
-   "difficulty": 18.2,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-03",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・ジカルボン酸のジエステル",
-  "story": "化合物 X（分子式 C₁₈H₂₆O₄）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C18H26O4",
-  "answer": "CCCCOC(=O)C(C(=O)Oc1ccc(CC)cc1)C(C)C",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "CC(C)C(C(=O)O)C(=O)O",
-    "candidates": [
-     "CC(C(=O)O)C(C)C(=O)O",
-     "CC(C)(CC(=O)O)C(=O)O",
-     "CC(C)C(C(=O)O)C(=O)O",
-     "CC(CC(=O)O)CC(=O)O",
-     "CC(CCC(=O)O)C(=O)O",
-     "CCC(C)(C(=O)O)C(=O)O",
-     "CCC(CC(=O)O)C(=O)O",
-     "CCCC(C(=O)O)C(=O)O",
-     "O=C(O)CCCCC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 4
-     },
-     {
-      "card": "anhydride",
-      "result": false
-     }
-    ],
-    "kind": "二価カルボン酸"
-   },
-   {
-    "label": "B",
-    "answer": "CCCCO",
-    "candidates": [
-     "CC(C)(C)O",
-     "CC(C)CO",
-     "CCC(C)O",
-     "CCCCO"
-    ],
-    "clues": [
-     {
-      "card": "iodoform",
-      "result": false
-     },
-     {
-      "card": "carbon_env",
-      "result": 4
-     },
-     {
-      "card": "chiral",
-      "result": 0
-     }
-    ],
-    "kind": "アルコール"
-   },
-   {
-    "label": "C",
-    "answer": "CCc1ccc(O)cc1",
-    "candidates": [
-     "CCc1ccc(O)cc1",
-     "CCc1cccc(O)c1",
-     "CCc1ccccc1O",
-     "Cc1cc(C)cc(O)c1",
-     "Cc1ccc(C)c(O)c1",
-     "Cc1ccc(O)c(C)c1",
-     "Cc1ccc(O)cc1C",
-     "Cc1cccc(C)c1O",
-     "Cc1cccc(O)c1C"
-    ],
-    "clues": [
-     {
-      "card": "ring_cl",
-      "result": 2
-     },
-     {
-      "card": "carbon_env",
-      "result": 6
-     }
-    ],
-    "kind": "フェノール類"
-   }
-  ],
-  "assemble": null,
-  "calcs": [],
-  "meta": {
-   "bonds": 2,
-   "template": "diester_diacid",
-   "frags": [
-    "diacid",
-    "alcohol",
-    "phenol"
-   ],
-   "difficulty": 23.4,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-04",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・2つのアミド結合",
-  "story": "化合物 X（分子式 C₁₄H₁₈N₂O₂）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C14H18N2O2",
-  "answer": "C=C(CC)C(=O)Nc1ccc(C(=O)NCC)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 5
-     },
-     {
-      "card": "ring_cl",
-      "result": 2
-     }
-    ],
-    "kind": "芳香族アミノ酸"
-   },
-   {
-    "label": "B",
-    "answer": "C=C(CC)C(=O)O",
-    "candidates": [
-     "C=C(C)CC(=O)O",
-     "C=C(CC)C(=O)O",
-     "C=CC(C)C(=O)O",
-     "C=CCCC(=O)O",
-     "CC(C)=CC(=O)O",
-     "CC=C(C)C(=O)O",
-     "CC=CCC(=O)O",
-     "CCC=CC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "hydrogenation",
-      "result": [
-       "CCC(C)C(=O)O"
-      ]
-     },
-     {
-      "card": "ozonolysis",
-      "result": [
-       "C=O",
-       "CCC(=O)C(=O)O"
-      ]
-     },
-     {
-      "card": "chiral",
-      "result": 0
-     },
-     {
-      "card": "cis_trans",
-      "result": false
-     }
-    ],
-    "kind": "カルボン酸"
-   },
-   {
-    "label": "C",
-    "answer": "CCN",
+    "answer": "O=C(O)C=CC(=O)O",
     "given": true,
-    "note": "アミン（この分子式では構造がほぼ1つに決まるので与える）"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 5,
-     "V": 0.455
-    },
-    "prompt": "X 5.0 g に白金触媒で水素を付加させると、標準状態で 0.455 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 246。5.0 ÷ 246 = 0.0203 mol、0.455 ÷ 22.4 = 0.0203 mol なので、1 mol あたり 1 mol の H₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "diamide",
-   "frags": [
-    "aminoaracid",
-    "acid",
-    "amine"
-   ],
-   "difficulty": 20.5,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-05",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・エステルとアミド",
-  "story": "化合物 X（分子式 C₂₀H₂₃NO₃）は中性の化合物で、エステル結合とアミド結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C20H23NO3",
-  "answer": "CC(C)CC(=O)Nc1ccc(C(=O)OC(C)c2ccccc2)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "cl_sub",
-      "result": 2
-     },
-     {
-      "card": "ring_cl",
-      "result": 2
-     }
-    ],
-    "kind": "芳香族アミノ酸"
+    "note": "二価カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
    },
    {
     "label": "B",
-    "answer": "CC(C)CC(=O)O",
-    "candidates": [
-     "CC(C)(C)C(=O)O",
-     "CC(C)CC(=O)O",
-     "CCC(C)C(=O)O",
-     "CCCCC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 4
-     }
-    ],
-    "kind": "カルボン酸"
+    "answer": "O=C(O)CO",
+    "given": true,
+    "note": "ヒドロキシ酸（この分子式では構造がほぼ1つに決まるので与える）"
    },
    {
     "label": "C",
-    "answer": "CC(O)c1ccccc1",
+    "answer": "Cc1ccc(CO)cc1",
     "candidates": [
      "CC(O)c1ccccc1",
      "Cc1ccc(CO)cc1",
@@ -1300,805 +1207,132 @@
     ],
     "clues": [
      {
-      "card": "chiral",
-      "result": 1
-     }
-    ],
-    "kind": "アルコール"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 20,
-     "co2": 43.1,
-     "h2o": 17.6,
-     "M": 102,
-     "formula": "C5H10O2"
-    },
-    "prompt": "加水分解で得た化合物 B 20.0 mg を完全燃焼させると CO₂ 43.1 mg と H₂O 17.6 mg が得られた（分子量は 102）。化合物 B の分子式はどれか",
-    "answer": "C5H10O2",
-    "choices": [
-     "C4H8O2",
-     "C5H10O2",
-     "C5H10O3",
-     "C5H8O2"
-    ],
-    "unit": "",
-    "explain": "C = 43.1 × 12/44 = 11.75 mg、H = 17.6 × 2/18 = 1.96 mg、O = 20.0 − 11.75 − 1.96 = 6.29 mg。C : H : O = 11.75/12 : 1.96/1.0 : 6.29/16 = 2.49 : 4.97 : 1.00 より組成式 C₅H₁₀O₂。分子量 102 から C₅H₁₀O₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "ester_amide",
-   "frags": [
-    "aminoaracid",
-    "acid",
-    "aralcohol"
-   ],
-   "difficulty": 18.1,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-06",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・グリセリンのトリエステル",
-  "story": "化合物 X（分子式 C₂₃H₂₂O₇）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
-  "formula": "C23H22O7",
-  "answer": "C=Cc1ccccc1C(=O)OC(COC(=O)C(=C)C)COC(=O)c1ccc(O)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "OCC(O)CO",
-    "given": true,
-    "note": "グリセリン（1,2,3-プロパントリオール）"
-   },
-   {
-    "label": "B",
-    "answer": "O=C(O)c1ccc(O)cc1",
-    "candidates": [
-     "O=C(O)c1ccc(O)cc1",
-     "O=C(O)c1cccc(O)c1",
-     "O=C(O)c1ccccc1O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 5
-     },
-     {
-      "card": "ring_cl",
-      "result": 2
-     }
-    ],
-    "kind": "芳香族ヒドロキシ酸"
-   },
-   {
-    "label": "C",
-    "answer": "C=C(C)C(=O)O",
-    "candidates": [
-     "C=C(C)C(=O)O",
-     "C=CCC(=O)O",
-     "CC=CC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "ozonolysis",
-      "result": [
-       "C=O",
-       "CC(=O)C(=O)O"
-      ]
-     },
-     {
-      "card": "cl_sub",
-      "result": 2
-     }
-    ],
-    "kind": "カルボン酸"
-   },
-   {
-    "label": "D",
-    "answer": "C=Cc1ccccc1C(=O)O",
-    "candidates": [
-     "C=C(C(=O)O)c1ccccc1",
-     "C=Cc1ccc(C(=O)O)cc1",
-     "C=Cc1cccc(C(=O)O)c1",
-     "C=Cc1ccccc1C(=O)O",
-     "O=C(O)C=Cc1ccccc1"
-    ],
-    "clues": [
-     {
-      "card": "hydrogenation",
-      "result": [
-       "CCc1ccccc1C(=O)O"
-      ]
-     },
-     {
-      "card": "cis_trans",
-      "result": false
-     }
-    ],
-    "kind": "芳香族カルボン酸"
-   }
-  ],
-  "assemble": {
-   "candidates": [
-    "C=Cc1ccccc1C(=O)OCC(COC(=O)c1ccc(O)cc1)OC(=O)C(=C)C",
-    "C=Cc1ccccc1C(=O)OC(COC(=O)C(=C)C)COC(=O)c1ccc(O)cc1",
-    "C=Cc1ccccc1C(=O)OCC(COC(=O)C(=C)C)OC(=O)c1ccc(O)cc1"
-   ],
-   "clues": [
-    {
-     "card": "partial_hydrolysis",
-     "result": "C=C(C)C(=O)OCC(O)CO"
-    },
-    {
-     "card": "partial_hydrolysis",
-     "result": "O=C(OCC(O)CO)c1ccc(O)cc1"
-    }
-   ]
-  },
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 12,
-     "V": 1.31
-    },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 1.31 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 2,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 410。12.0 ÷ 410 = 0.0293 mol、1.31 ÷ 22.4 = 0.0585 mol なので、1 mol あたり 2 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 20,
-     "co2": 40.9,
-     "h2o": 12.6,
-     "M": 86,
-     "formula": "C4H6O2"
-    },
-    "prompt": "加水分解で得た化合物 C 20.0 mg を完全燃焼させると CO₂ 40.9 mg と H₂O 12.6 mg が得られた（分子量は 86）。化合物 C の分子式はどれか",
-    "answer": "C4H6O2",
-    "choices": [
-     "C3H4O2",
-     "C4H4O2",
-     "C4H6O",
-     "C4H6O2"
-    ],
-    "unit": "",
-    "explain": "C = 40.9 × 12/44 = 11.15 mg、H = 12.6 × 2/18 = 1.40 mg、O = 20.0 − 11.15 − 1.40 = 7.45 mg。C : H : O = 11.15/12 : 1.40/1.0 : 7.45/16 = 2.00 : 3.01 : 1.00 より組成式 C₂H₃O。分子量 86 から C₄H₆O₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 3,
-   "template": "triester",
-   "frags": [
-    "glycerol",
-    "hydroxyaracid",
-    "acid",
-    "aracid"
-   ],
-   "difficulty": 27.7,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-07",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・2つのアミド結合",
-  "story": "化合物 X（分子式 C₁₄H₁₈N₂O₂）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C14H18N2O2",
-  "answer": "C=CC(=O)Nc1ccc(C(=O)N(CC)CC)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "ring_cl",
-      "result": 2
-     },
-     {
-      "card": "carbon_env",
-      "result": 5
-     }
-    ],
-    "kind": "芳香族アミノ酸"
-   },
-   {
-    "label": "B",
-    "answer": "C=CC(=O)O",
-    "given": true,
-    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
-   },
-   {
-    "label": "C",
-    "answer": "CCNCC",
-    "candidates": [
-     "CC(C)(C)N",
-     "CC(C)CN",
-     "CCC(C)N",
-     "CCCCN",
-     "CCCNC",
-     "CCNCC",
-     "CNC(C)C"
-    ],
-    "clues": [
-     {
-      "card": "cl_sub",
-      "result": 2
-     }
-    ],
-    "kind": "アミン"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 12,
-     "V": 1.09
-    },
-    "prompt": "X 12.0 g に白金触媒で水素を付加させると、標準状態で 1.09 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 246。12.0 ÷ 246 = 0.0488 mol、1.09 ÷ 22.4 = 0.0487 mol なので、1 mol あたり 1 mol の H₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "diamide",
-   "frags": [
-    "aminoaracid",
-    "acid",
-    "amine"
-   ],
-   "difficulty": 12.9,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-08",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・2つのアミド結合",
-  "story": "化合物 X（分子式 C₁₄H₁₈N₂O₂）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C14H18N2O2",
-  "answer": "CC(C)=CC(=O)Nc1ccc(C(=O)N(C)C)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 5
-     }
-    ],
-    "kind": "芳香族アミノ酸"
-   },
-   {
-    "label": "B",
-    "answer": "CC(C)=CC(=O)O",
-    "candidates": [
-     "C=C(C)CC(=O)O",
-     "C=C(CC)C(=O)O",
-     "C=CC(C)C(=O)O",
-     "C=CCCC(=O)O",
-     "CC(C)=CC(=O)O",
-     "CC=C(C)C(=O)O",
-     "CC=CCC(=O)O",
-     "CCC=CC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "cl_sub",
-      "result": 2
-     },
-     {
-      "card": "kmno4_cleave",
-      "result": [
-       "CC(C)=O",
-       "O=C(O)C(=O)O"
-      ]
-     }
-    ],
-    "kind": "カルボン酸"
-   },
-   {
-    "label": "C",
-    "answer": "CNC",
-    "given": true,
-    "note": "アミン（この分子式では構造がほぼ1つに決まるので与える）"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 5,
-     "V": 0.455
-    },
-    "prompt": "X 5.0 g に白金触媒で水素を付加させると、標準状態で 0.455 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 246。5.0 ÷ 246 = 0.0203 mol、0.455 ÷ 22.4 = 0.0203 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 25,
-     "co2": 55,
-     "h2o": 18,
-     "M": 100,
-     "formula": "C5H8O2"
-    },
-    "prompt": "加水分解で得た化合物 B 25.0 mg を完全燃焼させると CO₂ 55 mg と H₂O 18 mg が得られた（分子量は 100）。化合物 B の分子式はどれか",
-    "answer": "C5H8O2",
-    "choices": [
-     "C5H10O2",
-     "C5H8O",
-     "C5H8O2",
-     "C5H8O3"
-    ],
-    "unit": "",
-    "explain": "C = 55 × 12/44 = 15.00 mg、H = 18 × 2/18 = 2.00 mg、O = 25.0 − 15.00 − 2.00 = 8.00 mg。C : H : O = 15.00/12 : 2.00/1.0 : 8.00/16 = 2.50 : 4.00 : 1.00 より組成式 C₅H₈O₂。分子量 100 から C₅H₈O₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "diamide",
-   "frags": [
-    "aminoaracid",
-    "acid",
-    "amine"
-   ],
-   "difficulty": 14.1,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-09",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・ジカルボン酸のジエステル",
-  "story": "化合物 X（分子式 C₁₇H₂₂O₄）は中性の化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C17H22O4",
-  "answer": "CCC(C)=COC(=O)c1ccc(C(=O)OC(C)CC)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "O=C(O)c1ccc(C(=O)O)cc1",
-    "candidates": [
-     "O=C(O)c1ccc(C(=O)O)cc1",
-     "O=C(O)c1cccc(C(=O)O)c1",
-     "O=C(O)c1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "cl_sub",
-      "result": 1
-     },
-     {
-      "card": "anhydride",
-      "result": false
-     }
-    ],
-    "kind": "芳香族二価カルボン酸"
-   },
-   {
-    "label": "B",
-    "answer": "CCC(C)O",
-    "candidates": [
-     "CC(C)(C)O",
-     "CC(C)CO",
-     "CCC(C)O",
-     "CCCCO"
-    ],
-    "clues": [
-     {
-      "card": "dehydration_ozonolysis",
-      "result": [
-       "C=O",
-       "CC=O",
-       "CCC=O"
-      ]
-     },
-     {
-      "card": "chiral",
-      "result": 1
-     }
-    ],
-    "kind": "アルコール"
-   },
-   {
-    "label": "C",
-    "answer": "CCC(C)C=O",
-    "candidates": [
-     "CC(=O)C(C)C",
-     "CC(C)(C)C=O",
-     "CC(C)CC=O",
-     "CCC(=O)CC",
-     "CCC(C)C=O",
-     "CCCC(C)=O",
-     "CCCCC=O"
-    ],
-    "clues": [
-     {
-      "card": "chiral",
-      "result": 1
-     }
-    ],
-    "kind": "カルボニル化合物"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 5,
-     "V": 0.386
-    },
-    "prompt": "X 5.0 g に白金触媒で水素を付加させると、標準状態で 0.386 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 290。5.0 ÷ 290 = 0.0172 mol、0.386 ÷ 22.4 = 0.0172 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 15,
-     "co2": 35.7,
-     "h2o": 18.2,
-     "M": 74,
-     "formula": "C4H10O"
-    },
-    "prompt": "加水分解で得た化合物 B 15.0 mg を完全燃焼させると CO₂ 35.7 mg と H₂O 18.2 mg が得られた（分子量は 74）。化合物 B の分子式はどれか",
-    "answer": "C4H10O",
-    "choices": [
-     "C3H8O",
-     "C4H10O",
-     "C4H12O",
-     "C4H8O"
-    ],
-    "unit": "",
-    "explain": "C = 35.7 × 12/44 = 9.74 mg、H = 18.2 × 2/18 = 2.02 mg、O = 15.0 − 9.74 − 2.02 = 3.24 mg。C : H : O = 9.74/12 : 2.02/1.0 : 3.24/16 = 4.00 : 9.98 : 1.00 より組成式 C₄H₁₀O。分子量 74 から C₄H₁₀O。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "vinyl",
-   "frags": [
-    "ardiacid",
-    "alcohol",
-    "carbonyl"
-   ],
-   "difficulty": 20.3,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-10",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・エステルとアミド",
-  "story": "化合物 X（分子式 C₁₈H₁₇NO₃）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C18H17NO3",
-  "answer": "C=C(C)C(=O)Nc1ccc(C(=O)OCc2ccccc2)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "carbon_env",
-      "result": 5
-     },
-     {
-      "card": "ring_cl",
-      "result": 2
-     }
-    ],
-    "kind": "芳香族アミノ酸"
-   },
-   {
-    "label": "B",
-    "answer": "C=C(C)C(=O)O",
-    "candidates": [
-     "C=C(C)C(=O)O",
-     "C=CCC(=O)O",
-     "CC=CC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "cl_sub",
-      "result": 2
-     },
-     {
-      "card": "hydrogenation",
-      "result": [
-       "CC(C)C(=O)O"
-      ]
-     }
-    ],
-    "kind": "カルボン酸"
-   },
-   {
-    "label": "C",
-    "answer": "OCc1ccccc1",
-    "given": true,
-    "note": "アルコール（この分子式では構造がほぼ1つに決まるので与える）"
-   }
-  ],
-  "assemble": null,
-  "calcs": [
-   {
-    "key": "h2",
-    "data": {
-     "m": 15,
-     "V": 1.14
-    },
-    "prompt": "X 15.0 g に白金触媒で水素を付加させると、標準状態で 1.14 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 1,
-    "choices": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "unit": "個",
-    "explain": "X の分子量は 295。15.0 ÷ 295 = 0.0508 mol、1.14 ÷ 22.4 = 0.0509 mol なので、1 mol あたり 1 mol の H₂。"
-   },
-   {
-    "key": "combustion",
-    "data": {
-     "sample": 10,
-     "co2": 20.5,
-     "h2o": 6.28,
-     "M": 86,
-     "formula": "C4H6O2"
-    },
-    "prompt": "加水分解で得た化合物 B 10.0 mg を完全燃焼させると CO₂ 20.5 mg と H₂O 6.28 mg が得られた（分子量は 86）。化合物 B の分子式はどれか",
-    "answer": "C4H6O2",
-    "choices": [
-     "C4H4O2",
-     "C4H6O2",
-     "C4H8O2",
-     "C5H8O2"
-    ],
-    "unit": "",
-    "explain": "C = 20.5 × 12/44 = 5.59 mg、H = 6.28 × 2/18 = 0.70 mg、O = 10.0 − 5.59 − 0.70 = 3.71 mg。C : H : O = 5.59/12 : 0.70/1.0 : 3.71/16 = 2.01 : 3.01 : 1.00 より組成式 C₂H₃O。分子量 86 から C₄H₆O₂。"
-   }
-  ],
-  "meta": {
-   "bonds": 2,
-   "template": "ester_amide",
-   "frags": [
-    "aminoaracid",
-    "acid",
-    "aralcohol"
-   ],
-   "difficulty": 15.1,
-   "seed": "20260929",
-   "band": [
-    12.5,
-    31.1
-   ]
-  }
- },
- {
-  "id": "g20260929-11",
-  "mode": "big",
-  "level": 3,
-  "generated": true,
-  "title": "自動生成・ジオールのジエステル",
-  "story": "化合物 X（分子式 C₁₆H₂₂O₄）は中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C16H22O4",
-  "answer": "CCC(C)C(=O)OCCCOC(=O)c1ccc(C)cc1",
-  "fragments": [
-   {
-    "label": "A",
-    "answer": "OCCCO",
-    "given": true,
-    "note": "二価アルコール（この分子式では構造がほぼ1つに決まるので与える）"
-   },
-   {
-    "label": "B",
-    "answer": "Cc1ccc(C(=O)O)cc1",
-    "candidates": [
-     "Cc1ccc(C(=O)O)cc1",
-     "Cc1cccc(C(=O)O)c1",
-     "Cc1ccccc1C(=O)O",
-     "O=C(O)Cc1ccccc1"
-    ],
-    "clues": [
-     {
       "card": "kmno4",
       "result": [
        "O=C(O)c1ccc(C(=O)O)cc1"
       ]
      },
      {
-      "card": "carbon_env",
-      "result": 6
+      "card": "cl_sub",
+      "result": 4
      }
     ],
-    "kind": "芳香族カルボン酸"
+    "kind": "アルコール"
    },
    {
-    "label": "C",
-    "answer": "CCC(C)C(=O)O",
-    "candidates": [
-     "CC(C)(C)C(=O)O",
-     "CC(C)CC(=O)O",
-     "CCC(C)C(=O)O",
-     "CCCCC(=O)O"
-    ],
-    "clues": [
-     {
-      "card": "chiral",
-      "result": 1
-     },
-     {
-      "card": "carbon_env",
-      "result": 5
-     }
-    ],
-    "kind": "カルボン酸"
+    "label": "D",
+    "answer": "OCc1ccccc1",
+    "given": true,
+    "note": "アルコール（この分子式では構造がほぼ1つに決まるので与える）"
    }
   ],
-  "assemble": null,
+  "assemble": {
+   "candidates": [
+    "Cc1ccc(COC(=O)C=CC(=O)OCC(=O)OCc2ccccc2)cc1",
+    "Cc1ccc(COC(=O)COC(=O)C=CC(=O)OCc2ccccc2)cc1"
+   ],
+   "clues": [
+    {
+     "card": "partial_hydrolysis",
+     "result": "Cc1ccc(COC(=O)C=CC(=O)OCC(=O)O)cc1"
+    }
+   ]
+  },
   "calcs": [
    {
-    "key": "combustion",
+    "key": "combustion_x",
     "data": {
-     "sample": 15,
-     "co2": 32.4,
-     "h2o": 13.2,
-     "M": 102,
-     "formula": "C5H10O2"
+     "sample": 20.9,
+     "co2": 52.5,
+     "h2o": 10.2,
+     "M": 368,
+     "formula": "C21H20O6"
     },
-    "prompt": "加水分解で得た化合物 C 15.0 mg を完全燃焼させると CO₂ 32.4 mg と H₂O 13.2 mg が得られた（分子量は 102）。化合物 C の分子式はどれか",
-    "answer": "C5H10O2",
+    "prompt": "X 20.9 mg を完全燃焼させると CO₂ 52.5 mg と H₂O 10.2 mg が得られた（分子量は 368）。X の分子式はどれか",
+    "answer": "C21H20O6",
     "choices": [
-     "C5H10O2",
-     "C5H10O3",
-     "C5H12O2",
-     "C5H8O2"
+     "C20H16O7",
+     "C21H20O6",
+     "C22H24O5",
+     "C23H28O4"
     ],
     "unit": "",
-    "explain": "C = 32.4 × 12/44 = 8.84 mg、H = 13.2 × 2/18 = 1.47 mg、O = 15.0 − 8.84 − 1.47 = 4.70 mg。C : H : O = 8.84/12 : 1.47/1.0 : 4.70/16 = 2.51 : 5.00 : 1.00 より組成式 C₅H₁₀O₂。分子量 102 から C₅H₁₀O₂。"
+    "explain": "C = 52.5 × 12/44 = 14.32 mg、H = 10.2 × 2/18 = 1.13 mg、O = 20.9 − 14.32 − 1.13 = 5.45 mg。C : H : O = 14.32/12 : 1.13/1.0 : 5.45/16 = 3.50 : 3.33 : 1.00 より組成式 C₂₁H₂₀O₆。分子量 368 から C₂₁H₂₀O₆。"
+   },
+   {
+    "key": "h2",
+    "data": {
+     "m": 16.9,
+     "V": 1.03
+    },
+    "prompt": "X 16.9 g に白金触媒で水素を付加させると、標準状態で 1.03 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 368。16.9 ÷ 368 = 0.0459 mol、1.03 ÷ 22.4 = 0.0460 mol なので、1 mol あたり 1 mol の H₂。"
    }
   ],
+  "hideFormula": true,
   "meta": {
-   "bonds": 2,
-   "template": "diester_diol",
+   "bonds": 3,
+   "template": "linker",
    "frags": [
-    "diol",
-    "aracid",
-    "acid"
+    "diacid",
+    "hydroxyacid",
+    "aralcohol",
+    "aralcohol"
    ],
-   "difficulty": 15,
+   "difficulty": 14.9,
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  },
  {
-  "id": "g20260929-12",
+  "id": "g20260929-03",
   "mode": "big",
   "level": 3,
   "generated": true,
-  "title": "自動生成・エステルとアミド",
-  "story": "化合物 X（分子式 C₁₅H₁₇NO₃）は中性の化合物で、エステル結合とアミド結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C が得られた。",
-  "formula": "C15H17NO3",
-  "answer": "C=CC(=O)Nc1ccc(C(=O)OCC=C(C)C)cc1",
+  "title": "自動生成・ジカルボン酸のジエステル",
+  "story": "化合物 X（分子量 276）は水に溶けにくい中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C16H20O4",
+  "answer": "C=C(C)C(C)OC(=O)C(C)(C)C(=O)Oc1ccccc1",
   "fragments": [
    {
     "label": "A",
-    "answer": "Nc1ccc(C(=O)O)cc1",
+    "answer": "CC(C)(C(=O)O)C(=O)O",
     "candidates": [
-     "Nc1ccc(C(=O)O)cc1",
-     "Nc1cccc(C(=O)O)c1",
-     "Nc1ccccc1C(=O)O"
+     "CC(C)(C(=O)O)C(=O)O",
+     "CC(CC(=O)O)C(=O)O",
+     "CCC(C(=O)O)C(=O)O",
+     "O=C(O)CCCC(=O)O"
     ],
     "clues": [
      {
-      "card": "carbon_env",
-      "result": 5
+      "card": "chiral",
+      "result": 0
      },
      {
-      "card": "ring_cl",
-      "result": 2
+      "card": "anhydride",
+      "result": false
+     },
+     {
+      "card": "carbon_env",
+      "result": 3
      }
     ],
-    "kind": "芳香族アミノ酸"
+    "kind": "二価カルボン酸"
    },
    {
     "label": "B",
-    "answer": "C=CC(=O)O",
-    "given": true,
-    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
-   },
-   {
-    "label": "C",
-    "answer": "CC(C)=CCO",
+    "answer": "C=C(C)C(C)O",
     "candidates": [
      "C=C(C)C(C)O",
      "C=C(C)CCO",
@@ -2112,18 +1346,776 @@
      "CC=C(C)CO",
      "CC=CC(C)O",
      "CC=CCCO",
-     "CCC=CCO"
+     "CCC=CCO",
+     "OC1CCCC1"
     ],
     "clues": [
      {
-      "card": "hydrogenation",
+      "card": "cis_trans",
+      "result": false
+     },
+     {
+      "card": "cl_sub",
+      "result": 4
+     },
+     {
+      "card": "iodoform",
+      "result": true
+     }
+    ],
+    "kind": "アルコール（不飽和または環状）"
+   },
+   {
+    "label": "C",
+    "answer": "Oc1ccccc1",
+    "given": true,
+    "note": "フェノール類（この分子式では構造がほぼ1つに決まるので与える）"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "combustion_x",
+    "data": {
+     "sample": 33.8,
+     "co2": 86.2,
+     "h2o": 22,
+     "M": 276,
+     "formula": "C16H20O4"
+    },
+    "prompt": "X 33.8 mg を完全燃焼させると CO₂ 86.2 mg と H₂O 22.0 mg が得られた（分子量は 276）。X の分子式はどれか",
+    "answer": "C16H20O4",
+    "choices": [
+     "C15H16O5",
+     "C16H20O4",
+     "C17H24O3",
+     "C18H28O2"
+    ],
+    "unit": "",
+    "explain": "C = 86.2 × 12/44 = 23.51 mg、H = 22 × 2/18 = 2.44 mg、O = 33.8 − 23.51 − 2.44 = 7.85 mg。C : H : O = 23.51/12 : 2.44/1.0 : 7.85/16 = 3.99 : 4.98 : 1.00 より組成式 C₄H₅O。分子量 276 から C₁₆H₂₀O₄。"
+   }
+  ],
+  "hideFormula": true,
+  "meta": {
+   "bonds": 2,
+   "template": "diester_diacid",
+   "frags": [
+    "diacid",
+    "alcohol",
+    "phenol"
+   ],
+   "difficulty": 22,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-04",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・ジカルボン酸のジエステル",
+  "story": "分子式 C₁₇H₂₆O₄ の化合物 Xは中性の化合物で、複数のエステル結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C17H26O4",
+  "answer": "CC1CCC(=COC(=O)C(C)C(=O)OCC2CCCC2)C1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "CC(C(=O)O)C(=O)O",
+    "given": true,
+    "note": "二価カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "B",
+    "answer": "OCC1CCCC1",
+    "candidates": [
+     "C=C(C)C(C)(C)O",
+     "C=C(C)C(C)CO",
+     "C=C(C)C(O)CC",
+     "C=C(C)CC(C)O",
+     "C=C(C)CCCO",
+     "C=C(CC)C(C)O",
+     "C=C(CC)CCO",
+     "C=C(CO)C(C)C",
+     "C=C(CO)CCC",
+     "C=CC(C)(C)CO",
+     "C=CC(C)(O)CC",
+     "C=CC(C)C(C)O",
+     "C=CC(C)CCO",
+     "C=CC(CC)CO",
+     "C=CC(O)C(C)C",
+     "C=CC(O)CCC",
+     "C=CCC(C)(C)O",
+     "C=CCC(C)CO",
+     "C=CCC(O)CC",
+     "C=CCCC(C)O",
+     "C=CCCCCO",
+     "CC(C)=C(C)CO",
+     "CC(C)=CC(C)O",
+     "CC(C)=CCCO",
+     "CC(C)C=CCO",
+     "CC1(O)CCCC1",
+     "CC1CCC(O)C1",
+     "CC1CCCC1O",
+     "CC=C(C)C(C)O",
+     "CC=C(C)CCO",
+     "CC=C(CC)CO",
+     "CC=CC(C)(C)O",
+     "CC=CC(C)CO",
+     "CC=CC(O)CC",
+     "CC=CCC(C)O",
+     "CC=CCCCO",
+     "CCC(C)=CCO",
+     "CCC=C(C)CO",
+     "CCC=CC(C)O",
+     "CCC=CCCO",
+     "CCCC=CCO",
+     "OC1CCCCC1",
+     "OCC1CCCC1"
+    ],
+    "clues": [
+     {
+      "card": "mild_oxidation",
       "result": [
-       "CC(C)CCO"
+       "O=CC1CCCC1"
+      ]
+     }
+    ],
+    "kind": "アルコール（不飽和または環状）"
+   },
+   {
+    "label": "C",
+    "answer": "CC1CCC(C=O)C1",
+    "candidates": [
+     "CC(=O)C1CCCC1",
+     "CC1(C)CCC(=O)C1",
+     "CC1(C)CCCC1=O",
+     "CC1(C=O)CCCC1",
+     "CC1CC(=O)C(C)C1",
+     "CC1CC(=O)CC1C",
+     "CC1CCC(=O)C1C",
+     "CC1CCC(=O)CC1",
+     "CC1CCC(C)C1=O",
+     "CC1CCC(C=O)C1",
+     "CC1CCCC(=O)C1",
+     "CC1CCCC1C=O",
+     "CC1CCCCC1=O",
+     "CCC1CCC(=O)C1",
+     "CCC1CCCC1=O",
+     "O=CC1CCCCC1",
+     "O=CCC1CCCC1"
+    ],
+    "clues": [
+     {
+      "card": "kmno4",
+      "result": [
+       "CC1CCC(C(=O)O)C1"
+      ]
+     }
+    ],
+    "kind": "環状のカルボニル化合物"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 13.2,
+     "V": 1.01
+    },
+    "prompt": "X 13.2 g に白金触媒で水素を付加させると、標準状態で 1.01 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 294。13.2 ÷ 294 = 0.0449 mol、1.01 ÷ 22.4 = 0.0451 mol なので、1 mol あたり 1 mol の H₂。"
+   },
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 35.2,
+     "co2": 92.9,
+     "h2o": 38,
+     "M": 100,
+     "formula": "C6H12O"
+    },
+    "prompt": "加水分解で得た化合物 B 35.2 mg を完全燃焼させると CO₂ 92.9 mg と H₂O 38.0 mg が得られた（分子量は 100）。化合物 B の分子式はどれか",
+    "answer": "C6H12O",
+    "choices": [
+     "C4H4O3",
+     "C5H8O2",
+     "C6H12O",
+     "C7H16"
+    ],
+    "unit": "",
+    "explain": "C = 92.9 × 12/44 = 25.34 mg、H = 38 × 2/18 = 4.22 mg、O = 35.2 − 25.34 − 4.22 = 5.64 mg。C : H : O = 25.34/12 : 4.22/1.0 : 5.64/16 = 5.99 : 11.97 : 1.00 より組成式 C₆H₁₂O。分子量 100 から C₆H₁₂O。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "vinyl",
+   "frags": [
+    "diacid",
+    "alcohol",
+    "cyclocarbonyl"
+   ],
+   "difficulty": 17.7,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-05",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・グリセリンのトリエステル",
+  "story": "化合物 X（分子量 332）は NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、エステル結合をもつ。X は臭素水を脱色する。X を完全に加水分解すると、化合物 A・B・C・D が得られた。",
+  "formula": "C18H20O6",
+  "answer": "C=CC(=O)OCC(COC(=O)C(C)C=C)OC(=O)c1ccccc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "OCC(O)CO",
+    "given": true,
+    "note": "グリセリン（1,2,3-プロパントリオール）"
+   },
+   {
+    "label": "B",
+    "answer": "O=C(O)c1ccccc1",
+    "given": true,
+    "note": "芳香族カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "C",
+    "answer": "C=CC(=O)O",
+    "given": true,
+    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "D",
+    "answer": "C=CC(C)C(=O)O",
+    "candidates": [
+     "C=C(C)CC(=O)O",
+     "C=C(CC)C(=O)O",
+     "C=CC(C)C(=O)O",
+     "C=CCCC(=O)O",
+     "CC(C)=CC(=O)O",
+     "CC=C(C)C(=O)O",
+     "CC=CCC(=O)O",
+     "CCC=CC(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "markovnikov",
+      "result": [
+       "CC(O)C(C)C(=O)O"
       ]
      },
      {
+      "card": "cl_sub",
+      "result": 4
+     },
+     {
+      "card": "hydrogenation",
+      "result": [
+       "CCC(C)C(=O)O"
+      ]
+     }
+    ],
+    "kind": "カルボン酸"
+   }
+  ],
+  "assemble": {
+   "candidates": [
+    "C=CC(=O)OC(COC(=O)c1ccccc1)COC(=O)C(C)C=C",
+    "C=CC(=O)OCC(COC(=O)c1ccccc1)OC(=O)C(C)C=C",
+    "C=CC(=O)OCC(COC(=O)C(C)C=C)OC(=O)c1ccccc1"
+   ],
+   "clues": [
+    {
+     "card": "partial_hydrolysis",
+     "result": "C=CC(=O)OCC(O)CO"
+    },
+    {
+     "card": "partial_hydrolysis",
+     "result": "C=CC(C)C(=O)OCC(O)CO"
+    }
+   ]
+  },
+  "calcs": [
+   {
+    "key": "combustion_x",
+    "data": {
+     "sample": 14.2,
+     "co2": 33.9,
+     "h2o": 7.7,
+     "M": 332,
+     "formula": "C18H20O6"
+    },
+    "prompt": "X 14.2 mg を完全燃焼させると CO₂ 33.9 mg と H₂O 7.70 mg が得られた（分子量は 332）。X の分子式はどれか",
+    "answer": "C18H20O6",
+    "choices": [
+     "C17H16O7",
+     "C18H20O6",
+     "C19H24O5",
+     "C20H28O4"
+    ],
+    "unit": "",
+    "explain": "C = 33.9 × 12/44 = 9.25 mg、H = 7.7 × 2/18 = 0.86 mg、O = 14.2 − 9.25 − 0.86 = 4.10 mg。C : H : O = 9.25/12 : 0.86/1.0 : 4.10/16 = 3.01 : 3.34 : 1.00 より組成式 C₉H₁₀O₃。分子量 332 から C₁₈H₂₀O₆。"
+   },
+   {
+    "key": "h2",
+    "data": {
+     "m": 13.3,
+     "V": 1.79
+    },
+    "prompt": "X 13.3 g に白金触媒で水素を付加させると、標準状態で 1.79 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 2,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 332。13.3 ÷ 332 = 0.0401 mol、1.79 ÷ 22.4 = 0.0799 mol なので、1 mol あたり 2 mol の H₂。"
+   },
+   {
+    "key": "n_x",
+    "at": "assemble",
+    "data": {
+     "n": 3
+    },
+    "prompt": "断片 A・B・C・D の構造がすべて決まった。つなぎ方だけが違う X の候補は何種類あるか（立体異性体は区別しない）",
+    "answer": 3,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "種類",
+    "explain": "酸の側（カルボキシ基）と、アルコール・フェノール・アミン・エノールの側を1対1に対応させる組み合わせを、同じ化合物になるものを除いて数えると 3 種類。"
+   }
+  ],
+  "hideFormula": true,
+  "meta": {
+   "bonds": 3,
+   "template": "triester",
+   "frags": [
+    "glycerol",
+    "aracid",
+    "acid",
+    "acid"
+   ],
+   "difficulty": 19.1,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-06",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・2つのアミド結合",
+  "story": "化合物 X（分子式 C₁₆H₂₂N₂O₂）は NaHCO₃ 水溶液にも希塩酸にも溶けない化合物で、エステル結合とアミド結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C16H22N2O2",
+  "answer": "CCC=CC(=O)Nc1ccc(C(=O)NC(C)(C)C)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "Nc1ccc(C(=O)O)cc1",
+    "candidates": [
+     "Nc1ccc(C(=O)O)cc1",
+     "Nc1cccc(C(=O)O)c1",
+     "Nc1ccccc1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "carbon_env",
+      "result": 5
+     }
+    ],
+    "kind": "芳香族アミノ酸"
+   },
+   {
+    "label": "B",
+    "answer": "CCC=CC(=O)O",
+    "candidates": [
+     "C=C(C)CC(=O)O",
+     "C=C(CC)C(=O)O",
+     "C=CC(C)C(=O)O",
+     "C=CCCC(=O)O",
+     "CC(C)=CC(=O)O",
+     "CC=C(C)C(=O)O",
+     "CC=CCC(=O)O",
+     "CCC=CC(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "kmno4_cleave",
+      "result": [
+       "CCC(=O)O",
+       "O=C(O)C(=O)O"
+      ]
+     },
+     {
+      "card": "markovnikov",
+      "result": [
+       "CCC(O)CC(=O)O",
+       "CCCC(O)C(=O)O"
+      ]
+     }
+    ],
+    "kind": "カルボン酸"
+   },
+   {
+    "label": "C",
+    "answer": "CC(C)(C)N",
+    "candidates": [
+     "CC(C)(C)N",
+     "CC(C)CN",
+     "CCC(C)N",
+     "CCCCN",
+     "CCCNC",
+     "CCNCC",
+     "CNC(C)C"
+    ],
+    "clues": [
+     {
+      "card": "cl_sub",
+      "result": 1
+     },
+     {
+      "card": "carbon_env",
+      "result": 2
+     }
+    ],
+    "kind": "アミン"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 14,
+     "V": 1.14
+    },
+    "prompt": "X 14.0 g に白金触媒で水素を付加させると、標準状態で 1.14 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 274。14 ÷ 274 = 0.0511 mol、1.14 ÷ 22.4 = 0.0509 mol なので、1 mol あたり 1 mol の H₂。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "diamide",
+   "frags": [
+    "aminoaracid",
+    "acid",
+    "amine"
+   ],
+   "difficulty": 19.2,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-07",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・ジカルボン酸のジエステル",
+  "story": "化合物 X（分子式 C₁₅H₁₆O₄）は水に溶けにくい中性の化合物で、複数のエステル結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C15H16O4",
+  "answer": "COC(=O)c1ccccc1C(=O)OC1=CCCCC1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "O=C(O)c1ccccc1C(=O)O",
+    "candidates": [
+     "O=C(O)c1ccc(C(=O)O)cc1",
+     "O=C(O)c1cccc(C(=O)O)c1",
+     "O=C(O)c1ccccc1C(=O)O"
+    ],
+    "clues": [
+     {
       "card": "carbon_env",
       "result": 4
+     }
+    ],
+    "kind": "芳香族二価カルボン酸"
+   },
+   {
+    "label": "B",
+    "answer": "CO",
+    "given": true,
+    "note": "アルコール（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "C",
+    "answer": "O=C1CCCCC1",
+    "candidates": [
+     "CC1CCC(=O)C1",
+     "CC1CCCC1=O",
+     "O=C1CCCCC1",
+     "O=CC1CCCC1"
+    ],
+    "clues": [
+     {
+      "card": "silver_mirror",
+      "result": false
+     },
+     {
+      "card": "chiral",
+      "result": 0
+     },
+     {
+      "card": "kmno4",
+      "result": []
+     }
+    ],
+    "kind": "環状のカルボニル化合物"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 17.8,
+     "V": 1.53
+    },
+    "prompt": "X 17.8 g に白金触媒で水素を付加させると、標準状態で 1.53 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 260。17.8 ÷ 260 = 0.0685 mol、1.53 ÷ 22.4 = 0.0683 mol なので、1 mol あたり 1 mol の H₂。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "vinyl",
+   "frags": [
+    "ardiacid",
+    "alcohol",
+    "cyclocarbonyl"
+   ],
+   "difficulty": 15,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-08",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・2つのアミド結合",
+  "story": "分子式 C₁₄H₁₈N₂O₂ の化合物 Xは水に溶けにくい中性の化合物で、エステル結合とアミド結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C14H18N2O2",
+  "answer": "C=CC(=O)Nc1ccc(C(=O)NC(C)CC)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "Nc1ccc(C(=O)O)cc1",
+    "candidates": [
+     "Nc1ccc(C(=O)O)cc1",
+     "Nc1cccc(C(=O)O)c1",
+     "Nc1ccccc1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "ring_cl",
+      "result": 2
+     }
+    ],
+    "kind": "芳香族アミノ酸"
+   },
+   {
+    "label": "B",
+    "answer": "C=CC(=O)O",
+    "given": true,
+    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "C",
+    "answer": "CCC(C)N",
+    "candidates": [
+     "CC(C)(C)N",
+     "CC(C)CN",
+     "CCC(C)N",
+     "CCCCN",
+     "CCCNC",
+     "CCNCC",
+     "CNC(C)C"
+    ],
+    "clues": [
+     {
+      "card": "chiral",
+      "result": 1
+     },
+     {
+      "card": "cl_sub",
+      "result": 4
+     }
+    ],
+    "kind": "アミン"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 9.69,
+     "V": 0.882
+    },
+    "prompt": "X 9.69 g に白金触媒で水素を付加させると、標準状態で 0.882 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 246。9.69 ÷ 246 = 0.0394 mol、0.882 ÷ 22.4 = 0.0394 mol なので、1 mol あたり 1 mol の H₂。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "diamide",
+   "frags": [
+    "aminoaracid",
+    "acid",
+    "amine"
+   ],
+   "difficulty": 13.9,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-09",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・エステルとアミド",
+  "story": "分子式 C₂₀H₂₁NO₃ の化合物 Xは中性の化合物で、エステル結合とアミド結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C20H21NO3",
+  "answer": "C=CCCC(=O)Nc1ccc(C(=O)OCc2cccc(C)c2)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "Nc1ccc(C(=O)O)cc1",
+    "candidates": [
+     "Nc1ccc(C(=O)O)cc1",
+     "Nc1cccc(C(=O)O)c1",
+     "Nc1ccccc1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "carbon_env",
+      "result": 5
+     },
+     {
+      "card": "cl_sub",
+      "result": 2
+     }
+    ],
+    "kind": "芳香族アミノ酸"
+   },
+   {
+    "label": "B",
+    "answer": "C=CCCC(=O)O",
+    "candidates": [
+     "C=C(C)CC(=O)O",
+     "C=C(CC)C(=O)O",
+     "C=CC(C)C(=O)O",
+     "C=CCCC(=O)O",
+     "CC(C)=CC(=O)O",
+     "CC=C(C)C(=O)O",
+     "CC=CCC(=O)O",
+     "CCC=CC(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "cis_trans",
+      "result": false
+     },
+     {
+      "card": "cl_sub",
+      "result": 4
+     },
+     {
+      "card": "chiral",
+      "result": 0
+     }
+    ],
+    "kind": "カルボン酸"
+   },
+   {
+    "label": "C",
+    "answer": "Cc1cccc(CO)c1",
+    "candidates": [
+     "CC(O)c1ccccc1",
+     "Cc1ccc(CO)cc1",
+     "Cc1cccc(CO)c1",
+     "Cc1ccccc1CO",
+     "OCCc1ccccc1"
+    ],
+    "clues": [
+     {
+      "card": "mild_oxidation",
+      "result": [
+       "Cc1cccc(C=O)c1"
+      ]
+     },
+     {
+      "card": "iodoform",
+      "result": false
      }
     ],
     "kind": "アルコール"
@@ -2134,11 +2126,11 @@
    {
     "key": "h2",
     "data": {
-     "m": 10,
-     "V": 1.73
+     "m": 18.6,
+     "V": 1.29
     },
-    "prompt": "X 10.0 g に白金触媒で水素を付加させると、標準状態で 1.73 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
-    "answer": 2,
+    "prompt": "X 18.6 g に白金触媒で水素を付加させると、標準状態で 1.29 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
     "choices": [
      1,
      2,
@@ -2146,29 +2138,442 @@
      4
     ],
     "unit": "個",
-    "explain": "X の分子量は 259。10.0 ÷ 259 = 0.0386 mol、1.73 ÷ 22.4 = 0.0772 mol なので、1 mol あたり 2 mol の H₂。"
+    "explain": "X の分子量は 323。18.6 ÷ 323 = 0.0576 mol、1.29 ÷ 22.4 = 0.0576 mol なので、1 mol あたり 1 mol の H₂。"
    },
    {
     "key": "combustion",
     "data": {
-     "sample": 20,
-     "co2": 51.2,
-     "h2o": 20.9,
-     "M": 86,
-     "formula": "C5H10O"
+     "sample": 38.2,
+     "co2": 84,
+     "h2o": 27.5,
+     "M": 100,
+     "formula": "C5H8O2"
     },
-    "prompt": "加水分解で得た化合物 C 20.0 mg を完全燃焼させると CO₂ 51.2 mg と H₂O 20.9 mg が得られた（分子量は 86）。化合物 C の分子式はどれか",
-    "answer": "C5H10O",
+    "prompt": "加水分解で得た化合物 B 38.2 mg を完全燃焼させると CO₂ 84.0 mg と H₂O 27.5 mg が得られた（分子量は 100）。化合物 B の分子式はどれか",
+    "answer": "C5H8O2",
     "choices": [
-     "C5H10",
-     "C5H10O",
-     "C5H10O2",
-     "C5H8O"
+     "C4H4O3",
+     "C5H8O2",
+     "C6H12O",
+     "C7H16"
     ],
     "unit": "",
-    "explain": "C = 51.2 × 12/44 = 13.96 mg、H = 20.9 × 2/18 = 2.32 mg、O = 20.0 − 13.96 − 2.32 = 3.71 mg。C : H : O = 13.96/12 : 2.32/1.0 : 3.71/16 = 5.01 : 10.00 : 1.00 より組成式 C₅H₁₀O。分子量 86 から C₅H₁₀O。"
+    "explain": "C = 84 × 12/44 = 22.91 mg、H = 27.5 × 2/18 = 3.06 mg、O = 38.2 − 22.91 − 3.06 = 12.24 mg。C : H : O = 22.91/12 : 3.06/1.0 : 12.24/16 = 2.50 : 4.00 : 1.00 より組成式 C₅H₈O₂。分子量 100 から C₅H₈O₂。"
    }
   ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "ester_amide",
+   "frags": [
+    "aminoaracid",
+    "acid",
+    "aralcohol"
+   ],
+   "difficulty": 25.9,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-10",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・ジカルボン酸のジエステル",
+  "story": "分子式 C₁₈H₂₆O₄ の化合物 Xは水に溶けにくい中性の化合物で、エステル結合をもつ。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C18H26O4",
+  "answer": "CCCC(C(=O)OCc1cccc(C)c1)C(=O)OC(C)CC",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "CCCC(C(=O)O)C(=O)O",
+    "candidates": [
+     "CC(C(=O)O)C(C)C(=O)O",
+     "CC(C)(CC(=O)O)C(=O)O",
+     "CC(C)C(C(=O)O)C(=O)O",
+     "CC(CC(=O)O)CC(=O)O",
+     "CC(CCC(=O)O)C(=O)O",
+     "CCC(C)(C(=O)O)C(=O)O",
+     "CCC(CC(=O)O)C(=O)O",
+     "CCCC(C(=O)O)C(=O)O",
+     "O=C(O)CCCCC(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "cl_sub",
+      "result": 4
+     },
+     {
+      "card": "chiral",
+      "result": 0
+     },
+     {
+      "card": "carbon_env",
+      "result": 5
+     }
+    ],
+    "kind": "二価カルボン酸"
+   },
+   {
+    "label": "B",
+    "answer": "Cc1cccc(CO)c1",
+    "candidates": [
+     "CC(O)c1ccccc1",
+     "Cc1ccc(CO)cc1",
+     "Cc1cccc(CO)c1",
+     "Cc1ccccc1CO",
+     "OCCc1ccccc1"
+    ],
+    "clues": [
+     {
+      "card": "iodoform",
+      "result": false
+     },
+     {
+      "card": "mild_oxidation",
+      "result": [
+       "Cc1cccc(C=O)c1"
+      ]
+     }
+    ],
+    "kind": "アルコール"
+   },
+   {
+    "label": "C",
+    "answer": "CCC(C)O",
+    "candidates": [
+     "CC(C)(C)O",
+     "CC(C)CO",
+     "CCC(C)O",
+     "CCCCO"
+    ],
+    "clues": [
+     {
+      "card": "kmno4",
+      "result": [
+       "CCC(C)=O"
+      ]
+     },
+     {
+      "card": "chiral",
+      "result": 1
+     }
+    ],
+    "kind": "アルコール"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 22.7,
+     "co2": 54,
+     "h2o": 27.6,
+     "M": 74,
+     "formula": "C4H10O"
+    },
+    "prompt": "加水分解で得た化合物 C 22.7 mg を完全燃焼させると CO₂ 54.0 mg と H₂O 27.6 mg が得られた（分子量は 74）。化合物 C の分子式はどれか",
+    "answer": "C4H10O",
+    "choices": [
+     "C2H2O3",
+     "C3H6O2",
+     "C4H10O",
+     "C4H8O"
+    ],
+    "unit": "",
+    "explain": "C = 54 × 12/44 = 14.73 mg、H = 27.6 × 2/18 = 3.07 mg、O = 22.7 − 14.73 − 3.07 = 4.91 mg。C : H : O = 14.73/12 : 3.07/1.0 : 4.91/16 = 4.00 : 10.00 : 1.00 より組成式 C₄H₁₀O。分子量 74 から C₄H₁₀O。"
+   }
+  ],
+  "hideFormula": false,
+  "meta": {
+   "bonds": 2,
+   "template": "diester_diacid",
+   "frags": [
+    "diacid",
+    "aralcohol",
+    "alcohol"
+   ],
+   "difficulty": 24.2,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-11",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・三価カルボン酸のエステルとアミド",
+  "story": "化合物 X（分子量 494）は中性の化合物で、複数のエステル結合をもつ。X は臭素水を脱色しない。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C31H26O6",
+  "answer": "Cc1ccc(OC(=O)c2ccc(C(=O)OCc3cccc(C)c3)cc2C(=O)Oc2ccc(C)cc2)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "O=C(O)c1ccc(C(=O)O)c(C(=O)O)c1",
+    "candidates": [
+     "O=C(O)c1cc(C(=O)O)cc(C(=O)O)c1",
+     "O=C(O)c1ccc(C(=O)O)c(C(=O)O)c1",
+     "O=C(O)c1cccc(C(=O)O)c1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "ring_cl",
+      "result": 3
+     }
+    ],
+    "kind": "芳香族三価カルボン酸"
+   },
+   {
+    "label": "B",
+    "answer": "Cc1ccc(O)cc1",
+    "candidates": [
+     "Cc1ccc(O)cc1",
+     "Cc1cccc(O)c1",
+     "Cc1ccccc1O"
+    ],
+    "clues": [
+     {
+      "card": "carbon_env",
+      "result": 5
+     },
+     {
+      "card": "cl_sub",
+      "result": 3
+     }
+    ],
+    "kind": "フェノール類"
+   },
+   {
+    "label": "C",
+    "answer": "Cc1cccc(CO)c1",
+    "candidates": [
+     "CC(O)c1ccccc1",
+     "Cc1ccc(CO)cc1",
+     "Cc1cccc(CO)c1",
+     "Cc1ccccc1CO",
+     "OCCc1ccccc1"
+    ],
+    "clues": [
+     {
+      "card": "kmno4",
+      "result": [
+       "O=C(O)c1cccc(C(=O)O)c1"
+      ]
+     }
+    ],
+    "kind": "アルコール"
+   }
+  ],
+  "assemble": {
+   "candidates": [
+    "Cc1ccc(OC(=O)c2ccc(C(=O)OCc3cccc(C)c3)c(C(=O)Oc3ccc(C)cc3)c2)cc1",
+    "Cc1ccc(OC(=O)c2ccc(C(=O)Oc3ccc(C)cc3)c(C(=O)OCc3cccc(C)c3)c2)cc1",
+    "Cc1ccc(OC(=O)c2ccc(C(=O)OCc3cccc(C)c3)cc2C(=O)Oc2ccc(C)cc2)cc1"
+   ],
+   "clues": [
+    {
+     "card": "partial_hydrolysis",
+     "result": "Cc1ccc(OC(=O)c2cc(C(=O)O)ccc2C(=O)O)cc1"
+    },
+    {
+     "card": "partial_hydrolysis",
+     "result": "Cc1ccc(OC(=O)c2ccc(C(=O)O)cc2C(=O)O)cc1"
+    }
+   ]
+  },
+  "calcs": [
+   {
+    "key": "combustion_x",
+    "data": {
+     "sample": 10.5,
+     "co2": 29,
+     "h2o": 4.97,
+     "M": 494,
+     "formula": "C31H26O6"
+    },
+    "prompt": "X 10.5 mg を完全燃焼させると CO₂ 29.0 mg と H₂O 4.97 mg が得られた（分子量は 494）。X の分子式はどれか",
+    "answer": "C31H26O6",
+    "choices": [
+     "C30H22O7",
+     "C31H26O6",
+     "C32H30O5",
+     "C33H34O4"
+    ],
+    "unit": "",
+    "explain": "C = 29 × 12/44 = 7.91 mg、H = 4.97 × 2/18 = 0.55 mg、O = 10.5 − 7.91 − 0.55 = 2.04 mg。C : H : O = 7.91/12 : 0.55/1.0 : 2.04/16 = 5.17 : 4.33 : 1.00 より組成式 C₃₁H₂₆O₆。分子量 494 から C₃₁H₂₆O₆。"
+   }
+  ],
+  "hideFormula": true,
+  "meta": {
+   "bonds": 3,
+   "template": "triacid",
+   "frags": [
+    "artriacid",
+    "phenol",
+    "aralcohol",
+    "phenol"
+   ],
+   "difficulty": 23.3,
+   "seed": "20260929",
+   "band": [
+    12.1,
+    30.6
+   ]
+  }
+ },
+ {
+  "id": "g20260929-12",
+  "mode": "big",
+  "level": 3,
+  "generated": true,
+  "title": "自動生成・エステルとアミド",
+  "story": "化合物 X（分子式 C₁₅H₁₉NO₃）は中性の化合物で、エステル結合とアミド結合をもつ。X に臭素水を加えると、臭素の色が消えた。X を完全に加水分解すると、化合物 A・B・C が得られた。",
+  "formula": "C15H19NO3",
+  "answer": "CC(=O)Nc1ccc(C(=O)OCCC=C(C)C)cc1",
+  "fragments": [
+   {
+    "label": "A",
+    "answer": "Nc1ccc(C(=O)O)cc1",
+    "candidates": [
+     "Nc1ccc(C(=O)O)cc1",
+     "Nc1cccc(C(=O)O)c1",
+     "Nc1ccccc1C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "cl_sub",
+      "result": 2
+     }
+    ],
+    "kind": "芳香族アミノ酸"
+   },
+   {
+    "label": "B",
+    "answer": "CC(=O)O",
+    "given": true,
+    "note": "カルボン酸（この分子式では構造がほぼ1つに決まるので与える）"
+   },
+   {
+    "label": "C",
+    "answer": "CC(C)=CCCO",
+    "candidates": [
+     "C=C(C)C(C)(C)O",
+     "C=C(C)C(C)CO",
+     "C=C(C)C(O)CC",
+     "C=C(C)CC(C)O",
+     "C=C(C)CCCO",
+     "C=C(CC)C(C)O",
+     "C=C(CC)CCO",
+     "C=C(CO)C(C)C",
+     "C=C(CO)CCC",
+     "C=CC(C)(C)CO",
+     "C=CC(C)(O)CC",
+     "C=CC(C)C(C)O",
+     "C=CC(C)CCO",
+     "C=CC(CC)CO",
+     "C=CC(O)C(C)C",
+     "C=CC(O)CCC",
+     "C=CCC(C)(C)O",
+     "C=CCC(C)CO",
+     "C=CCC(O)CC",
+     "C=CCCC(C)O",
+     "C=CCCCCO",
+     "CC(C)=C(C)CO",
+     "CC(C)=CC(C)O",
+     "CC(C)=CCCO",
+     "CC(C)C=CCO",
+     "CC1(O)CCCC1",
+     "CC1CCC(O)C1",
+     "CC1CCCC1O",
+     "CC=C(C)C(C)O",
+     "CC=C(C)CCO",
+     "CC=C(CC)CO",
+     "CC=CC(C)(C)O",
+     "CC=CC(C)CO",
+     "CC=CC(O)CC",
+     "CC=CCC(C)O",
+     "CC=CCCCO",
+     "CCC(C)=CCO",
+     "CCC=C(C)CO",
+     "CCC=CC(C)O",
+     "CCC=CCCO",
+     "CCCC=CCO",
+     "OC1CCCCC1",
+     "OCC1CCCC1"
+    ],
+    "clues": [
+     {
+      "card": "hydrogenation",
+      "result": [
+       "CC(C)CCCO"
+      ]
+     },
+     {
+      "card": "cis_trans",
+      "result": false
+     },
+     {
+      "card": "carbon_env",
+      "result": 5
+     },
+     {
+      "card": "iodoform",
+      "result": false
+     }
+    ],
+    "kind": "アルコール（不飽和または環状）"
+   }
+  ],
+  "assemble": null,
+  "calcs": [
+   {
+    "key": "h2",
+    "data": {
+     "m": 12.4,
+     "V": 1.06
+    },
+    "prompt": "X 12.4 g に白金触媒で水素を付加させると、標準状態で 1.06 L の H₂ が消費された。X 1分子がもつ C=C の数はいくつか（ベンゼン環には付加しない）",
+    "answer": 1,
+    "choices": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unit": "個",
+    "explain": "X の分子量は 261。12.4 ÷ 261 = 0.0475 mol、1.06 ÷ 22.4 = 0.0473 mol なので、1 mol あたり 1 mol の H₂。"
+   },
+   {
+    "key": "combustion",
+    "data": {
+     "sample": 30.5,
+     "co2": 80.5,
+     "h2o": 32.9,
+     "M": 100,
+     "formula": "C6H12O"
+    },
+    "prompt": "加水分解で得た化合物 C 30.5 mg を完全燃焼させると CO₂ 80.5 mg と H₂O 32.9 mg が得られた（分子量は 100）。化合物 C の分子式はどれか",
+    "answer": "C6H12O",
+    "choices": [
+     "C4H4O3",
+     "C5H8O2",
+     "C6H12O",
+     "C7H16"
+    ],
+    "unit": "",
+    "explain": "C = 80.5 × 12/44 = 21.95 mg、H = 32.9 × 2/18 = 3.66 mg、O = 30.5 − 21.95 − 3.66 = 4.89 mg。C : H : O = 21.95/12 : 3.66/1.0 : 4.89/16 = 5.99 : 11.96 : 1.00 より組成式 C₆H₁₂O。分子量 100 から C₆H₁₂O。"
+   }
+  ],
+  "hideFormula": false,
   "meta": {
    "bonds": 2,
    "template": "ester_amide",
@@ -2177,11 +2582,11 @@
     "acid",
     "alcohol"
    ],
-   "difficulty": 16.1,
+   "difficulty": 21.3,
    "seed": "20260929",
    "band": [
-    12.5,
-    31.1
+    12.1,
+    30.6
    ]
   }
  }

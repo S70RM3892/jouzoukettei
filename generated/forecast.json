@@ -8,52 +8,101 @@
   "backtest": {
     "years": [
       {
-        "year": 2011,
+        "year": 2004,
         "hit": 7,
-        "k": 13,
+        "k": 11,
         "freqHit": 7,
-        "lastYearHit": 6
+        "lastYearHit": 3
       },
       {
-        "year": 2012,
-        "hit": 8,
-        "k": 17,
-        "freqHit": 8,
-        "lastYearHit": 11
+        "year": 2005,
+        "hit": 4,
+        "k": 9,
+        "freqHit": 4,
+        "lastYearHit": 3
       },
       {
-        "year": 2013,
-        "hit": 7,
-        "k": 12,
-        "freqHit": 8,
-        "lastYearHit": 4
+        "year": 2006,
+        "hit": 5,
+        "k": 8,
+        "freqHit": 5,
+        "lastYearHit": 1
       },
       {
-        "year": 2014,
+        "year": 2007,
         "hit": 7,
         "k": 15,
         "freqHit": 8,
         "lastYearHit": 7
       },
       {
-        "year": 2015,
-        "hit": 5,
+        "year": 2008,
+        "hit": 7,
         "k": 11,
         "freqHit": 6,
-        "lastYearHit": 3
+        "lastYearHit": 6
+      },
+      {
+        "year": 2009,
+        "hit": 7,
+        "k": 15,
+        "freqHit": 8,
+        "lastYearHit": 8
+      },
+      {
+        "year": 2010,
+        "hit": 5,
+        "k": 12,
+        "freqHit": 6,
+        "lastYearHit": 5
+      },
+      {
+        "year": 2011,
+        "hit": 9,
+        "k": 14,
+        "freqHit": 9,
+        "lastYearHit": 7
+      },
+      {
+        "year": 2012,
+        "hit": 10,
+        "k": 18,
+        "freqHit": 10,
+        "lastYearHit": 12
+      },
+      {
+        "year": 2013,
+        "hit": 10,
+        "k": 13,
+        "freqHit": 10,
+        "lastYearHit": 5
+      },
+      {
+        "year": 2014,
+        "hit": 8,
+        "k": 15,
+        "freqHit": 8,
+        "lastYearHit": 7
+      },
+      {
+        "year": 2015,
+        "hit": 6,
+        "k": 12,
+        "freqHit": 6,
+        "lastYearHit": 4
       },
       {
         "year": 2016,
-        "hit": 6,
+        "hit": 7,
         "k": 13,
-        "freqHit": 8,
+        "freqHit": 7,
         "lastYearHit": 4
       },
       {
         "year": 2017,
-        "hit": 4,
-        "k": 11,
-        "freqHit": 4,
+        "hit": 6,
+        "k": 12,
+        "freqHit": 6,
         "lastYearHit": 4
       },
       {
@@ -65,17 +114,24 @@
       },
       {
         "year": 2019,
-        "hit": 2,
-        "k": 10,
+        "hit": 4,
+        "k": 11,
         "freqHit": 4,
         "lastYearHit": 2
+      },
+      {
+        "year": 2020,
+        "hit": 3,
+        "k": 10,
+        "freqHit": 3,
+        "lastYearHit": 4
       },
       {
         "year": 2021,
         "hit": 5,
         "k": 11,
         "freqHit": 5,
-        "lastYearHit": 4
+        "lastYearHit": 3
       },
       {
         "year": 2022,
@@ -85,54 +141,78 @@
         "lastYearHit": 2
       },
       {
+        "year": 2023,
+        "hit": 8,
+        "k": 14,
+        "freqHit": 8,
+        "lastYearHit": 6
+      },
+      {
+        "year": 2024,
+        "hit": 9,
+        "k": 16,
+        "freqHit": 9,
+        "lastYearHit": 9
+      },
+      {
+        "year": 2025,
+        "hit": 9,
+        "k": 12,
+        "freqHit": 9,
+        "lastYearHit": 4
+      },
+      {
         "year": 2026,
-        "hit": 5,
+        "hit": 4,
         "k": 8,
         "freqHit": 4,
         "lastYearHit": 4
       }
     ],
-    "rprec": 0.4348596256684492,
-    "rprecFreq": 0.47400589606471955,
-    "rprecLastYear": 0.3555241327300151,
-    "brier": 0.23889884773930123,
-    "brierFreq": 0.23917122941151311,
-    "rprecRandom": 0.35101010101010105,
+    "rprec": 0.5145095846182803,
+    "rprecFreq": 0.5199773053033923,
+    "rprecLastYear": 0.37888868377998813,
+    "brier": 0.20980643217113948,
+    "brierFreq": 0.20877073811573754,
+    "rprecRandom": 0.3357487922705314,
     "chosen": "frequency"
   },
   "probs": {
-    "sugar": 0.7352941176470589,
-    "chiral": 0.6764705882352942,
-    "hydrogenation": 0.6176470588235294,
-    "mole_calc": 0.6176470588235294,
-    "isomer_enumeration": 0.5588235294117647,
-    "polymer": 0.5588235294117647,
-    "ester_hydrolysis": 0.5,
-    "novel_rule": 0.5,
-    "amino_acid": 0.5,
-    "side_chain_oxidation": 0.4411764705882353,
-    "anhydride": 0.4411764705882353,
-    "stereo_3d": 0.38235294117647056,
-    "amide_hydrolysis": 0.3235294117647059,
-    "alcohol_oxidation": 0.3235294117647059,
-    "iodoform": 0.3235294117647059,
-    "silver_mirror": 0.3235294117647059,
-    "nitration_reduction": 0.3235294117647059,
-    "peptide_sequence": 0.3235294117647059,
-    "fecl3": 0.2647058823529412,
-    "extraction": 0.2647058823529412,
-    "cis_trans": 0.2647058823529412,
-    "combustion_analysis": 0.2647058823529412,
-    "nucleic_acid": 0.2647058823529412,
-    "lipid": 0.2647058823529412,
-    "partial_hydrolysis": 0.20588235294117646,
-    "ozonolysis": 0.20588235294117646,
-    "kmno4_cleavage": 0.20588235294117646,
-    "dehydration": 0.20588235294117646,
-    "diazo": 0.20588235294117646,
-    "sulfonation_fusion": 0.20588235294117646,
-    "symmetry_carbons": 0.20588235294117646,
-    "glycerol_ester": 0.20588235294117646,
-    "enol_tautomer": 0.14705882352941177
+    "chiral": 0.6964285714285714,
+    "mole_calc": 0.6607142857142857,
+    "sugar": 0.6607142857142857,
+    "hydrogenation": 0.5892857142857143,
+    "ester_hydrolysis": 0.5178571428571429,
+    "isomer_enumeration": 0.5178571428571429,
+    "novel_rule": 0.5178571428571429,
+    "amino_acid": 0.5178571428571429,
+    "polymer": 0.5178571428571429,
+    "ring_compound": 0.44642857142857145,
+    "side_chain_oxidation": 0.4107142857142857,
+    "stereo_3d": 0.4107142857142857,
+    "silver_mirror": 0.375,
+    "peptide_sequence": 0.375,
+    "alcohol_oxidation": 0.3392857142857143,
+    "anhydride": 0.3392857142857143,
+    "combustion_analysis": 0.3392857142857143,
+    "iodoform": 0.30357142857142855,
+    "nitration_reduction": 0.30357142857142855,
+    "cis_trans": 0.26785714285714285,
+    "amide_hydrolysis": 0.23214285714285715,
+    "dehydration": 0.23214285714285715,
+    "extraction": 0.23214285714285715,
+    "symmetry_carbons": 0.23214285714285715,
+    "lipid": 0.23214285714285715,
+    "fecl3": 0.19642857142857142,
+    "partial_hydrolysis": 0.16071428571428573,
+    "kmno4_cleavage": 0.16071428571428573,
+    "diazo": 0.16071428571428573,
+    "sulfonation_fusion": 0.16071428571428573,
+    "glycerol_ester": 0.16071428571428573,
+    "enol_tautomer": 0.16071428571428573,
+    "nucleic_acid": 0.16071428571428573,
+    "addition_selectivity": 0.16071428571428573,
+    "ozonolysis": 0.125,
+    "heteroaromatic": 0.05357142857142857
   }
 }

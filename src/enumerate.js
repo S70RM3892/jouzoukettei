@@ -36,7 +36,8 @@ function acceptable(g, opts) {
     }
     if (el === 'N') {
       if (ns.some((x) => g.atoms[x.atom].el === 'N' || g.atoms[x.atom].el === 'O')) return false;
-      if (ns.some((x) => x.order > 1) && !opts.allowImine) return false; // イミン・ニトリルは扱わない
+      // イミン・ニトリルは扱わない（ピリジン環の N は芳香環の一部なので許す）
+      if (!g.atoms[i].arom && ns.some((x) => x.order > 1) && !opts.allowImine) return false;
     }
     if (el === 'C') {
       const dbl = ns.filter((x) => x.order === 2).length;

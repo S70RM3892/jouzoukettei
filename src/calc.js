@@ -42,7 +42,9 @@ function empiricalFromMoles(mol) {
     let ok = true;
     for (const [el, x] of Object.entries(mol)) {
       const v = (x / min) * k;
-      if (Math.abs(v - Math.round(v)) > 0.08 * k) { ok = false; break; }
+      // 原子数が大きいと百分率の丸めの誤差も大きくなるので、許す幅を比例して広げる（京大2000: C₅₄H₉₀O）
+      // k を大きくすると何でも整数に近づくので、許す幅は k によらず一定にする
+      if (Math.abs(v - Math.round(v)) > 0.1 + 0.0015 * v) { ok = false; break; }
       if (Math.round(v)) r[el] = Math.round(v);
     }
     if (ok) {
