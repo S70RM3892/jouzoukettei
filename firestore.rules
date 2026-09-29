@@ -1,0 +1,52 @@
+rules_version = '2';
+
+// GitHub Pages 版（Firebase）のオンライン機能のルール。Firebase コンソールの Firestore →「ルール」に貼る。
+// 誰でも読めるが、書けるのは自分（匿名ログインの uid）の文書だけ。
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // 名前
+    match /profiles/{uid} {
+      allow read: if true;
+      allow write: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['name', 'updatedAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 20;
+    }
+
+    // ランキング
+    match /scores/{uid} {
+      allow read: if true;
+      allow write: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['solved', 'ids', 'points', 'wins', 'updatedAt'])
+        && request.resource.data.solved is int && request.resource.data.solved >= 0 && request.resource.data.solved <= 2000
+        && request.resource.data.ids is list && request.resource.data.ids.size() <= 2000
+        && request.resource.data.points is number
+        && request.resource.data.wins is int && request.resource.data.wins >= 0;
+    }
+
+    // 意見投稿（1人50件まで、1件300字まではアプリ側で切る）
+    match /posts/{uid} {
+      allow read: if true;
+      allow write: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['items'])
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 50;
+    }
+
+    // 早解き対戦
+    match /rooms/{room}/peers/{peer} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+    match /rooms/{room}/events/{ev} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type is string && request.resource.data.at is int;
+    }
+  }
+}

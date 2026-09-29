@@ -29,6 +29,22 @@
 
 `v` から始まるタグを push すると、`.github/workflows/release.yml` がテストとビルドのあと GitHub のリリースを作り、ネットなしで開ける HTML を添付する。
 
+## ランキング・意見投稿・早解き対戦（オンライン）
+
+claude.ai で開いたときは claude.ai の保存と部屋を使う。GitHub Pages（https://s70rm3892.github.io/jouzoukettei/）では Firebase（匿名ログイン＋ Cloud Firestore、無料の Spark プランで足りる）を使う。
+Pages 版は端末（ブラウザ）ごとに匿名の参加者になり、ホームの「名前」で決めた名前がランキング・投稿・対戦に出る。
+
+最初に1回だけ設定する:
+
+1. [Firebase コンソール](https://console.firebase.google.com/)でプロジェクトを作り、「ウェブアプリを追加」して表示される `firebaseConfig` を控える
+2. Authentication →「ログイン方法」で **匿名** を有効にする。「設定」→「承認済みドメイン」に `s70rm3892.github.io` を足す
+3. Firestore Database を作り、「ルール」にこのリポジトリの `firestore.rules` を貼って公開する（書けるのは自分の文書だけ）
+4. 控えた `firebaseConfig` を `firebase.config.json` に書いてコミットする（今はプロジェクト `minhaya-3e7ee` の設定が入っている）。リポジトリ変数 `FIREBASE_CONFIG` があればそちらが優先。ウェブ用の設定は公開して問題ない値
+5. Actions の pages を手動で走らせる（または main に push）
+
+設定がないと、オンラインの3つは「使えない」と表示されるだけで、ほかは今まで通り動く。
+手元で試すときも `npm run build` でこの設定が入る。`"emulator": "127.0.0.1"` を足すと Firebase Emulator Suite（auth 9099・firestore 8080）につなぐ。
+
 ## 京大形式（大問）
 
 京大の大問と同じく、問題文と実験（あ）（い）…を最初に全部読んでから、問1〜に答える。
@@ -80,7 +96,8 @@
 | `scripts/test-rules.js` | 判定ロジックの単体テスト（教科書の典型例） |
 | `scripts/validate.js` | 問題の自動検証 |
 | `scripts/build.js` | 検証 → 構造式SVGと判定表を前計算 → `dist/index.html` を出力 |
-| `src/index.html` | ゲーム画面のテンプレート |
+| `src/index.html` | ゲーム画面のテンプレート（オンライン機能の Firebase 版もここ） |
+| `firestore.rules` | Pages 版のオンライン機能の Firestore ルール |
 | `src/enumerate.js` | 分子式から構造異性体を漏れなく列挙する（候補集合・数え上げの母集団） |
 | `src/calc.js` | 燃焼分析・元素分析・分子量・気体の体積の計算 |
 | `src/reactions.js` | 京大で「与えられた規則」として出た反応と、配向性つきの芳香族置換（下の表） |

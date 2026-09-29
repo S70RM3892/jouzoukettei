@@ -40,6 +40,9 @@ jobs:
           npm run generate -- "$(TZ=Asia/Tokyo date +%Y%m%d)" 12
           npm run validate
       - name: dist/index.html を生成
+        # ランキング・投稿・対戦を Pages で動かす Firebase の設定（Settings → Secrets and variables → Actions → Variables）
+        env:
+          FIREBASE_CONFIG: ${{ vars.FIREBASE_CONFIG }}
         run: npm run build
       - name: 公開するファイルを用意
         run: |

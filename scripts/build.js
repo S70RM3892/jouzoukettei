@@ -250,10 +250,14 @@ async function main() {
   const html = template.replace('/*__PUZZLE_DATA__*/null', () => json);
   if (html === template) throw new Error('data placeholder not found in src/index.html');
   fs.mkdirSync(path.join(ROOT, 'dist'), { recursive: true });
-  // index.html: そのまま開ける完全な文書 / artifact.html: claude.ai Artifact 用（外枠は公開時に付く）
+  // GitHub Pages 版のオンライン機能（ランキング・投稿・対戦）は Firebase で動かす。
+  // 設定は環境変数 FIREBASE_CONFIG（Actions ではリポジトリ変数）か firebase.config.json から。どちらもなければオフ
+  const online = onlineConfig();
+  const pageHtml = html.replace('/*__ONLINE_CONFIG__*/null', () => (online ? JSON.stringify(online).replace(/</g, '\\u003c') : 'null'));
+  // index.html: そのまま開ける完全な文書 / artifact.html: claude.ai Artifact 用（外枠は公開時に付く。オンライン機能は claude.ai のものを使う）
   fs.writeFileSync(
     path.join(ROOT, 'dist', 'index.html'),
-    `<!doctype html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n${html}\n</html>\n`,
+    `<!doctype html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n${pageHtml}\n</html>\n`,
   );
   fs.writeFileSync(path.join(ROOT, 'dist', 'artifact.html'), html);
 
@@ -263,6 +267,25 @@ async function main() {
     rejected.forEach((e) => console.error('  ' + e));
     process.exit(1);
   }
+}
+
+function onlineConfig() {
+  let raw = process.env.FIREBASE_CONFIG;
+  const file = path.join(ROOT, 'firebase.config.json');
+  if (!raw && fs.existsSync(file)) raw = fs.readFileSync(file, 'utf8');
+  if (!raw || !raw.trim()) return null;
+  // Firebase コンソールの「const firebaseConfig = { ... };」をそのまま貼っても読めるようにする
+  const body = raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1)
+    .replace(/([{,]\s*)([A-Za-z_]\w*)\s*:/g, '$1"$2":')
+    .replace(/'([^']*)'/g, '"$1"')
+    .replace(/,\s*}/g, '}');
+  let cfg;
+  try { cfg = JSON.parse(body); } catch (e) { throw new Error('FIREBASE_CONFIG を読めない: ' + e.message); }
+  for (const k of ['apiKey', 'projectId', 'appId']) {
+    if (typeof cfg[k] !== 'string' || !cfg[k]) throw new Error(`FIREBASE_CONFIG に ${k} がない`);
+  }
+  console.log(`online: Firebase project ${cfg.projectId}`);
+  return { firebase: cfg };
 }
 
 main();

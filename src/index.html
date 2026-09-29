@@ -321,6 +321,8 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .posts p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .post-head { display: flex; gap: 10px; align-items: center; font-size: 0.85rem; }
 .post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
+.namerow { align-items: center; }
+.namerow .codein { width: 12em; font-family: inherit; font-size: 1rem; }
 .codein { font: inherit; font-family: var(--f-mono); font-size: 1.1rem; width: 9em; padding: 10px 12px; min-height: 44px;
   border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); text-transform: lowercase; }
 .codebox { display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
@@ -361,6 +363,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 
 <script>
 const DATA = /*__PUZZLE_DATA__*/null;
+const ONLINE_CONFIG = /*__ONLINE_CONFIG__*/null; // GitHub Pages 版のオンライン機能（Firebase）の設定。ビルド時に入る
 const PER_CARD = 10;      // 最少枚数を超えて開いた手がかり1枚ごとの減点
 const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
 const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
@@ -583,6 +586,7 @@ function renderHome() {
           <button class="btn" id="go-posts">みんなの意見</button>
           <button class="btn" id="go-race">早解き対戦</button>
         </div>
+        <div id="name-box">${online.ready ? nameFormHtml() : ''}</div>
         <div id="online-status">${onlineStatusHtml()}</div>
       </section>
       <section class="panel">
@@ -1121,18 +1125,25 @@ function countResultHtml() {
 const RACE_LEN = 5;
 const RACE_PENALTY = 10000;
 const POST_MAX = 300;
-const online = { ready: false, off: false, user: null, db: null, room: null, uid: null, scores: [], posts: [], writeErr: null };
+const online = { ready: false, off: false, provider: null, user: null, db: null, room: null, uid: null, scores: [], posts: [], writeErr: null };
 let writeChain = Promise.resolve();
 
 async function initOnline() {
-  if (!window.claude || typeof window.claude.use !== 'function') {
+  let user, db, room;
+  if (window.claude && typeof window.claude.use === 'function') {
+    online.provider = 'claude';
+    [user, db, room] = await Promise.all([
+      window.claude.use('user'), window.claude.use('db'), window.claude.use('room'),
+    ]);
+  } else if (ONLINE_CONFIG && ONLINE_CONFIG.firebase) {
+    // GitHub Pages など claude.ai の外: 同じ形の窓口を Firebase で用意する
+    online.provider = 'firebase';
+    ({ user, db, room } = await firebaseBackend(ONLINE_CONFIG.firebase));
+  } else {
     online.ready = true;
     online.off = true;
     return;
   }
-  const [user, db, room] = await Promise.all([
-    window.claude.use('user'), window.claude.use('db'), window.claude.use('room'),
-  ]);
   Object.assign(online, { user, db, room });
   online.uid = user ? await user.id() : null;
   online.ready = true;
@@ -1155,6 +1166,7 @@ function refreshOnline() {
   if (view.screen === 'rank') { const el = $('#rank-list'); if (el) { el.innerHTML = rankListHtml(); fillNames(el); } }
   if (view.screen === 'posts') { const el = $('#post-list'); if (el) { el.innerHTML = postListHtml(); fillNames(el); bindPostDeletes(); } }
   if (view.screen === 'home') { const el = $('#online-status'); if (el) el.innerHTML = onlineStatusHtml(); }
+  if (view.screen === 'home') { const el = $('#name-box'); if (el && !el.firstChild) el.innerHTML = nameFormHtml(); }
 }
 
 // data-uid を持つ要素に名前を入れる。名前は保存せず、表示のたびに引く
@@ -1218,10 +1230,155 @@ async function mergeRemoteScore() {
 
 function onlineStatusHtml() {
   if (!online.ready) return '<p class="hint">接続中…</p>';
-  if (online.off || !online.db) return '<p class="hint">ランキング・投稿・対戦は claude.ai でこのページを開いたときに使える。</p>';
+  if (online.off || !online.db) return '<p class="hint">ランキング・投稿・対戦は、公開版（GitHub Pages）か claude.ai でこのページを開いたときに使える。</p>';
   if (!online.uid) return '<p class="hint">サインインすると成績がランキングに載る。</p>';
   const i = online.scores.findIndex((s) => s.id === online.uid);
   return `<p class="hint">${i >= 0 ? `あなたは ${i + 1} 位（${online.scores.length} 人中）` : 'まだランキングに載っていない。1問正解すると載る。'}${online.writeErr ? ' ・ 成績を保存できなかった（書き込み権限がない可能性がある）' : ''}</p>`;
+}
+
+// Firebase 版だけ: ランキングなどに出す名前を自分で決める（claude.ai 版はアカウントの名前）
+function nameFormHtml() {
+  if (online.provider !== 'firebase' || !online.uid) return '';
+  const cur = online.user.myName();
+  return `<div class="row namerow"><label for="my-name" class="eyebrow">名前</label>
+    <input id="my-name" class="codein" maxlength="${NAME_MAX}" autocomplete="nickname" placeholder="ランキングに出る名前" value="${esc(cur)}">
+    <button class="btn" id="name-save">保存</button><span class="hint" id="name-msg">${cur ? '' : '名前を決めるとランキングに名前が出る。'}</span></div>`;
+}
+document.addEventListener('click', async (ev) => {
+  if (!ev.target || ev.target.id !== 'name-save' || online.provider !== 'firebase') return;
+  const name = ($('#my-name').value || '').trim().slice(0, NAME_MAX);
+  const msg = $('#name-msg');
+  if (!name) { msg.textContent = '名前を入れる。'; return; }
+  try { await online.user.setName(name); msg.textContent = '保存した。'; }
+  catch (e) { msg.textContent = '保存できなかった。'; }
+});
+
+// ---- claude.ai の外で使う Firebase の窓口 ----
+// window.claude.use('user' | 'db' | 'room') と同じ呼び方ができるものを、Firebase Authentication（匿名）と Cloud Firestore で作る。
+//   profiles/<uid>              名前
+//   scores/<uid>, posts/<uid>   claude.ai 版と同じ
+//   rooms/<部屋>/peers/<peer>   対戦の参加者と進み具合（15 秒ごとに更新し、45 秒更新がなければいないとみなす）
+//   rooms/<部屋>/events/<id>    対戦の開始の合図
+const NAME_MAX = 20;
+const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
+async function firebaseBackend(cfg) {
+  const [app, auth, fs] = await Promise.all([
+    import(FIREBASE_SDK + 'firebase-app.js'),
+    import(FIREBASE_SDK + 'firebase-auth.js'),
+    import(FIREBASE_SDK + 'firebase-firestore.js'),
+  ]);
+  const { emulator, ...appCfg } = cfg;
+  const fa = app.initializeApp(appCfg);
+  const au = auth.getAuth(fa);
+  const store_ = fs.getFirestore(fa);
+  // 手元で試すとき: firebase.config.json に "emulator": "127.0.0.1" を足すと Firebase Emulator Suite につなぐ
+  if (emulator) {
+    auth.connectAuthEmulator(au, `http://${emulator}:9099`, { disableWarnings: true });
+    fs.connectFirestoreEmulator(store_, emulator, 8080);
+  }
+  await auth.signInAnonymously(au);
+  const uid = au.currentUser.uid;
+
+  const wrapDoc = (d) => ({ id: d.id, exists: d.exists(), data: () => d.data() });
+  const wrapSnap = (q) => ({ docs: q.docs.map(wrapDoc) });
+
+  // --- user ---
+  const names = new Map();
+  let myName = '';
+  try {
+    const d = await fs.getDoc(fs.doc(store_, 'profiles', uid));
+    if (d.exists() && typeof d.data().name === 'string') myName = d.data().name;
+  } catch (e) {}
+  names.set(uid, myName);
+  const user = {
+    id: async () => uid,
+    myName: () => myName,
+    async setName(name) {
+      await fs.setDoc(fs.doc(store_, 'profiles', uid), { name, updatedAt: Date.now() });
+      myName = name;
+      names.set(uid, name);
+      refreshOnline();
+    },
+    async profiles(ids) {
+      await Promise.all(ids.filter((id) => !names.has(id)).map(async (id) => {
+        try {
+          const d = await fs.getDoc(fs.doc(store_, 'profiles', id));
+          names.set(id, d.exists() && typeof d.data().name === 'string' ? d.data().name : '');
+        } catch (e) { names.set(id, ''); }
+      }));
+      const out = {};
+      ids.forEach((id) => { out[id] = { name: names.get(id) || '' }; });
+      return out;
+    },
+  };
+
+  // --- db（使っている呼び方だけ） ---
+  const makeQuery = (name, cons) => ({
+    orderBy: (f, dir) => makeQuery(name, [...cons, fs.orderBy(f, dir)]),
+    limit: (n) => makeQuery(name, [...cons, fs.limit(n)]),
+    onSnapshot: (ok, ng) => fs.onSnapshot(fs.query(fs.collection(store_, name), ...cons), (q) => ok(wrapSnap(q)), ng),
+  });
+  const db = {
+    collection: (name) => makeQuery(name, []),
+    doc: (p) => {
+      const r = fs.doc(store_, p);
+      return { get: async () => wrapDoc(await fs.getDoc(r)), set: (body) => fs.setDoc(r, body) };
+    },
+  };
+
+  // --- room ---
+  const room = {
+    async join(name) {
+      name = String(name).replace(/[^a-z0-9-]/g, '').slice(0, 40);
+      const me = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      const peersCol = fs.collection(store_, 'rooms', name, 'peers');
+      const myRef = fs.doc(peersCol, me);
+      let presence = {}, raw = [], list = [], peerCbs = [], handlers = {}, unsubs = [], left = false;
+      const alive = () => raw.filter((p) => p.id === me || Date.now() - (p.at || 0) < 45000);
+      const recompute = () => {
+        list = alive().map((p) => ({ peer: p.id, kind: 'viewer', by: p.uid, sameTab: p.id === me, presence: p.presence || {} }));
+        peerCbs.forEach((cb) => cb({ peers: list }));
+      };
+      const beat = () => fs.setDoc(myRef, { uid, presence, at: Date.now() }).catch(() => {});
+      await beat();
+      await new Promise((resolve) => {
+        let first = true;
+        unsubs.push(fs.onSnapshot(peersCol, (q) => {
+          raw = q.docs.map((d) => ({ id: d.id, ...d.data() }));
+          recompute();
+          if (first) { first = false; resolve(); }
+        }, () => resolve()));
+      });
+      // 入る前の合図は捨て、入ってから届いたものだけ渡す（自分の合図も戻ってくる）
+      let firstEv = true;
+      unsubs.push(fs.onSnapshot(fs.query(fs.collection(store_, 'rooms', name, 'events'), fs.orderBy('at', 'desc'), fs.limit(5)), (q) => {
+        if (firstEv) { firstEv = false; return; }
+        q.docChanges().forEach((ch) => {
+          if (ch.type !== 'added') return;
+          const d = ch.doc.data();
+          (handlers[d.type] || []).forEach((cb) => cb({ data: d.data, by: d.uid }));
+        });
+      }, () => {}));
+      const timer = setInterval(() => { beat(); recompute(); }, 15000);
+      const bye = () => { if (!left) fs.deleteDoc(myRef).catch(() => {}); };
+      window.addEventListener('pagehide', bye);
+      return {
+        peers: () => list,
+        onPeers: (cb) => { peerCbs.push(cb); },
+        on: (type, cb) => { (handlers[type] = handlers[type] || []).push(cb); },
+        presence: (p) => { presence = p || {}; beat(); },
+        emit: (type, data) => fs.addDoc(fs.collection(store_, 'rooms', name, 'events'), { type, data, uid, at: Date.now() }),
+        async leave() {
+          left = true;
+          clearInterval(timer);
+          window.removeEventListener('pagehide', bye);
+          unsubs.forEach((u) => u());
+          await fs.deleteDoc(myRef).catch(() => {});
+        },
+      };
+    },
+  };
+  return { user, db, room };
 }
 
 // ---- A: ランキング ----
