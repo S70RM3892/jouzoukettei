@@ -1,0 +1,41 @@
+name: release
+
+# v から始まるタグを push すると、テストとビルドのあと GitHub のリリースを作り、
+# そのままブラウザで開ける index.html（オフライン版）を添付する
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/cache@v4
+        with:
+          path: generated/library.json
+          key: fragment-library-${{ hashFiles('src/generator.js', 'src/enumerate.js', 'src/chem.js') }}
+      - name: 判定ロジック・過去問・問題のテスト
+        run: npm test
+      - name: dist/index.html を生成
+        run: npm run build
+      - name: 添付ファイルを用意
+        run: |
+          mkdir -p release
+          cp dist/index.html "release/yuki-kozo-kettei-${GITHUB_REF_NAME}.html"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.html
+          generate_release_notes: true
+          body: |
+            有機構造決定（京大化学 大問演習）の ${{ github.ref_name }}。
+            添付の HTML をダウンロードしてブラウザで開けば、ネットなしで遊べる（学校の端末でも開ける）。
+            オンライン版: https://s70rm3892.github.io/jouzoukettei/

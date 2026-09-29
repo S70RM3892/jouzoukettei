@@ -4,8 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 const chem = require('../src/chem');
+const calc = require('../src/calc');
 
-const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json'];
+const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json', 'generated.json'];
 
 async function loadRDKit() {
   const init = require('@rdkit/rdkit');
@@ -152,7 +153,8 @@ function checkBig(RDKit, P) {
     seen.add(a);
     const formula = chem.formula(chem.graphFromSmiles(RDKit, a));
     let r = null;
-    if (!f.given) {
+    // 化合物どうしの関係を使う大問（chain）は、断片ごとではなく全体で1通りに決まるかを下で調べる
+    if (!f.given && !P.chain) {
       r = checkNarrow(RDKit, { id: `${P.id}/${f.label}`, formula, answer: a, candidates: f.candidates, clues: f.clues });
       errors.push(...r.errors);
     }
@@ -171,7 +173,25 @@ function checkBig(RDKit, P) {
     });
     assemble = { r, clues: P.assemble.clues };
   }
-  return { errors, X, bonds, frags, assemble };
+  if (P.chain) require('../src/chain').check(RDKit, P).forEach((m) => err(m));
+  // 計算段階: 問題文の数値から答えを計算し直して一致を確かめる
+  for (const c of P.calcs || []) {
+    if (!c.choices || !c.choices.includes(c.answer) || new Set(c.choices).size !== c.choices.length) err(`calc ${c.key}: choices must contain the answer once`);
+    if (c.key === 'h2') {
+      const M = calc.mass(P.formula);
+      const n = Math.round((c.data.V / 22.4) / (c.data.m / M));
+      if (n !== c.answer || n !== chem.h2Uptake(chem.graphFromSmiles(RDKit, X))) err(`calc h2: data gives ${n}, answer ${c.answer}`);
+    } else if (c.key === 'combustion' || c.key === 'combustion_x') {
+      const f = calc.molecularFromEmpirical(calc.empiricalFromCombustion(c.data.sample, c.data.co2, c.data.h2o), { mw: c.data.M });
+      const target = c.key === 'combustion_x' ? f === P.formula : frags.some((fr) => fr.formula === f);
+      if (f !== c.answer || !target) err(`calc ${c.key}: data gives ${f}, answer ${c.answer}`);
+      // 選択肢の中で、データから一意に決まること
+      if (c.choices.filter((x) => x === f).length !== 1) err(`calc ${c.key}: answer not uniquely among choices`);
+    } else if (c.key === 'n_x') {
+      if (!P.assemble || c.answer !== P.assemble.candidates.length) err(`calc n_x: answer ${c.answer} but ${P.assemble ? P.assemble.candidates.length : 0} assembly candidates`);
+    } else err(`unknown calc ${c.key}`);
+  }
+  return { errors, X, bonds, frags, assemble, calcs: P.calcs || [] };
 }
 
 // 数え上げ型: 母集団（その分子式のすべての異性体）から条件に合うものを数える

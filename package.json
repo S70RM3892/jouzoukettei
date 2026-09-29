@@ -6,7 +6,12 @@
   "scripts": {
     "validate": "node scripts/validate.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test-rules.js && node scripts/validate.js"
+    "forecast": "node scripts/forecast.js",
+    "generate": "node scripts/generate.js",
+    "test:rules": "node scripts/test-rules.js",
+    "test:enumerate": "node scripts/test-enumerate.js",
+    "test:kakomon": "node scripts/test-kakomon.js",
+    "test": "node scripts/test-rules.js && node scripts/test-enumerate.js && node scripts/test-kakomon.js && node scripts/validate.js"
   },
   "devDependencies": {
     "@rdkit/rdkit": "latest"

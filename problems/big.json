@@ -327,9 +327,8 @@
       {
         "label": "C",
         "answer": "NC(CS)C(=O)O",
-        "candidates": ["NC(CS)C(=O)O", "CSC(N)C(=O)O", "NCC(S)C(=O)O"],
+        "candidates": ["NC(CS)C(=O)O", "NCC(S)C(=O)O"],
         "clues": [
-          {"card": "sulfur", "result": true},
           {"card": "alpha_amino", "result": true}
         ]
       }

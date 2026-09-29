@@ -2,71 +2,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Shippori+Mincho+B1:wght@600;800&display=swap">
 <style>
+/* 試験の問題用紙と赤ペン添削: 用紙の白と藍墨の文字、採点だけ朱。難易度は浅葱から藍、紅への6段 */
 :root {
-  --ground: #edf0ea;
-  --surface: #f8f9f5;
+  --ground: #eef1f5;
+  --surface: #f7f9fb;
   --paper: #ffffff;
-  --ink: #16221e;
-  --muted: #5b6862;
-  --line: #cfd6cd;
-  --accent: #2350a0;
+  --ink: #151b2e;
+  --muted: #5a6275;
+  --line: #d3d9e3;
+  --rule: #1d2a52;
+  --accent: #26408f;
   --accent-ink: #ffffff;
-  --accent-soft: #dfe7f5;
-  --pos: #b0372b;
-  --pos-soft: #f6e1dd;
+  --accent-soft: #e2e8f6;
+  --pos: #c5302b;
+  --pos-soft: #fbe4e2;
   --ok: #2c7548;
-  --ok-soft: #dcefe2;
+  --ok-soft: #ddefe3;
   --warn: #9a6512;
   --warn-soft: #f6ead2;
-  --shadow: 0 1px 2px rgb(22 34 30 / 0.08), 0 4px 14px rgb(22 34 30 / 0.06);
+  --redpen: #d0342c;
+  --grid: rgb(38 64 143 / 0.05);
+  --g1: #3f9aa0; --g2: #3a7fb0; --g3: #3656a8; --g4: #4b3b9e; --g5: #8a2f86; --g6: #c5302b;
+  --shadow: 0 1px 2px rgb(21 27 46 / 0.06), 0 8px 24px rgb(21 27 46 / 0.07);
   --mol-filter: none;
-  --f-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  --f-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
   --f-body: "BIZ UDPGothic", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --ground: #111714;
-    --surface: #19211d;
-    --paper: #1f2824;
-    --ink: #e5ebe6;
-    --muted: #95a29b;
-    --line: #2f3a35;
-    --accent: #86a8ea;
-    --accent-ink: #0f1a2e;
-    --accent-soft: #1f2c44;
-    --pos: #eb8579;
-    --pos-soft: #3a2320;
-    --ok: #74c393;
-    --ok-soft: #1c3226;
-    --warn: #e2b155;
-    --warn-soft: #362c18;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
-    --mol-filter: invert(0.9) hue-rotate(180deg);
+    --ground: #0d1220; --surface: #141b2d; --paper: #182036; --ink: #e7eaf3; --muted: #9aa3b8; --line: #2a3450;
+    --rule: #aab8e8; --accent: #93a9f5; --accent-ink: #0d1220; --accent-soft: #1e2a4c;
+    --pos: #ff8a80; --pos-soft: #3a1f24; --ok: #7ccf9a; --ok-soft: #173024; --warn: #e2b155; --warn-soft: #362c18;
+    --redpen: #ff6f65; --grid: rgb(147 169 245 / 0.05);
+    --g1: #5cc2c7; --g2: #5fa8e0; --g3: #7d93f0; --g4: #9d86f0; --g5: #d77ad2; --g6: #ff7d74;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5); --mol-filter: invert(0.9) hue-rotate(180deg);
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --ground: #111714;
-  --surface: #19211d;
-  --paper: #1f2824;
-  --ink: #e5ebe6;
-  --muted: #95a29b;
-  --line: #2f3a35;
-  --accent: #86a8ea;
-  --accent-ink: #0f1a2e;
-  --accent-soft: #1f2c44;
-  --pos: #eb8579;
-  --pos-soft: #3a2320;
-  --ok: #74c393;
-  --ok-soft: #1c3226;
-  --warn: #e2b155;
-  --warn-soft: #362c18;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
-  --mol-filter: invert(0.9) hue-rotate(180deg);
+  --ground: #0d1220; --surface: #141b2d; --paper: #182036; --ink: #e7eaf3; --muted: #9aa3b8; --line: #2a3450;
+  --rule: #aab8e8; --accent: #93a9f5; --accent-ink: #0d1220; --accent-soft: #1e2a4c;
+  --pos: #ff8a80; --pos-soft: #3a1f24; --ok: #7ccf9a; --ok-soft: #173024; --warn: #e2b155; --warn-soft: #362c18;
+  --redpen: #ff6f65; --grid: rgb(147 169 245 / 0.05);
+  --g1: #5cc2c7; --g2: #5fa8e0; --g3: #7d93f0; --g4: #9d86f0; --g5: #d77ad2; --g6: #ff7d74;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5); --mol-filter: invert(0.9) hue-rotate(180deg);
 }
 
 * { box-sizing: border-box; }
@@ -74,15 +57,17 @@
 html, body { min-height: 100%; }
 body {
   margin: 0;
-  background: var(--ground);
+  background-color: var(--ground);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 20px 20px;
   color: var(--ink);
   font: 15px/1.65 var(--f-body);
   -webkit-text-size-adjust: 100%;
 }
 .wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 120px; }
 h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.3; }
-h1 { font-size: 1.75rem; font-weight: 900; letter-spacing: 0.02em; }
-h2 { font-size: 1.05rem; font-weight: 700; }
+h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: 0.04em; }
+h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.03em; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .eyebrow { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; }
@@ -98,7 +83,10 @@ button { font: inherit; color: inherit; }
   padding: 10px 16px; cursor: pointer; font-weight: 700; min-height: 44px;
 }
 .btn:hover { border-color: var(--muted); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn { transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease; }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 14px rgb(38 64 143 / 0.25); }
+.btn.primary:hover { box-shadow: 0 6px 20px rgb(38 64 143 / 0.32); }
 .btn.primary:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn.ghost { background: transparent; border-color: transparent; padding-inline: 8px; }
 .chip {
@@ -108,6 +96,31 @@ button { font: inherit; color: inherit; }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
 .chip:disabled { opacity: 0.5; cursor: not-allowed; }
 .chip small { font-size: 0.72rem; margin-left: 4px; }
+
+/* ---------- 難易度（6段） ---------- */
+.grade { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em; color: var(--gc); white-space: nowrap; }
+.grade .pips { display: inline-flex; gap: 2px; }
+.grade .pips i { width: 5px; height: 12px; border-radius: 1px; background: var(--line); }
+.grade .pips i.on { background: var(--gc); }
+.gchip[aria-pressed="true"] { background: var(--gc, var(--ink)); border-color: var(--gc, var(--ink)); color: var(--paper); }
+.gchip { border-color: color-mix(in srgb, var(--gc, var(--line)) 45%, var(--line)); }
+.g1 { --gc: var(--g1); } .g2 { --gc: var(--g2); } .g3 { --gc: var(--g3); } .g4 { --gc: var(--g4); } .g5 { --gc: var(--g5); } .g6 { --gc: var(--g6); }
+.gscale { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-top: 4px; }
+.gscale span { height: 6px; border-radius: 2px; background: var(--gc); }
+.gscale-l { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); }
+
+/* ---------- 表紙 ---------- */
+.cover { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 4px; padding: 18px 18px 16px; position: relative; overflow: hidden; }
+.cover::before { content: ""; position: absolute; inset: 8px; border: 3px double var(--rule); border-radius: 2px; pointer-events: none; opacity: 0.55; }
+.cover .kicker { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.3em; font-size: 0.82rem; color: var(--muted); }
+.cover h1 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.15; margin-top: 6px; color: var(--ink); }
+.cover h1 em { font-style: normal; color: var(--accent); }
+.cover p { margin: 8px 0 0; max-width: 32em; color: var(--muted); font-size: 0.92rem; }
+.cover .seal { position: absolute; right: 16px; top: 16px; width: 64px; height: 64px; border: 2px solid var(--redpen); color: var(--redpen); border-radius: 50%;
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 0.72rem; line-height: 1.15; text-align: center; transform: rotate(-12deg); opacity: 0.85; }
+.today { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gc, var(--accent)); border-radius: 4px; padding: 12px 14px; }
+.today .t { font-family: var(--f-display); font-weight: 800; font-size: 1.05rem; }
+.today .s { font-size: 0.8rem; color: var(--muted); }
 
 /* ---------- Home ---------- */
 .masthead { display: grid; gap: 6px; padding-block: 12px 4px; }
@@ -126,6 +139,7 @@ button { font: inherit; color: inherit; }
   background: none; border: 0; padding: 12px 4px; cursor: pointer; text-align: left; min-height: 52px;
 }
 .plist button:hover { background: var(--surface); }
+.plist li { border-left: 3px solid var(--gc, transparent); }
 .plist .num { font-family: var(--f-mono); color: var(--muted); font-size: 0.85rem; }
 .plist .fm { font-size: 1.1rem; }
 .lv { color: var(--warn); letter-spacing: 1px; font-size: 0.8rem; margin-left: 8px; }
@@ -210,6 +224,51 @@ button { font: inherit; color: inherit; }
 .verdict h2 { font-size: 1.6rem; font-weight: 900; }
 .verdict .score { font-family: var(--f-mono); font-size: 1rem; }
 .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.clue .infer { display: block; margin-top: 6px; padding: 6px 8px; border-radius: 8px; background: var(--accent-soft); color: var(--ink); font-size: 0.82rem; line-height: 1.5; text-align: left; }
+.clue .infer b { display: block; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.06em; }
+.exam .sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.exam .grp { font-size: 0.9rem; margin: 14px 0 4px; color: var(--muted); letter-spacing: 0.04em; }
+.exam .exps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.exam .exps li { line-height: 1.7; }
+.exam .lab { font-weight: 700; margin-right: 2px; }
+.exam .figs { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.exam .fig { width: 132px; border: 1px solid var(--line); border-radius: 10px; padding: 4px; background: var(--surface); }
+.exam .fig .pn, .exam .opt .pn { display: block; font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.3; min-height: 1.3em; }
+.exam .hintbtn { margin-top: 4px; font: inherit; font-size: 0.78rem; color: var(--accent); background: none; border: 1px dashed var(--accent); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+.exam .hinttx { margin: 6px 0 0; padding: 8px 10px; background: var(--accent-soft); border-radius: 8px; font-size: 0.86rem; line-height: 1.6; }
+.exam .q { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.exam .q.ok { border-color: var(--ok); background: var(--ok-soft); }
+.exam .q.part { border-color: var(--warn); background: var(--warn-soft); }
+.exam .q.ng { border-color: var(--pos); background: var(--pos-soft); }
+.exam .qhead { display: flex; justify-content: space-between; align-items: baseline; }
+.exam .qhead b { font-family: var(--f-display); font-size: 1.15rem; letter-spacing: 0.06em; }
+.exam .q { position: relative; }
+.exam .stamp { position: absolute; right: 64px; top: 2px; font-family: var(--f-display); font-weight: 800; font-size: 2.6rem; line-height: 1; color: var(--redpen); opacity: 0.85; transform: rotate(-8deg); pointer-events: none; }
+.exam .sheet { box-shadow: var(--shadow); border-radius: 4px; }
+.exam .grp { font-family: var(--f-display); font-weight: 800; color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+.exam .q.ok, .exam .q.part, .exam .q.ng { background: var(--paper); }
+.exam .qhead .pts { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
+.exam .qp { margin: 6px 0 10px; line-height: 1.7; }
+.exam input.ans { font: inherit; font-size: 1.05rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); width: 11em; max-width: 100%; }
+.exam .numrow input.ans { width: 6em; }
+.exam .optgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
+.exam .optgrid.wide { grid-template-columns: 1fr; }
+.exam .opt { font: inherit; background: var(--paper); border: 2px solid var(--line); border-radius: 10px; padding: 3px; cursor: pointer; color: var(--ink); }
+.exam .opt.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.exam .opt.right { border-color: var(--ok); }
+.exam .opt.wrong { border-color: var(--pos); }
+.exam .chip.right { border-color: var(--ok); }
+.exam .rules { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; background: var(--surface); font-size: 0.9rem; line-height: 1.7; }
+.exam .rules p { margin: 6px 0 0; }
+.exam .rules .rn { font-weight: 700; margin-right: 4px; }
+.exam .assign { display: grid; gap: 8px; }
+.exam .arow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.exam .arow > b { min-width: 1.5em; }
+.exam textarea.ans { font: inherit; width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); }
+.exam .selfgrade { margin-top: 8px; gap: 6px; align-items: center; }
+.exam .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.exam .expl { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 0.88rem; line-height: 1.7; }
+.exam .expl p { margin: 4px 0; }
 .molcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
 .molcard .cap { font-size: 0.8rem; padding: 0 6px 4px; }
 .molcard .cap b { display: block; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
@@ -307,8 +366,9 @@ const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
 const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
 const STORE_KEY = 'jouzoukettei.v1';
 const MODES = [
+  { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答え 11 題の再現と、基礎から京大超えまで6段階の自動生成の大問。化合物どうしの関係を使う問題が中心' },
+  { key: 'big', name: '京大形式（基本）', note: '手作りの大問を京大形式で。問題文と実験を全部読んでから、問1〜に答える' },
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
-  { key: 'big', name: '大問型', note: '分解 → 断片 → 組み立て' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
 ];
@@ -344,7 +404,14 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmtFormula = (f) => esc(f).replace(/(\d+)/g, '<sub>$1</sub>');
 const stars = (n) => '★'.repeat(n) + '☆'.repeat(3 - n);
-const molName = (s) => (DATA.molecules[s] && DATA.molecules[s].name) || s;
+// 難易度の6段（基礎・標準・京大下位・京大平均・京大上位・京大超え）
+const GRADE_NAMES = (DATA && DATA.grades) || ['基礎', '標準', '京大下位', '京大平均', '京大上位', '京大超え'];
+const gradeOfP = (p) => p.grade || p.level || 1;
+function gradeBadge(pOrG) {
+  const g = typeof pOrG === 'number' ? pOrG : gradeOfP(pOrG);
+  return `<span class="grade g${g}" title="難易度 ${g}/6"><span class="pips">${[1, 2, 3, 4, 5, 6].map((i) => `<i class="${i <= g ? 'on' : ''}"></i>`).join('')}</span>${esc(GRADE_NAMES[g - 1])}</span>`;
+}
+const molName = (s) => { const m = DATA.molecules[s]; return (m && (m.name || (m.formula && m.formula.replace(/\d+/g, (d) => [...d].map((x) => '₀₁₂₃₄₅₆₇₈₉'[x]).join(''))))) || s; };
 const molSvg = (s) => DATA.molecules[s].svg;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const letter = (i) => String.fromCharCode(0x2460 + i); // ① ② ③ …
@@ -382,7 +449,7 @@ function checkNight() {
 }
 
 // ---------- 出題 ----------
-let view = { screen: 'home', level: 0, mode: 'narrow' };
+let view = { screen: 'home', level: 0, mode: 'gen' };
 let game = null;
 
 function accuracy(n = 20) {
@@ -398,7 +465,7 @@ function cardsOf(p) {
 
 function pickProblem(level, avoidId) {
   const inMode = DATA.problems.filter((p) => p.mode === view.mode);
-  const pool = inMode.filter((p) => (!level || p.level === level) && p.id !== avoidId);
+  const pool = inMode.filter((p) => (!level || gradeOfP(p) === level) && p.id !== avoidId);
   const list = pool.length ? pool : inMode;
   const weights = list.map((p) => {
     const st = store.stats[p.id];
@@ -425,7 +492,10 @@ function show(screen) {
 
 function startProblem(p) {
   if (isNight()) { checkNight(); return; }
-  if (p.mode === 'big' || p.mode === 'polymer') {
+  if (p.exam) {
+    game = { exam: { P: p, ans: {}, hints: new Set(), graded: false } };
+    show('exam');
+  } else if (p.mode === 'big' || p.mode === 'polymer' || p.mode === 'gen') {
     game = { big: { P: p, idx: 0, scores: [], allCorrect: true } };
     goStage();
   } else if (p.mode === 'count') {
@@ -462,7 +532,7 @@ function nextStage(score, correct) {
 function bigProgress() {
   if (!game || !game.big) return '';
   const b = game.big;
-  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? (s.key === 'dp' ? '重合度' : '計算') : s.label === 'X' ? '組み立て' : s.label);
+  const label = (s) => (s.type === 'split' ? '分解' : s.type === 'calc' ? CALC_SHORT[s.key] || '計算' : s.label === 'X' ? '組み立て' : s.label);
   return `<div class="progress" aria-label="大問の進み具合">
     <span class="muted mono" style="font-size:.8rem">${esc(b.P.id)}</span>
     ${b.P.stages.map((s, i) => `<span class="step ${i < b.idx ? 'done' : i === b.idx ? 'now' : ''}">${esc(label(s))}</span>`).join('<span class="arrow">→</span>')}
@@ -487,14 +557,20 @@ function renderHome() {
   const inMode = DATA.problems.filter((p) => p.mode === view.mode);
   const solved = DATA.problems.filter((p) => store.stats[p.id] && store.stats[p.id].everCorrect).length;
   const weak = Object.entries(store.weak).filter(([c, n]) => n > 0 && DATA.cards[c]).sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const list = inMode.filter((p) => !view.level || p.level === view.level);
+  const list = inMode.filter((p) => !view.level || gradeOfP(p) === view.level);
+  // 今日の一問: 京大形式の自動生成から、まだ正解していない問題を1つ
+  const todayP = DATA.problems.filter((p) => p.mode === 'gen' && !p.kyoto).find((p) => !(store.stats[p.id] && store.stats[p.id].everCorrect)) || DATA.problems.find((p) => p.mode === 'gen');
   $('#app').innerHTML = `
     <div class="stack">
-      <header class="masthead">
-        <span class="eyebrow">京大化学 大問3・4 対策</span>
-        <h1>有機構造決定パズル</h1>
-        <p>分子式から始めて手がかりを集め、構造を自分の手で決める。カードは少ないほど高得点。</p>
+      <header class="cover">
+        <div class="seal">構造<br>決定</div>
+        <span class="kicker">化学 ・ 有機 ・ 大問演習</span>
+        <h1>有機<em>構造</em>決定</h1>
+        <p>問題文と実験をすべて読み、化合物どうしの関係から構造を決める。答えは紙に書いてから選ぶ。採点は赤ペンで。</p>
       </header>
+      ${todayP ? `<button class="today g${gradeOfP(todayP)}" id="go-today" style="font:inherit;text-align:left;cursor:pointer;color:inherit">
+        <span><span class="s">今日の一問</span><br><span class="t">${esc(todayP.title || '')}</span><br>${gradeBadge(todayP)}</span>
+        <span class="btn primary" aria-hidden="true">解く</span></button>` : ''}
       <section class="stats" aria-label="成績">
         <div class="stat"><b>${acc === null ? '—' : acc + '%'}</b><span>直近20問の正答率</span></div>
         <div class="stat"><b>${solved}<small class="muted">/${DATA.problems.length}</small></b><span>正解した問題</span></div>
@@ -514,12 +590,15 @@ function renderHome() {
         <div class="row" id="modes">
           ${MODES.map((m) => `<button class="chip" data-mode="${m.key}" aria-pressed="${view.mode === m.key}">${m.name}<small>${DATA.problems.filter((p) => p.mode === m.key).length}問</small></button>`).join('')}
         </div>
-        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。京大の本番形式。C₂₀ 前後の化合物を加水分解して、断片ごとに決めてから組み戻す。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : '。'}</p>
+        <p class="hint">${esc(MODES.find((m) => m.key === view.mode).note)}${view.mode === 'big' ? '。各実験の「わかること」を開くと、その結果で決まる部分構造が出る（1回 −1点）。' : view.mode === 'count' ? '。紙に全部書き出してから数を入れる。' : view.mode === 'gen' ? genNote() : '。'}</p>
       </section>
       <section class="panel">
         <h2>難易度</h2>
         <div class="row" id="levels">
-          ${[0, 1, 2, 3].map((l) => `<button class="chip" data-level="${l}" aria-pressed="${view.level === l}">${l ? stars(l) : 'すべて'}</button>`).join('')}
+          ${[0, 1, 2, 3, 4, 5, 6].map((l) => `<button class="chip gchip ${l ? 'g' + l : ''}" data-level="${l}" aria-pressed="${view.level === l}">${l ? esc(GRADE_NAMES[l - 1]) : 'すべて'}<small>${inMode.filter((p) => !l || gradeOfP(p) === l).length}</small></button>`).join('')}
+        </div>
+        <div><div class="gscale">${[1, 2, 3, 4, 5, 6].map((g) => `<span class="g${g}"></span>`).join('')}</div>
+          <div class="gscale-l"><span>基礎</span><span>京大の過去問の分布（下位25%・中央・上位25%・最難）で区切る</span><span>京大超え</span></div>
         </div>
         <div class="row"><button class="btn primary" id="auto">おまかせで1問</button>
           <span class="hint">苦手なカードを含む問題と未正解の問題が多めに出る</span></div>
@@ -539,10 +618,10 @@ function renderHome() {
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
-            const sub = p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
-            return `<li><button data-id="${p.id}">
+            const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
+            return `<li class="g${gradeOfP(p)}"><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
-              <span><span class="formula fm">${fmtFormula(p.formula)}</span><span class="lv">${stars(p.level)}</span>
+              <span><span class="formula fm">${p.hideFormula ? '分子式は計算で' : fmtFormula(p.formula)}</span><span class="lv">${gradeBadge(p)}</span>
                 <span class="muted sub">${sub}</span></span>
               ${badge}</button></li>`;
           }).join('')}
@@ -550,6 +629,7 @@ function renderHome() {
       </section>
       <p class="hint">23時以降はプレイできない。週1回は京大過去問の構造決定を紙で解くこと。</p>
     </div>`;
+  if ($('#go-today')) $('#go-today').onclick = () => startProblem(todayP);
   $('#go-rank').onclick = () => show('rank');
   $('#go-posts').onclick = () => show('posts');
   $('#go-race').onclick = () => show('race');
@@ -585,7 +665,7 @@ function renderPlay() {
     <div class="stack">
       <div class="row" style="justify-content:space-between">
         <button class="btn ghost" id="back">← 問題一覧</button>
-        <span class="muted mono" style="font-size:.85rem">${esc(p.id)} <span class="lv">${stars(p.level)}</span></span>
+        <span class="muted mono" style="font-size:.85rem">${esc(p.id)} <span class="lv">${gradeBadge(p)}</span></span>
       </div>
       ${bigProgress()}
       <div class="board-head">
@@ -614,6 +694,7 @@ function renderPlay() {
               <span class="cname">${esc(meta.name)}</span>
               <span class="act">${esc(meta.action)}</span>
               ${open ? resultHtml(c.card, c.result) : '<span class="res">タップして結果を見る</span>'}
+              ${open && c.infer ? `<span class="infer"><b>わかること</b>${esc(c.infer)}</span>` : ''}
             </button>`;
           }).join('')}
         </div>
@@ -786,7 +867,7 @@ function renderResult() {
 // ---------- 画面: 大問（分解） ----------
 function renderSplit() {
   const P = game.big.P;
-  const st = P.stages[0];
+  const st = P.stages[game.big.idx];
   const ans = game.split.answer;
   const opts = [1, 2, 3, 4, 5];
   const water = (n) => (n === 1 ? 'H₂O' : `${n} H₂O`);
@@ -795,7 +876,7 @@ function renderSplit() {
     <div class="stack">
       <div class="row" style="justify-content:space-between">
         <button class="btn ghost" id="back">← 問題一覧</button>
-        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${gradeBadge(P)}</span></span>
       </div>
       ${bigProgress()}
       <div class="board-head">
@@ -831,29 +912,44 @@ function renderSplit() {
   if (nx) nx.onclick = () => nextStage(ans === st.bonds ? 100 : 0, ans === st.bonds);
 }
 
-// ---------- 画面: 高分子（計算） ----------
+const CALC_SHORT = { dp: '重合度', per: '計算', h2: 'H₂付加', combustion: '燃焼', combustion_x: 'Xの分子式', n_x: '候補の数' };
+const CALC_LONG = { dp: '重合度の計算', per: '結合・分子の数', h2: '水素付加量の計算', combustion: '燃焼分析', combustion_x: 'X の分子式（燃焼分析）', n_x: 'つなぎ方の候補の数' };
+
+// 京大レベルの説明（何年度の何題を物差しにしたか・いつの種か）
+function genNote() {
+  const gen = DATA.problems.filter((p) => p.mode === 'gen');
+  const k = gen.filter((p) => p.kyoto).length;
+  const g = gen.find((p) => !p.kyoto);
+  const band = g ? g.band : null;
+  const seed = g && g.seed ? `${g.seed.slice(0, 4)}-${g.seed.slice(4, 6)}-${g.seed.slice(6, 8)}` : '';
+  void band;
+  return `。京大の答え ${k} 題を同じ手順で問題化したもの（「京大○年度型の再現」）と、自動生成 ${gen.length - k} 題。${seed ? `自動生成は ${seed} の朝5時に入れ替わった。` : ''}`;
+}
+
+// ---------- 画面: 計算（高分子の重合度・大問の水素付加量と燃焼分析） ----------
 function renderCalc() {
   const b = game.big;
   const P = b.P;
   const st = P.stages[b.idx];
   const ans = game.calc.answer;
+  const isPolymer = P.mode === 'polymer';
   $('#app').innerHTML = `
     <div class="stack">
       <div class="row" style="justify-content:space-between">
         <button class="btn ghost" id="back">← 問題一覧</button>
-        <span class="muted mono" style="font-size:.85rem"><span class="lv">${stars(P.level)}</span></span>
+        <span class="muted mono" style="font-size:.85rem"><span class="lv">${gradeBadge(P)}</span></span>
       </div>
       ${bigProgress()}
       <div class="board-head">
-        <div><span class="eyebrow">${esc(P.title)} ・ 繰り返し単位</span><div class="formula">${fmtFormula(P.unitFormula)}</div></div>
+        <div><span class="eyebrow">${esc(P.title)} ・ ${isPolymer ? '繰り返し単位' : '化合物 X'}</span><div class="formula">${st.key === 'combustion_x' ? '分子式 ?' : fmtFormula(isPolymer ? P.unitFormula : P.formula)}</div></div>
       </div>
-      <div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>
+      ${isPolymer ? `<div class="xcard">${molCardHtml(P.answerSmiles, '繰り返し単位（* は隣の単位とのつなぎ目）')}</div>` : ''}
       <p class="story">${esc(P.story)}</p>
-      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16</p>
+      <p class="hint mono">原子量: H = 1.0, C = 12, N = 14, O = 16${isPolymer ? '' : '　気体 1 mol = 22.4 L（標準状態）'}</p>
       <section class="panel">
         <h2>${esc(st.prompt)}</h2>
         <div class="row" id="opts">
-          ${st.choices.map((n) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-n="${n}" ${ans !== null ? 'disabled' : ''}>${n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
+          ${st.choices.map((n, i) => `<button class="btn ${ans === n ? (n === st.answer ? 'right' : 'wrong') : ''}" data-i="${i}" ${ans !== null ? 'disabled' : ''}>${typeof n === 'string' ? fmtFormula(n) : n}${st.unit ? ' ' + esc(st.unit) : ''}</button>`).join('')}
         </div>
         ${ans === null ? '<p class="hint">紙で計算してから選ぶ。</p>' : `
           <div class="verdict ${ans === st.answer ? 'ok' : 'ng'}">
@@ -865,9 +961,9 @@ function renderCalc() {
     </div>`;
   $('#back').onclick = () => show('home');
   $('#opts').onclick = (e) => {
-    const t = e.target.closest('[data-n]');
+    const t = e.target.closest('[data-i]');
     if (!t || game.calc.answer !== null) return;
-    game.calc.answer = +t.dataset.n;
+    game.calc.answer = st.choices[+t.dataset.i];
     render();
   };
   const nx = $('#next');
@@ -902,7 +998,7 @@ function renderBigDone() {
     b.recorded = true;
   }
   const scored = P.stages.filter((s) => s.type !== 'given');
-  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? (s.key === 'dp' ? '重合度の計算' : '結合・分子の数') : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
+  const label = (s) => (s.type === 'split' ? '分解（結合の数）' : s.type === 'calc' ? CALC_LONG[s.key] || '計算' : s.label === 'X' ? '組み立て' : `${P.mode === 'polymer' ? '単量体' : '断片'} ${s.label}`);
   $('#app').innerHTML = `
     <div class="stack">
       <div class="verdict ${b.allCorrect ? 'ok' : 'ng'}">
@@ -944,7 +1040,7 @@ function renderCount() {
     <div class="stack">
       <div class="row" style="justify-content:space-between">
         <button class="btn ghost" id="back">← 問題一覧</button>
-        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${stars(P.level)}</span></span>
+        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${gradeBadge(P)}</span></span>
       </div>
       <div class="board-head">
         <div><span class="eyebrow">${esc(P.scope)}</span><div class="formula">${fmtFormula(P.formula)}</div></div>
@@ -1446,7 +1542,179 @@ setInterval(() => {
   if (t && race.finished === null) t.textContent = fmtSec(raceElapsed());
 }, 100);
 
+// ---------- 画面: 京大形式（問題文と実験を全部読んでから、問1〜に答える） ----------
+const HINT_COST = 1;
+// 分子式を「C8H10O」の形にそろえる（小文字・下付き・空白・順序の違いを吸収）
+function normFormula(t) {
+  let x = String(t || '').replace(/[₀-₉]/g, (d) => '₀₁₂₃₄₅₆₇₈₉'.indexOf(d)).replace(/[\s　]/g, '')
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
+  // 小文字だけで書かれたら（c4h8o）元素記号に直す
+  if (!/[A-Z]/.test(x)) x = x.replace(/cl/g, 'Cl').replace(/br/g, 'Br').replace(/[chonsfi]/g, (c) => c.toUpperCase());
+  const c = {};
+  const re = /([A-Z][a-z]?)(\d*)/g;
+  let m, used = 0;
+  while ((m = re.exec(x))) { if (!m[0]) break; c[m[1]] = (c[m[1]] || 0) + (m[2] ? +m[2] : 1); used += m[0].length; }
+  if (used !== x.length || !Object.keys(c).length) return null;
+  const order = ['C', 'H', ...Object.keys(c).filter((e) => e !== 'C' && e !== 'H').sort()];
+  return order.filter((e) => c[e]).map((e) => e + (c[e] > 1 ? c[e] : '')).join('');
+}
+function answered(q, a) {
+  if (a === undefined || a === null || a === '' || (Array.isArray(a) && !a.length)) return false;
+  if (q.type === 'assign') return q.items.every((it) => a[it]);
+  if (q.type === 'essay') return String(a).trim().length > 0;
+  return true;
+}
+function examScore(q, a, self) {
+  if (q.type === 'essay') return Math.round(q.points * ((self && self[q.no]) || 0));
+  if (!answered(q, a) && q.type !== 'assign') return 0;
+  if (q.type === 'assign') {
+    if (!a) return 0;
+    const ok = q.items.filter((it, i) => a[it] === q.answer[i]).length;
+    return Math.round((q.points * ok) / q.items.length);
+  }
+  if (q.type === 'formula') return normFormula(a) === normFormula(q.answer) ? q.points : 0;
+  if (q.type === 'number') {
+    const v = Number(String(a).replace(/[，,]/g, '.'));
+    if (q.tol) return Math.abs(v - q.answer) <= Math.abs(q.answer) * q.tol + 1e-9 ? q.points : 0;
+    return v === Number(q.answer) ? q.points : 0;
+  }
+  if (q.type === 'multi') {
+    const hit = a.filter((x) => q.answer.includes(x)).length;
+    const miss = a.length - hit;
+    return Math.max(0, Math.round((q.points * (hit - miss)) / q.answer.length));
+  }
+  return a.length === 1 && a[0] === q.answer[0] ? q.points : 0;
+}
+const GROUP = (g) => (g === 'X' ? '化合物 X について' : g === 'rel' ? '化合物どうしの関係' : `化合物 ${g} について`);
+// 選択肢の名前は採点後にだけ出す（名前で選べないようにする）
+function molOpt(s, sel, cls = '', named = false) {
+  return `<button class="opt ${sel ? 'sel' : ''} ${cls}" data-v="${esc(s)}" aria-pressed="${sel}"><span class="mol">${molSvg(s)}</span><span class="pn">${named ? esc(molName(s)) : ''}</span></button>`;
+}
+function renderExam() {
+  const E = game.exam;
+  const P = E.P;
+  const X = P.exam;
+  const graded = E.graded;
+  E.self = E.self || {};
+  const scores = graded ? X.questions.map((q) => examScore(q, E.ans[q.no], E.self)) : [];
+  const got = scores.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
+  const groups = [];
+  X.experiments.forEach((e, i) => { if (!groups.length || groups[groups.length - 1].g !== e.group) groups.push({ g: e.group, items: [] }); groups[groups.length - 1].items.push({ e, i }); });
+  const qHtml = (q) => {
+    const a = E.ans[q.no];
+    const sc = graded ? examScore(q, a, E.self) : null;
+    let input = '';
+    if (q.type === 'assign') input = `<div class="assign">${q.items.map((it, i) => `<div class="arow"><b>${esc(it)}</b><div class="row" data-assign="${q.no}" data-item="${esc(it)}">${q.options.map((o) => `<button class="chip ${graded && q.answer[i] === o ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || {})[it] === o}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div></div>`).join('')}</div>`;
+    else if (q.type === 'essay') input = `<textarea class="ans essay" data-q="${q.no}" rows="3" placeholder="紙に書いてから打ち込む（自己採点）" ${graded ? 'disabled' : ''}>${esc(a || '')}</textarea>`;
+    else
+    if (q.type === 'formula') input = `<input class="ans" data-q="${q.no}" inputmode="text" autocomplete="off" placeholder="例: C8H10O" value="${esc(a || '')}" ${graded ? 'disabled' : ''}>`;
+    else if (q.type === 'number') input = `<span class="numrow"><input class="ans" data-q="${q.no}" type="number" inputmode="numeric" value="${esc(a ?? '')}" ${graded ? 'disabled' : ''}> ${esc(q.unit || '')}</span>`;
+    else if (q.type === 'choice') input = `<div class="row" data-qopts="${q.no}">${q.options.map((o) => `<button class="chip ${graded && q.answer.includes(o) ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || []).includes(o)}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>`;
+    else input = `<div class="optgrid ${q.options.some((o) => o.replace(/[^A-Za-z]/g, '').length > 16) ? 'wide' : ''}" data-qopts="${q.no}" data-multi="${q.type === 'multi'}">${q.options.map((o) => molOpt(o, (a || []).includes(o), graded ? (q.answer.includes(o) ? 'right' : (a || []).includes(o) ? 'wrong' : '') : '', graded)).join('')}</div>`;
+    const answerText = q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0])
+      : q.type === 'assign' ? q.items.map((it, i) => `${esc(it)} → ${esc(q.answer[i])}`).join('、') : q.type === 'essay' ? `（模範解答）${esc(q.model)}`
+      : `緑の枠の構造${q.answer.map((s) => DATA.molecules[s] && DATA.molecules[s].name).filter(Boolean).length ? `（${q.answer.map((s) => DATA.molecules[s] && DATA.molecules[s].name).filter(Boolean).map(esc).join('、')}）` : ''}`;
+    const selfBtns = graded && q.type === 'essay' ? `<div class="row selfgrade" data-self="${q.no}"><span class="muted">自己採点:</span>${[[1, '要点がすべて入っている'], [0.5, '半分'], [0, '入っていない']].map(([v, t]) => `<button class="chip" data-sv="${v}" aria-pressed="${E.self[q.no] === v}">${t}</button>`).join('')}</div>` : '';
+    return `<section class="q ${graded ? (sc === q.points ? 'ok' : sc > 0 ? 'part' : 'ng') : ''}" id="q${q.no}">
+      ${graded ? `<span class="stamp" aria-hidden="true">${sc === q.points ? '〇' : sc > 0 ? '△' : '×'}</span>` : ''}
+      <div class="qhead"><b>問${q.no}</b><span class="pts">${graded ? `${sc} / ` : ''}${q.points} 点</span></div>
+      <p class="qp">${esc(q.prompt)}${q.type === 'multi' ? '<span class="muted">（複数選択）</span>' : ''}</p>
+      ${input}
+      ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p>${selfBtns}</div>` : ''}
+    </section>`;
+  };
+  $('#app').innerHTML = `
+    <div class="stack exam">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" id="back">← 問題一覧</button>
+        <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${gradeBadge(P)}</span></span>
+      </div>
+      <header><span class="eyebrow">京大形式 ・ ${esc(P.title || '')}</span></header>
+      <section class="sheet">
+        ${X.rules && X.rules.length ? `<div class="rules"><b>この問題で用いる反応の規則</b>${X.rules.map((ru) => `<p><span class="rn">${esc(ru.name)}</span> ${esc(ru.text)}</p>`).join('')}</div>` : ''}
+        <p class="story">${esc(X.intro)}</p>
+        ${groups.map((gr) => `<h3 class="grp">${GROUP(gr.g)}</h3>
+          <ol class="exps">${gr.items.map(({ e, i }) => `<li>
+            <span class="lab">${esc(e.label)}</span><span class="tx">${esc(e.text)}</span>
+            ${e.figs && e.figs.length ? `<div class="figs">${e.figs.map((f) => `<div class="fig"><span class="mol">${molSvg(f)}</span><span class="pn">${esc(molName(f))}</span></div>`).join('')}</div>` : ''}
+            ${e.hint ? `<button class="hintbtn" data-h="${i}" aria-expanded="${E.hints.has(i)}">${E.hints.has(i) ? 'わかること' : `わかること（−${HINT_COST}点）`}</button>${E.hints.has(i) ? `<p class="hinttx">${esc(e.hint)}</p>` : ''}` : ''}
+          </li>`).join('')}</ol>`).join('')}
+        <p class="hint">原子量: H = 1.0, C = 12, N = 14, O = 16。気体 1 mol = 22.4 L（標準状態）。構造は紙に書いてから選ぶ。</p>
+      </section>
+      ${X.questions.map(qHtml).join('')}
+      ${graded ? `<div class="verdict ${got >= X.total * 0.8 ? 'ok' : 'ng'}"><h2>${got} / ${X.total} 点</h2>
+        <span class="score">${E.hints.size ? `ヒント ${E.hints.size} 回で −${E.hints.size * HINT_COST}` : 'ヒントなし'}</span></div>
+        <div class="row"><button class="btn primary" id="next">次の問題（おまかせ）</button><button class="btn" id="retry">解き直す</button><button class="btn ghost" id="home">問題一覧</button></div>` : ''}
+    </div>
+    ${graded ? '' : `<div class="dock"><div class="dock-in"><p class="hint">${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答</p><button class="btn primary" id="grade">採点する</button></div></div>`}`;
+  $('#back').onclick = () => show('home');
+  const app = $('#app');
+  app.oninput = (e) => {
+    const t = e.target.closest('input.ans, textarea.ans');
+    if (!t || graded) return;
+    E.ans[+t.dataset.q] = t.value;
+    const dock = document.querySelector('.dock .hint');
+    if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
+  };
+  app.onclick = (e) => {
+    const h = e.target.closest('[data-h]');
+    if (h) { E.hints.add(+h.dataset.h); const y = window.scrollY; renderExam(); window.scrollTo(0, y); return; }
+    const asg = e.target.closest('[data-assign] [data-v]');
+    if (asg && !graded) {
+      const row = asg.closest('[data-assign]');
+      const no = +row.dataset.assign;
+      E.ans[no] = { ...(E.ans[no] || {}), [row.dataset.item]: asg.dataset.v };
+      row.querySelectorAll('[data-v]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === asg.dataset.v));
+      const dock = document.querySelector('.dock .hint');
+      if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
+      return;
+    }
+    const sv = e.target.closest('[data-self] [data-sv]');
+    if (sv && graded) {
+      E.self[+sv.closest('[data-self]').dataset.self] = +sv.dataset.sv;
+      const y = window.scrollY; renderExam(); window.scrollTo(0, y);
+      return;
+    }
+    const opt = e.target.closest('[data-qopts] [data-v]');
+    if (opt && !graded) {
+      const box = opt.closest('[data-qopts]');
+      const no = +box.dataset.qopts;
+      const multi = box.dataset.multi === 'true';
+      const v = opt.dataset.v;
+      let cur = E.ans[no] || [];
+      cur = multi ? (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]) : (cur[0] === v ? [] : [v]);
+      E.ans[no] = cur;
+      box.querySelectorAll('[data-v]').forEach((b) => { const on = cur.includes(b.dataset.v); b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
+      const dock = document.querySelector('.dock .hint');
+      if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
+      return;
+    }
+    if (e.target.id === 'grade') {
+      const empty = X.questions.filter((q) => !answered(q, E.ans[q.no])).length;
+      // 確認ダイアログは使えない環境があるので、ページの中で2回押しにする
+      if (empty && !E.confirmGrade) {
+        E.confirmGrade = true;
+        const dock = document.querySelector('.dock .hint');
+        if (dock) dock.innerHTML = `<b style="color:var(--pos)">${empty} 問が未解答。</b>もう一度押すと採点する`;
+        e.target.textContent = 'このまま採点';
+        return;
+      }
+      E.graded = true;
+      const sc = X.questions.map((q) => examScore(q, E.ans[q.no], E.self));
+      const total = sc.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
+      record(P.id, sc.every((v, i) => v === X.questions[i].points), Math.max(0, Math.round((100 * total) / X.total)));
+      render(); window.scrollTo(0, 0);
+      return;
+    }
+    if (e.target.id === 'next') { app.onclick = null; app.oninput = null; startProblem(pickProblem(view.level, P.id)); return; }
+    if (e.target.id === 'retry') { app.onclick = null; app.oninput = null; startProblem(P); return; }
+    if (e.target.id === 'home') { app.onclick = null; app.oninput = null; show('home'); }
+  };
+}
+
 function render() {
+  const app0 = document.getElementById('app');
+  if (view.screen !== 'exam' && app0) { app0.onclick = null; app0.oninput = null; }
   const s = view.screen;
   if (s === 'play' && game && game.p) renderPlay();
   else if (s === 'result' && game && game.done) renderResult();
@@ -1459,6 +1727,7 @@ function render() {
   else if (s === 'race') renderRaceHome();
   else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();
   else if (s === 'count' && game && game.count) renderCount();
+  else if (s === 'exam' && game && game.exam) renderExam();
   else renderHome();
 }
 
