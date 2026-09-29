@@ -614,4 +614,15 @@ function templateFor(classes) {
   return null;
 }
 
-module.exports = { biasRelations, fragmentInfo, allAssembliesWithVariants, CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };
+// 難易度の6段階。京大の答えを同じ手順で問題化したときの難易度の分布（min・25%・中央・75%・max）を物差しにする
+const GRADES = ['基礎', '標準', '京大下位', '京大平均', '京大上位', '京大超え'];
+function gradeOf(d, st) {
+  if (d < st.p25 * 0.7) return 1;
+  if (d < st.p25) return 2;
+  if (d < st.median) return 3;
+  if (d < st.p75) return 4;
+  if (d < st.max) return 5;
+  return 6;
+}
+
+module.exports = { GRADES, gradeOf, biasRelations, fragmentInfo, allAssembliesWithVariants, CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };

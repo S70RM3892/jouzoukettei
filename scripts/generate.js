@@ -81,6 +81,8 @@ async function main() {
   const ks = kyoto.map((k) => k.d);
   const lo = Math.round(quantile(ks, 0.25) * 10) / 10;
   const hi = Math.round(Math.max(...ks) * 1.25 * 10) / 10;
+  const kstats = { min: Math.min(...ks), p25: quantile(ks, 0.25), median: quantile(ks, 0.5), p75: quantile(ks, 0.75), max: Math.max(...ks) };
+  console.log(`難易度の6段階の境目: 基礎 < ${(kstats.p25 * 0.7).toFixed(1)} ≦ 標準 < ${kstats.p25.toFixed(1)} ≦ 京大下位 < ${kstats.median.toFixed(1)} ≦ 京大平均 < ${kstats.p75.toFixed(1)} ≦ 京大上位 < ${kstats.max.toFixed(1)} ≦ 京大超え`);
   console.log(`京大の答え ${Object.keys(DATA.structures).length} 個のうち ${kyoto.length} 個を生成器の型で再現できた`);
   kyoto.forEach((k) => console.log(`  ${k.y.padEnd(5)} 型=${k.template.padEnd(15)} 難易度 ${k.d.toFixed(1)}`));
   console.log(`採用する難易度: ${lo} 〜 ${hi}（京大の下位25% 〜 最大の1.25倍）`);
@@ -126,6 +128,7 @@ async function main() {
   const cap = Math.ceil(N / 4);
   const seenX = new Set(kyoto.map((k) => k.p.answer));
   const stats = { tried: 0, invalid: 0, band: 0, dup: 0 };
+  const perGrade = {};
   const seenSig = new Set();
   for (let i = 0; i < N * 200 && out.length < N; i++) {
     let spec = G.sampleSpec(r, lib, finalW);
@@ -143,7 +146,11 @@ async function main() {
     // 多様性: 同じ型で同じ分類の組み合わせ（例: フタル酸＋アルコール2つ）は1日1問まで
     const sig = spec.template + ':' + p.fragments.map((f) => (f.given ? 'g' : f.kind)).sort().join('+');
     if (seenSig.has(sig)) { stats.dup++; continue; }
-    if (p.meta.difficulty < lo || p.meta.difficulty > hi) { stats.band++; continue; }
+    // 6段階それぞれから同じくらいの数を出す（段階ごとの上限 = N/6 を切り上げ）
+    const g = G.gradeOf(p.meta.difficulty, kstats);
+    if (p.meta.difficulty > hi * 1.3 || (perGrade[g] || 0) >= Math.ceil(N / 6)) { stats.band++; continue; }
+    perGrade[g] = (perGrade[g] || 0) + 1;
+    p.meta.grade = g;
     const v = checkBig(RDKit, p);
     if (v.errors.length) { stats.invalid++; console.log('  検証で落とした: ' + v.errors[0]); continue; }
     seenX.add(p.answer);
@@ -165,7 +172,9 @@ async function main() {
   const top = Object.keys(forecast.probs).slice(0, 12);
   console.log(`${forecast.target}年度の予測上位12要素のうち、今日の問題で練習できるもの ${top.filter((t) => tagsIn.has(t)).length}/12: ${top.filter((t) => tagsIn.has(t)).map((t) => DATA.tags[t]).join('、')}`);
 
-  const problems = [...kyoto.map((k) => k.p), ...out].map((p) => ({ ...p, meta: { ...p.meta, seed: seedStr, band: [lo, hi] } }));
+  kyoto.forEach((k) => { k.p.meta.grade = G.gradeOf(k.p.meta.difficulty, kstats); });
+  console.log('段階ごとの問題数: ' + G.GRADES.map((n, i) => `${n} ${out.filter((p) => p.meta.grade === i + 1).length}`).join('・'));
+  const problems = [...kyoto.map((k) => k.p), ...out].map((p) => ({ ...p, meta: { ...p.meta, seed: seedStr, band: [lo, hi], kyotoStats: kstats } }));
   fs.writeFileSync(path.join(ROOT, 'problems', 'generated.json'), JSON.stringify(problems, null, 1) + '\n');
   console.log(`problems/generated.json に ${problems.length} 問（京大の再現 ${kyoto.length}・自動生成 ${out.length}）を書いた`);
 }

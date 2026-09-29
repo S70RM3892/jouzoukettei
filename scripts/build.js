@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const chem = require('../src/chem');
 const { buildExam } = require('../src/exam');
+const G = require('../src/generator');
 const { infer } = require('../src/inference');
 const { loadRDKit, loadProblems, checkAny } = require('./validate');
 
@@ -151,13 +152,22 @@ async function main() {
 
   const out = [];
   const rejected = [];
+  // 京大の答えの難易度分布（generate.js が書いたもの。なければ既定値）
+  const genP = problems.find((p) => p.meta && p.meta.kyotoStats);
+  const kyotoStats = genP ? genP.meta.kyotoStats : { min: 7, p25: 12, median: 14, p75: 16, max: 25 };
   for (const p of problems) {
     const r = checkAny(RDKit, p);
     if (r.errors.length) {
       rejected.push(...r.errors);
       continue; // 検証に落ちた問題は収録しない
     }
-    const base = { id: p.id, mode: p.mode, level: p.level || 1, formula: p.formula };
+    // 6段階の難易度: 大問は京大の答えと同じ物差しの難易度から、ほかは手作りの level（1〜3）をそのまま
+    let grade = p.level || 1;
+    if (p.mode === 'big') {
+      const d = p.meta && p.meta.difficulty !== undefined ? p.meta.difficulty : G.difficulty(p);
+      grade = G.gradeOf(d, kyotoStats);
+    }
+    const base = { id: p.id, mode: p.mode, level: p.level || 1, grade, formula: p.formula };
     if (p.mode === 'narrow') {
       out.push(narrowData(r, p.clues, base));
     } else if (p.mode === 'big') {
@@ -233,7 +243,7 @@ async function main() {
   for (const [k, v] of Object.entries(chem.CARDS)) {
     cards[k] = { name: v.name, action: v.action, kind: v.kind, yes: v.yes, no: v.no, none: v.none };
   }
-  const data = { version: 2, cards, molecules, problems: out };
+  const data = { version: 2, cards, molecules, problems: out, grades: G.GRADES, kyotoStats };
 
   const template = fs.readFileSync(path.join(ROOT, 'src', 'index.html'), 'utf8');
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
