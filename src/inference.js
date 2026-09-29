@@ -151,4 +151,26 @@ const NAMES = {
   nitration: 'ニトロ化', sulfonation: 'スルホン化', hydrolysis: '加水分解', acetylation: 'アセチル化', azo_coupling: 'ジアゾカップリング',
 };
 
-module.exports = { sentence, infer, NAMES };
+// 「A を〜すると化合物 D が得られた」
+function derivation(op, subject, label, cards) {
+  const [pa, verb] = V[op] || ['について', `「${cards[op].action}」の操作を行うと`];
+  return `${subject} ${pa}${verb}、化合物 ${label} が得られた。`;
+}
+// 化合物どうしの関係
+function relation(rl, cards) {
+  const [pa, verb] = V[rl.op] || ['について', `「${cards[rl.op].action}」の操作を行うと`];
+  if (rl.type === 'yields') return `化合物 ${rl.a} ${pa}${verb}、化合物 ${rl.b} が得られた。`;
+  const both = pa === 'を' ? 'をそれぞれ' : pa === 'に' ? 'にそれぞれ' : `${pa}それぞれ`;
+  return `化合物 ${rl.a} と化合物 ${rl.b} ${both}${verb}、同じ化合物が得られた。`;
+}
+function relationHint(rl, cards) {
+  const base = infer(rl.op, [], cards);
+  if (rl.type === 'yields') return `${rl.b} は ${rl.a} から得られる。${rl.a} の候補それぞれにこの反応を当てはめ、生成物が ${rl.b} の候補に入るものだけが残る。${base}`;
+  return `${rl.a} と ${rl.b} は、この反応で消える部分以外（炭素骨格など）が同じ。${base}`;
+}
+
+// 問題文の最初に「規則」として示す反応（教科書の外の反応・京大で問題文に与えられたもの）
+const RULE_CARDS = ['markovnikov', 'acetylation_primary', 'periodate', 'acetonide', 'acetal_etoh', 'acetal_meoh', 'acetal_hydrolysis',
+  'imide_hydrolysis', 'ether_hydrogenolysis', 'ring_hydrogenolysis', 'kmno4_cleave', 'carbon_env', 'br2_anti', 'h2_syn', 'sugar_degrade', 'methylation_analysis'];
+
+module.exports = { sentence, infer, NAMES, derivation, relation, relationHint, RULE_CARDS };

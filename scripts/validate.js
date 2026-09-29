@@ -153,7 +153,8 @@ function checkBig(RDKit, P) {
     seen.add(a);
     const formula = chem.formula(chem.graphFromSmiles(RDKit, a));
     let r = null;
-    if (!f.given) {
+    // 化合物どうしの関係を使う大問（chain）は、断片ごとではなく全体で1通りに決まるかを下で調べる
+    if (!f.given && !P.chain) {
       r = checkNarrow(RDKit, { id: `${P.id}/${f.label}`, formula, answer: a, candidates: f.candidates, clues: f.clues });
       errors.push(...r.errors);
     }
@@ -172,6 +173,7 @@ function checkBig(RDKit, P) {
     });
     assemble = { r, clues: P.assemble.clues };
   }
+  if (P.chain) require('../src/chain').check(RDKit, P).forEach((m) => err(m));
   // 計算段階: 問題文の数値から答えを計算し直して一致を確かめる
   for (const c of P.calcs || []) {
     if (!c.choices || !c.choices.includes(c.answer) || new Set(c.choices).size !== c.choices.length) err(`calc ${c.key}: choices must contain the answer once`);

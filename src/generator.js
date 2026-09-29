@@ -324,7 +324,10 @@ function difficulty(p) {
   const stereo = [...cardTypes].filter((c) => c === 'chiral' || c === 'cis_trans').length;
   const novel = [...cardTypes].filter((c) => CARD_TAG[c] === 'novel_rule').length;
   const nC = calc.counts(p.formula).C;
-  return Math.round((poolBits + 1.2 * clues + 0.6 * cardTypes.size + 1.0 * stereo + 2.0 * novel + (p.assemble ? 2 : 0) + (p.calcs || []).length + 0.15 * nC) * 10) / 10;
+  // 化合物どうしの関係と誘導体は、全体を同時に考えさせるので重くする
+  const ders = (p.derived || []).length + (p.derived || []).reduce((a, d) => a + d.clues.length, 0) * 0.8;
+  const rels = (p.relations || []).length * 2.5;
+  return Math.round((poolBits + 1.2 * clues + 0.6 * cardTypes.size + 1.0 * stereo + 2.0 * novel + (p.assemble ? 2 : 0) + (p.calcs || []).length + 0.15 * nC + 1.5 * ders + rels) * 10) / 10;
 }
 
 // ---------- 組み立て全体 ----------
@@ -339,6 +342,8 @@ const TEMPLATES = {
   linker: { title: 'ヒドロキシ酸でつないだエステル', tag: 'partial_hydrolysis', parts: [['diacid', 'ardiacid'], ['hydroxyacid'], ['alcohol', 'aralcohol'], ['alcohol', 'aralcohol', 'phenol']] },
   // 京大2009: 芳香族三価カルボン酸にフェノール・アルコール・アミンがつく
   triacid: { title: '三価カルボン酸のエステルとアミド', tag: 'amide_hydrolysis', parts: [['artriacid'], ['phenol', 'alcohol', 'aralcohol'], ['phenol', 'alcohol', 'aralcohol'], ['aniline', 'amine', 'phenol']] },
+  // 京大の定番: アルコールと、それを酸化したカルボン酸（または同じ骨格の別の官能基）からできたエステル
+  ester_pair: { title: 'エステル（酸とアルコールの関係）', tag: 'alcohol_oxidation', parts: [['hydroxyacid'], ['acid'], ['alcohol']] },
   // 京大2003: 環状ケトンのエノールエステル。どちら側のα炭素でエノールになったかを不斉炭素などで決める
   enol_ring: { title: '環状ケトンのエノールエステル', tag: 'enol_tautomer', parts: [['acid', 'aracid'], ['cyclocarbonyl']] },
 };
@@ -507,6 +512,18 @@ function buildProblem(RDKit, r, lib, weights, spec) {
     story, formula, answer: X, fragments, assemble, calcs, hideFormula,
     meta: { bonds, template: spec.template || 'kakomon', frags: frags.map((f) => f.cls) },
   };
+  // 京大型: 化合物どうしの関係・誘導体を混ぜて、全体を同時に考えないと決まらない手がかりの組に作り直す
+  if (spec.chain !== false) {
+    const Ch = require('./chain');
+    let d = null;
+    for (let t = 0; t < 4 && !d; t++) d = Ch.design(RDKit, r, problem);
+    if (d && (d.derived.length || d.relations.length)) {
+      problem.fragments = d.fragments;
+      problem.derived = d.derived;
+      problem.relations = d.relations;
+      problem.chain = true;
+    }
+  }
   problem.meta.difficulty = difficulty(problem);
   return problem;
 }
@@ -540,6 +557,32 @@ function cardWeights(forecast) {
   return w;
 }
 
+// 化合物どうしの関係（A を酸化すると C、A と B を水素付加すると同じ化合物）が生まれるように、断片の1つを選び直す
+const REL = ['kmno4', 'hydrogenation', 'dehydration', 'markovnikov', 'kmno4_cleave', 'mild_oxidation'];
+function biasRelations(RDKit, r, lib, spec) {
+  const out = { ...spec, frags: spec.frags.map((f) => ({ ...f })) };
+  const opOf = (o, s) => { try { const v = chem.evaluate(RDKit, o, s); return Array.isArray(v) && v.length === 1 ? chem.canonical(RDKit, v[0]) : null; } catch (e) { return null; } };
+  // 候補が3つ以上ある（与えられない）断片の分類の、出題できる構造
+  const poolOf = (cls) => Object.values(lib).filter((e) => e.cls === cls && e.pool.length >= 3).flatMap((e) => e.solvable.map((k) => e.pool[k]));
+  const tries = [];
+  out.frags.forEach((fi, i) => out.frags.forEach((fj, j) => { if (i !== j && fi.cls !== 'glycerol' && fj.cls !== 'glycerol') REL.forEach((o) => tries.push([i, j, o])); }));
+  tries.sort(() => r() - 0.5);
+  for (const [i, j, o] of tries) {
+    const self = chem.canonical(RDKit, out.frags[i].smiles);
+    const other = chem.canonical(RDKit, out.frags[j].smiles);
+    // 向き1: B を置き換える。A を o すると B（yields）か、A と B を o すると同じ化合物（same）
+    const pi = opOf(o, self);
+    if (pi) {
+      const hits = poolOf(out.frags[j].cls).filter((m) => m !== self && (m === pi || (o !== 'mild_oxidation' && opOf(o, m) === pi)));
+      if (hits.length) { out.frags[j].smiles = pick(r, hits); return out; }
+    }
+    // 向き2: A を置き換える。B（与えられた酸などでもよい）が A から o で得られるように
+    const src = poolOf(out.frags[i].cls).filter((m) => m !== other && opOf(o, m) === other);
+    if (src.length) { out.frags[i].smiles = pick(r, src); return out; }
+  }
+  return spec;
+}
+
 // 過去問の X を分解して断片の分類を推定（再現と到達範囲の確認用）
 function classify(RDKit, lib, smiles) {
   const can = chem.canonical(RDKit, smiles);
@@ -571,4 +614,4 @@ function templateFor(classes) {
   return null;
 }
 
-module.exports = { fragmentInfo, allAssembliesWithVariants, CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };
+module.exports = { biasRelations, fragmentInfo, allAssembliesWithVariants, CARD_TAG, templateWeights, templateFor, chooseClues, valueTable, FRAG_CARDS, rng, buildLibrary, buildProblem, sampleSpec, cardWeights, difficulty, classify, TEMPLATES };

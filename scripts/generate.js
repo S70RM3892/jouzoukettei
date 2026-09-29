@@ -127,8 +127,10 @@ async function main() {
   const seenX = new Set(kyoto.map((k) => k.p.answer));
   const stats = { tried: 0, invalid: 0, band: 0, dup: 0 };
   const seenSig = new Set();
-  for (let i = 0; i < N * 60 && out.length < N; i++) {
-    const spec = G.sampleSpec(r, lib, finalW);
+  for (let i = 0; i < N * 200 && out.length < N; i++) {
+    let spec = G.sampleSpec(r, lib, finalW);
+    // 7 割の問題で、断片どうしに関係が生まれるように寄せる（京大型の「A を酸化すると C」など）
+    if (spec && r() < 0.7) spec = G.biasRelations(RDKit, r, lib, spec);
     if (!spec || (perTpl[spec.template] || 0) >= cap) continue;
     stats.tried++;
     spec.id = `g${seedStr}-${String(out.length + 1).padStart(2, '0')}`;
@@ -136,6 +138,8 @@ async function main() {
     try { p = G.buildProblem(RDKit, r, lib, weights, spec); } catch (e) { p = null; }
     if (!p) { stats.invalid++; continue; }
     if (seenX.has(p.answer)) { stats.dup++; continue; }
+    // 京大型: 化合物どうしの関係を含む問題を 6 割以上にする
+    if (!(p.relations && p.relations.length) && out.length >= 2 && out.filter((x) => x.relations && x.relations.length).length < Math.ceil(out.length * 0.6)) { stats.norel = (stats.norel || 0) + 1; continue; }
     // 多様性: 同じ型で同じ分類の組み合わせ（例: フタル酸＋アルコール2つ）は1日1問まで
     const sig = spec.template + ':' + p.fragments.map((f) => (f.given ? 'g' : f.kind)).sort().join('+');
     if (seenSig.has(sig)) { stats.dup++; continue; }
@@ -147,7 +151,7 @@ async function main() {
     perTpl[spec.template] = (perTpl[spec.template] || 0) + 1;
     out.push(p);
   }
-  console.log(`生成: ${out.length} 問（試行 ${stats.tried}、作れない ${stats.invalid}、難易度が範囲外 ${stats.band}、重複 ${stats.dup}）`);
+  console.log(`生成: ${out.length} 問（試行 ${stats.tried}、作れない ${stats.invalid}、難易度が範囲外 ${stats.band}、重複 ${stats.dup}、関係なしで見送り ${stats.norel || 0}）。化合物どうしの関係を含む問題 ${out.filter((x) => x.relations && x.relations.length).length} 問、誘導体を含む問題 ${out.filter((x) => x.derived && x.derived.length).length} 問`);
   out.forEach((p) => console.log(`  ${p.id} ${p.meta.template.padEnd(15)} ${p.formula.padEnd(10)} 難易度 ${p.meta.difficulty}  ${p.answer}`));
 
   // 予測の上位の出題要素のうち、今日の問題で練習できるもの

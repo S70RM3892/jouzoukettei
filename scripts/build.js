@@ -27,9 +27,12 @@ function drawSvg(RDKit, smiles) {
   const mol = RDKit.get_mol(chem.expand(smiles));
   try {
     mol.set_new_coords && mol.set_new_coords(true);
+    // 原子の多い分子（X など）は枠を広げて描く（縮めて文字が読めなくならないように）
+    const heavy = mol.get_num_atoms ? mol.get_num_atoms() : 0;
+    const big = heavy > 16;
     const details = {
-      width: 240,
-      height: 170,
+      width: big ? Math.min(560, 200 + heavy * 12) : 240,
+      height: big ? 240 : 170,
       bondLineWidth: 1.6,
       fixedBondLength: 38,
       minFontSize: 13,
@@ -167,7 +170,7 @@ async function main() {
         bonds: r.bonds,
         products: r.frags.map((f) => ({ label: f.label, formula: f.formula, count: f.count })),
       });
-      for (const f of r.frags) {
+      for (const f of (p.chain ? [] : r.frags)) {
         addMol(f.answer);
         if (f.given) stages.push({ type: 'given', label: f.label, smiles: f.answer, note: f.note });
         else stages.push(narrowData(f.r, f.clues, { type: 'narrow', label: f.label, id: `${p.id}/${f.label}`, formula: f.formula, level: p.level }));
@@ -182,7 +185,7 @@ async function main() {
       try {
         const e = buildExam(RDKit, p);
         e.mols.forEach(addMol);
-        exam = { intro: e.intro, experiments: e.experiments, questions: e.questions, total: e.total };
+        exam = { rules: e.rules, intro: e.intro, experiments: e.experiments, questions: e.questions, total: e.total };
       } catch (err) { console.warn(`exam skipped for ${p.id}: ${err.message}`); }
       if (p.generated) {
         // 京大の過去問の再現と自動生成は「京大レベル」モードにまとめる

@@ -232,11 +232,21 @@ button { font: inherit; color: inherit; }
 .exam input.ans { font: inherit; font-size: 1.05rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); width: 11em; max-width: 100%; }
 .exam .numrow input.ans { width: 6em; }
 .exam .optgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
+.exam .optgrid.wide { grid-template-columns: 1fr; }
 .exam .opt { font: inherit; background: var(--paper); border: 2px solid var(--line); border-radius: 10px; padding: 3px; cursor: pointer; color: var(--ink); }
 .exam .opt.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .exam .opt.right { border-color: var(--ok); }
 .exam .opt.wrong { border-color: var(--pos); }
 .exam .chip.right { border-color: var(--ok); }
+.exam .rules { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; background: var(--surface); font-size: 0.9rem; line-height: 1.7; }
+.exam .rules p { margin: 6px 0 0; }
+.exam .rules .rn { font-weight: 700; margin-right: 4px; }
+.exam .assign { display: grid; gap: 8px; }
+.exam .arow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.exam .arow > b { min-width: 1.5em; }
+.exam textarea.ans { font: inherit; width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); }
+.exam .selfgrade { margin-top: 8px; gap: 6px; align-items: center; }
+.exam .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .exam .expl { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 0.88rem; line-height: 1.7; }
 .exam .expl p { margin: 4px 0; }
 .molcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
@@ -1510,10 +1520,26 @@ function normFormula(t) {
   const order = ['C', 'H', ...Object.keys(c).filter((e) => e !== 'C' && e !== 'H').sort()];
   return order.filter((e) => c[e]).map((e) => e + (c[e] > 1 ? c[e] : '')).join('');
 }
-function examScore(q, a) {
-  if (a === undefined || a === null || a === '' || (Array.isArray(a) && !a.length)) return 0;
+function answered(q, a) {
+  if (a === undefined || a === null || a === '' || (Array.isArray(a) && !a.length)) return false;
+  if (q.type === 'assign') return q.items.every((it) => a[it]);
+  if (q.type === 'essay') return String(a).trim().length > 0;
+  return true;
+}
+function examScore(q, a, self) {
+  if (q.type === 'essay') return Math.round(q.points * ((self && self[q.no]) || 0));
+  if (!answered(q, a) && q.type !== 'assign') return 0;
+  if (q.type === 'assign') {
+    if (!a) return 0;
+    const ok = q.items.filter((it, i) => a[it] === q.answer[i]).length;
+    return Math.round((q.points * ok) / q.items.length);
+  }
   if (q.type === 'formula') return normFormula(a) === normFormula(q.answer) ? q.points : 0;
-  if (q.type === 'number') return Number(a) === Number(q.answer) ? q.points : 0;
+  if (q.type === 'number') {
+    const v = Number(String(a).replace(/[，,]/g, '.'));
+    if (q.tol) return Math.abs(v - q.answer) <= Math.abs(q.answer) * q.tol + 1e-9 ? q.points : 0;
+    return v === Number(q.answer) ? q.points : 0;
+  }
   if (q.type === 'multi') {
     const hit = a.filter((x) => q.answer.includes(x)).length;
     const miss = a.length - hit;
@@ -1521,7 +1547,7 @@ function examScore(q, a) {
   }
   return a.length === 1 && a[0] === q.answer[0] ? q.points : 0;
 }
-const GROUP = (g) => (g === 'X' ? '化合物 X について' : `化合物 ${g} について`);
+const GROUP = (g) => (g === 'X' ? '化合物 X について' : g === 'rel' ? '化合物どうしの関係' : `化合物 ${g} について`);
 // 選択肢の名前は採点後にだけ出す（名前で選べないようにする）
 function molOpt(s, sel, cls = '', named = false) {
   return `<button class="opt ${sel ? 'sel' : ''} ${cls}" data-v="${esc(s)}" aria-pressed="${sel}"><span class="mol">${molSvg(s)}</span><span class="pn">${named ? esc(molName(s)) : ''}</span></button>`;
@@ -1531,24 +1557,30 @@ function renderExam() {
   const P = E.P;
   const X = P.exam;
   const graded = E.graded;
-  const scores = graded ? X.questions.map((q) => examScore(q, E.ans[q.no])) : [];
+  E.self = E.self || {};
+  const scores = graded ? X.questions.map((q) => examScore(q, E.ans[q.no], E.self)) : [];
   const got = scores.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
   const groups = [];
   X.experiments.forEach((e, i) => { if (!groups.length || groups[groups.length - 1].g !== e.group) groups.push({ g: e.group, items: [] }); groups[groups.length - 1].items.push({ e, i }); });
   const qHtml = (q) => {
     const a = E.ans[q.no];
-    const sc = graded ? examScore(q, a) : null;
+    const sc = graded ? examScore(q, a, E.self) : null;
     let input = '';
+    if (q.type === 'assign') input = `<div class="assign">${q.items.map((it, i) => `<div class="arow"><b>${esc(it)}</b><div class="row" data-assign="${q.no}" data-item="${esc(it)}">${q.options.map((o) => `<button class="chip ${graded && q.answer[i] === o ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || {})[it] === o}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div></div>`).join('')}</div>`;
+    else if (q.type === 'essay') input = `<textarea class="ans essay" data-q="${q.no}" rows="3" placeholder="紙に書いてから打ち込む（自己採点）" ${graded ? 'disabled' : ''}>${esc(a || '')}</textarea>`;
+    else
     if (q.type === 'formula') input = `<input class="ans" data-q="${q.no}" inputmode="text" autocomplete="off" placeholder="例: C8H10O" value="${esc(a || '')}" ${graded ? 'disabled' : ''}>`;
     else if (q.type === 'number') input = `<span class="numrow"><input class="ans" data-q="${q.no}" type="number" inputmode="numeric" value="${esc(a ?? '')}" ${graded ? 'disabled' : ''}> ${esc(q.unit || '')}</span>`;
     else if (q.type === 'choice') input = `<div class="row" data-qopts="${q.no}">${q.options.map((o) => `<button class="chip ${graded && q.answer.includes(o) ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || []).includes(o)}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>`;
-    else input = `<div class="optgrid" data-qopts="${q.no}" data-multi="${q.type === 'multi'}">${q.options.map((o) => molOpt(o, (a || []).includes(o), graded ? (q.answer.includes(o) ? 'right' : (a || []).includes(o) ? 'wrong' : '') : '', graded)).join('')}</div>`;
-    const answerText = q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0]) : q.answer.map((s) => esc(molName(s))).join('、');
+    else input = `<div class="optgrid ${q.options.some((o) => o.replace(/[^A-Za-z]/g, '').length > 16) ? 'wide' : ''}" data-qopts="${q.no}" data-multi="${q.type === 'multi'}">${q.options.map((o) => molOpt(o, (a || []).includes(o), graded ? (q.answer.includes(o) ? 'right' : (a || []).includes(o) ? 'wrong' : '') : '', graded)).join('')}</div>`;
+    const answerText = q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0])
+      : q.type === 'assign' ? q.items.map((it, i) => `${esc(it)} → ${esc(q.answer[i])}`).join('、') : q.type === 'essay' ? `（模範解答）${esc(q.model)}` : q.answer.map((s) => esc(molName(s))).join('、');
+    const selfBtns = graded && q.type === 'essay' ? `<div class="row selfgrade" data-self="${q.no}"><span class="muted">自己採点:</span>${[[1, '要点がすべて入っている'], [0.5, '半分'], [0, '入っていない']].map(([v, t]) => `<button class="chip" data-sv="${v}" aria-pressed="${E.self[q.no] === v}">${t}</button>`).join('')}</div>` : '';
     return `<section class="q ${graded ? (sc === q.points ? 'ok' : sc > 0 ? 'part' : 'ng') : ''}" id="q${q.no}">
       <div class="qhead"><b>問${q.no}</b><span class="pts">${graded ? `${sc} / ` : ''}${q.points} 点</span></div>
       <p class="qp">${esc(q.prompt)}${q.type === 'multi' ? '<span class="muted">（複数選択）</span>' : ''}</p>
       ${input}
-      ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p></div>` : ''}
+      ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p>${selfBtns}</div>` : ''}
     </section>`;
   };
   $('#app').innerHTML = `
@@ -1559,6 +1591,7 @@ function renderExam() {
       </div>
       <header><span class="eyebrow">京大形式 ・ ${esc(P.title || '')}</span></header>
       <section class="sheet">
+        ${X.rules && X.rules.length ? `<div class="rules"><b>この問題で用いる反応の規則</b>${X.rules.map((ru) => `<p><span class="rn">${esc(ru.name)}</span> ${esc(ru.text)}</p>`).join('')}</div>` : ''}
         <p class="story">${esc(X.intro)}</p>
         ${groups.map((gr) => `<h3 class="grp">${GROUP(gr.g)}</h3>
           <ol class="exps">${gr.items.map(({ e, i }) => `<li>
@@ -1573,19 +1606,35 @@ function renderExam() {
         <span class="score">${E.hints.size ? `ヒント ${E.hints.size} 回で −${E.hints.size * HINT_COST}` : 'ヒントなし'}</span></div>
         <div class="row"><button class="btn primary" id="next">次の問題（おまかせ）</button><button class="btn" id="retry">解き直す</button><button class="btn ghost" id="home">問題一覧</button></div>` : ''}
     </div>
-    ${graded ? '' : `<div class="dock"><div class="dock-in"><p class="hint">${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答</p><button class="btn primary" id="grade">採点する</button></div></div>`}`;
+    ${graded ? '' : `<div class="dock"><div class="dock-in"><p class="hint">${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答</p><button class="btn primary" id="grade">採点する</button></div></div>`}`;
   $('#back').onclick = () => show('home');
   const app = $('#app');
   app.oninput = (e) => {
-    const t = e.target.closest('input.ans');
+    const t = e.target.closest('input.ans, textarea.ans');
     if (!t || graded) return;
     E.ans[+t.dataset.q] = t.value;
     const dock = document.querySelector('.dock .hint');
-    if (dock) dock.textContent = `${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答`;
+    if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
   };
   app.onclick = (e) => {
     const h = e.target.closest('[data-h]');
     if (h) { E.hints.add(+h.dataset.h); const y = window.scrollY; renderExam(); window.scrollTo(0, y); return; }
+    const asg = e.target.closest('[data-assign] [data-v]');
+    if (asg && !graded) {
+      const row = asg.closest('[data-assign]');
+      const no = +row.dataset.assign;
+      E.ans[no] = { ...(E.ans[no] || {}), [row.dataset.item]: asg.dataset.v };
+      row.querySelectorAll('[data-v]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === asg.dataset.v));
+      const dock = document.querySelector('.dock .hint');
+      if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
+      return;
+    }
+    const sv = e.target.closest('[data-self] [data-sv]');
+    if (sv && graded) {
+      E.self[+sv.closest('[data-self]').dataset.self] = +sv.dataset.sv;
+      const y = window.scrollY; renderExam(); window.scrollTo(0, y);
+      return;
+    }
     const opt = e.target.closest('[data-qopts] [data-v]');
     if (opt && !graded) {
       const box = opt.closest('[data-qopts]');
@@ -1597,14 +1646,14 @@ function renderExam() {
       E.ans[no] = cur;
       box.querySelectorAll('[data-v]').forEach((b) => { const on = cur.includes(b.dataset.v); b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
       const dock = document.querySelector('.dock .hint');
-      if (dock) dock.textContent = `${X.questions.filter((q) => { const a = E.ans[q.no]; return a !== undefined && a !== '' && !(Array.isArray(a) && !a.length); }).length} / ${X.questions.length} 問に解答`;
+      if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
       return;
     }
     if (e.target.id === 'grade') {
-      const empty = X.questions.filter((q) => { const a = E.ans[q.no]; return a === undefined || a === '' || (Array.isArray(a) && !a.length); }).length;
+      const empty = X.questions.filter((q) => !answered(q, E.ans[q.no])).length;
       if (empty && !confirm(`${empty} 問が未解答。採点するか？`)) return;
       E.graded = true;
-      const sc = X.questions.map((q) => examScore(q, E.ans[q.no]));
+      const sc = X.questions.map((q) => examScore(q, E.ans[q.no], E.self));
       const total = sc.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
       record(P.id, sc.every((v, i) => v === X.questions[i].points), Math.max(0, Math.round((100 * total) / X.total)));
       render(); window.scrollTo(0, 0);
