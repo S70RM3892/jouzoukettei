@@ -180,19 +180,117 @@ async function main() {
       && Math.round((337 / 253.8) / (100 / calc.mass('C54H90O'))) === 10],
   );
 
+  // これまで「扱えない」としていた出題要素（与えられた規則・立体）
+  const S = require('../src/stereo');
+  const iso = (x) => S.isoCanonical(R, x);
+  const sameIso = (a, b) => JSON.stringify([...a].map(iso).sort()) === JSON.stringify([...b].map(iso).sort());
+  CASES.push(
+    ['2025 III 小員環の水素化開環: シクロプロパン → プロパン、シクロブタン → ブタン、二環の C（C₅H₈）→ ひずみの最も小さいシクロペンタン', () => same(ev('ring_hydrogenolysis', 'C1CC1'), ['CCC'])
+      && same(ev('ring_hydrogenolysis', 'C1CCC1'), ['CCCC']) && chem.formula(chem.graphFromSmiles(R, 'C1CC2CC21')) === 'C5H8' && same(ev('ring_hydrogenolysis', 'C1CC2CC21'), ['C1CCCC1'])],
+    ['2024 III(b) 問3 臭素付加で不斉炭素が2つになるアルケンは (て)(に)、問4 白金触媒で水素付加して不斉炭素ができるのは (と)', () => {
+      const alk = { te: 'CCC(C)=CC', to: 'CCC(C)=C(C)C', na: 'CC(C)C(C)=C(C)C', ni: 'CCCC=CC', nu: 'CCCC=C' };
+      const two = Object.keys(alk).filter((k) => ev('chiral', ev('bromine_addition', alk[k])[0]) === 2);
+      const h2 = Object.keys(alk).filter((k) => ev('chiral', ev('hydrogenation', alk[k])[0]) >= 1);
+      return JSON.stringify(two) === JSON.stringify(['te', 'ni']) && JSON.stringify(h2) === JSON.stringify(['to']);
+    }],
+    ['2024 III(b) アンチ付加: トランス-2-ブテン → メソ体1つ、シス-2-ブテン → 鏡像の組。3-メチル-2-ペンテンの E と Z で生成物が重ならない（生成物からアルケンを決められる）', () => {
+      const e = ev('br2_anti', 'C/C=C/C'), z = ev('br2_anti', 'C/C=C\\C');
+      const pe = ev('br2_anti', 'C/C=C(\\C)CC'), pz = ev('br2_anti', 'C/C=C(/C)CC');
+      return e.length === 1 && !S.opticallyActive(R, e[0]) && z.length === 2 && S.mirror(R, z[0]) === iso(z[1])
+        && pe.length === 2 && pz.length === 2 && !pe.some((x) => pz.includes(x));
+    }],
+    ['2024 III(b) シン付加: 白金触媒の水素付加でも、E と Z から別の立体異性体（(E)-3,4-ジメチル-3-ヘキセン → 鏡像の組、Z → メソ体）', () => {
+      const e = ev('h2_syn', 'CC/C(C)=C(\\C)CC'), z = ev('h2_syn', 'CC/C(C)=C(/C)CC');
+      return e.length === 2 && z.length === 1 && !S.opticallyActive(R, z[0]);
+    }],
+    ['2002 III 1,2-ジメチルシクロプロパンの立体異性体は 3 種類（シス = メソ体、トランス = 鏡像の組）', () => ev('stereo_count', 'CC1CC1C') === 3],
+    ['2019 IV 炭素数4のアルドースは立体異性体4種、炭素を1つ減らすとグリセルアルデヒド2種、硝酸酸化で酒石酸は3種（メソ体1）', () => {
+      const tet = ['RR', 'LL', 'RL', 'LR'].map((p) => S.fischer(R, 'CHO', [...p], 'CH2OH'));
+      const deg = new Set(tet.flatMap((t) => ev('sugar_degrade', t)));
+      const tart = [...new Set(tet.flatMap((t) => ev('nitric_oxidation', t)))];
+      return new Set(tet).size === 4 && deg.size === 2 && tart.length === 3 && tart.filter((t) => !ev('optically_active', t)).length === 1
+        && ev('stereo_count', 'OCC(O)C(O)C=O') === 4 && ev('stereo_count', 'OC(=O)C(O)C(O)C(=O)O') === 3;
+    }],
+    ['2019 IV 問2 炭素数5のアルドース8種のうち、硝酸酸化の生成物に鏡像異性体がないもの (あ)(え)(か)(き)', () => {
+      const P = { a: 'RRR', i: 'LRR', u: 'LLR', e: 'RLR', o: 'RRL', ka: 'LRL', ki: 'LLL', ku: 'RLL' };
+      const meso = Object.keys(P).filter((k) => !ev('optically_active', ev('nitric_oxidation', S.fischer(R, 'CHO', [...P[k]], 'CH2OH'))[0]));
+      return JSON.stringify(meso) === JSON.stringify(['a', 'e', 'ka', 'ki']);
+    }],
+    ['2019 IV 問3 硝酸酸化で光学活性、炭素を1つ減らして硝酸酸化するとメソ酒石酸になる G は (い)(く)', () => {
+      const P = { a: 'RRR', i: 'LRR', u: 'LLR', e: 'RLR', o: 'RRL', ka: 'LRL', ki: 'LLL', ku: 'RLL' };
+      const G = Object.keys(P).filter((k) => {
+        const s0 = S.fischer(R, 'CHO', [...P[k]], 'CH2OH');
+        const H = ev('sugar_degrade', s0)[0];
+        return ev('optically_active', ev('nitric_oxidation', s0)[0]) && !ev('optically_active', ev('nitric_oxidation', H)[0]);
+      });
+      return JSON.stringify(G) === JSON.stringify(['i', 'ku']);
+    }],
+    ['2019 III(b) イミドの穏やかな加水分解: L（C₂₀H₁₅NO₂）→ 安息香酸とベンズアニリド。P の Q（オルト位が H の C₉H₁₀O₂）は 4 通り', () => {
+      const L = 'O=C(c1ccccc1)N(C(=O)c1ccccc1)c1ccccc1';
+      const Q = enumerate(R, 'C9H10O2', benz).filter((x) => hasMatch(R, x, 'c[CX3](=O)[OX2H1]') && !hasMatch(R, x, '[CX3](=O)([OX2H1])c(c[!#1;!c])') && !hasMatch(R, x, '[CX3](=O)([OX2H1])c:c[CH3,CH2]'));
+      const P = 'Cc1ccc(C(=O)N(C(=O)c2ccc(CC)cc2)c2ccccc2)cc1';
+      return chem.formula(chem.graphFromSmiles(R, L)) === 'C20H15NO2' && same(ev('imide_hydrolysis', L), ['O=C(O)c1ccccc1', 'O=C(Nc1ccccc1)c1ccccc1'])
+        && ev('imide_hydrolysis', P).length === 4 && Q.length === 4;
+    }],
+    ['2010 III(a) 選択的アセチル化（第一級 OH だけ）→ 酸化 → 加水分解でヨードホルム陽性: C は 1,3-ブタンジオール（1,2-ブタンジオールでは陰性）', () => {
+      const path = (c) => ev('iodoform', ev('hydrolysis', ev('mild_oxidation', ev('acetylation_primary', c)[0])[0]).find((x) => x !== can('CC(=O)O')));
+      return path('CC(O)CCO') === true && path('CCC(O)CO') === false && ev('chiral', 'CC(O)CCO') === 1;
+    }],
+    ['2018 III m-ブロモトルエンの合成経路: ニトロ化（o・p）→ 還元 → アセチル化 → 臭素化（1か所）→ 加水分解 → ジアゾ化と H₃PO₂', () => {
+      const nitro = ev('nitration', 'Cc1ccccc1');
+      const D = ev('nitro_reduction', 'Cc1ccc([N+](=O)[O-])cc1')[0];
+      const E = ev('bromine_water', D);
+      const F = ev('acetylation', D)[0];
+      const G = ev('bromination_fe', F);
+      const H = ev('hydrolysis', G[0]).find((x) => x !== can('CC(=O)O'));
+      const J = ev('deamination', H);
+      return same(nitro, ['Cc1ccccc1[N+](=O)[O-]', 'Cc1ccc([N+](=O)[O-])cc1']) && same(E, ['Cc1cc(Br)c(N)c(Br)c1']) && G.length === 1 && same(J, ['Cc1cccc(Br)c1'])
+        && same(ev('bromination_fe', 'CC(=O)c1ccccc1'), ['CC(=O)c1cccc(Br)c1']);
+    }],
+    ['2010 III(b) トルエンの塩素化で o・p、2009 メシチレンのニトロ化は1種類だけ', () => same(ev('chlorination', 'Cc1ccccc1'), ['Cc1ccccc1Cl', 'Cc1ccc(Cl)cc1']) && ev('nitration', 'Cc1cc(C)cc(C)c1').length === 1],
+    ['2016 III(b) ジアリールエーテルの水素化分解: L は m-クレゾールの対称エーテル（M だけ臭素水で C₇H₅Br₃O）、N（トルエン）を生じる L の構造異性体は 5', () => {
+      const cres = ['Cc1ccccc1O', 'Cc1cccc(O)c1', 'Cc1ccc(O)cc1'];
+      const M = cres.filter((x) => chem.formula(chem.graphFromSmiles(R, ev('bromine_water', x)[0])) === 'C7H5Br3O');
+      const ethers = enumerate(R, 'C14H14O', { seed: 'c1ccc(Oc2ccccc2)cc1', rings: 0 });
+      const withN = ethers.filter((x) => ev('ether_hydrogenolysis', x).includes(can('Cc1ccccc1')));
+      const L = 'Cc1cccc(Oc2cccc(C)c2)c1';
+      return same(M, ['Cc1cccc(O)c1']) && same(ev('ether_hydrogenolysis', L), ['Cc1cccc(O)c1', 'Cc1ccccc1']) && withN.filter((x) => x !== can(L)).length === 5;
+    }],
+    ['2001 III ジアゾ化とカップリング: C（5-アミノサリチル酸）のジアゾニウム塩と B（5-ニトロサリチル酸）で、B の OH のオルト位に N=N', () => {
+      const Rx = require('../src/reactions');
+      const p = Rx.azoCoupling(R, 'Nc1ccc(O)c(C(=O)O)c1', 'O=C(O)c1cc([N+](=O)[O-])ccc1O');
+      return p.length === 1 && hasMatch(R, p[0], 'N=N') && same(ev('azo_coupling', 'Nc1ccccc1'), ['Oc1ccc(N=Nc2ccccc2)cc1'])
+        && same(ev('nitro_reduction', 'O=C(O)c1cc([N+](=O)[O-])ccc1O'), ['Nc1ccc(O)c(C(=O)O)c1']);
+    }],
+    ['2026 III(a) アセタール交換（大過剰のエタノール）: A → ジエチルアセタール、B → 五員環、C → 2つのアセタール（六員環を含む）', () => same(ev('acetal_etoh', 'CCOC(OC)c1ccccc1'), ['CCOC(OCC)c1ccccc1'])
+      && same(ev('acetal_etoh', 'COC(CCCO)OC'), ['CCOC1CCCO1']) && same(ev('acetal_etoh', 'CCOC(C)OCCCCC=O'), ['CCOC(C)OCC', 'CCOC1CCCCO1'])],
+    ['2026 III(a) 問2 D（C₈H₁₈O₃、ヨードホルム陽性）→ メタノール中で五員環の E（C₆H₁₂O₂）→ エタノール中で F（C₇H₁₄O₂）', () => {
+      const D = 'CCOC(OC)CCC(C)O';
+      const E = ev('acetal_meoh', D);
+      return chem.formula(chem.graphFromSmiles(R, D)) === 'C8H18O3' && ev('iodoform', D) === true && E.length === 1
+        && chem.formula(chem.graphFromSmiles(R, E[0])) === 'C6H12O2' && chem.formula(chem.graphFromSmiles(R, ev('acetal_etoh', E[0])[0])) === 'C7H14O2';
+    }],
+    ['2026 III(b) 光学分割の量的計算: 触媒 X で G 8.00 g・I 2.00 g → 未反応 G_R 4.00 g・G_S 1.28 g、触媒 Y で G_S は G_R の 3.3 倍', () => {
+      const nI = 2.00 / 100, gR = 4.00, gS = 4.00 - nI * 136;
+      const nG = 1.36 / 136, nH = 0.712 / 178;
+      const ratio = (nG / 2 - nH * 0.10) / (nG / 2 - nH * 0.90);
+      return gR.toFixed(2) === '4.00' && gS.toFixed(2) === '1.28' && ratio.toPrecision(2) === '3.3';
+    }],
+    ['2020 IV アセトンによる保護: 1,2,5-ペンタントリオールは近い 1,2 位が五員環に。酸化と加水分解で 4,5-ジヒドロキシペンタン酸', () => {
+      const P = ev('acetonide', 'OCCCC(O)CO');
+      const ox = ev('kmno4', P[0]);
+      return same(P, ['CC1(C)OCC(CCCO)O1']) && same(ev('acetal_hydrolysis', ox[0]), ['CC(C)=O', 'O=C(O)CCC(O)CO']) && same(ev('acetonide', 'CCC(O)CCO'), ['CCC1CCOC(C)(C)O1']);
+    }],
+    ['2026 IV メチル化分析: マルトース（α1→4）をメチル化して加水分解すると、テトラ-O-メチル（非還元末端）とトリ-O-メチル（4位で結合）', () => {
+      const maltose = 'OCC1OC(OC2C(CO)OC(O)C(O)C2O)C(O)C(O)C1O';
+      const p = ev('methylation_analysis', maltose).map((x) => chem.formula(chem.graphFromSmiles(R, x))).sort();
+      return JSON.stringify(p) === JSON.stringify(['C10H20O6', 'C9H18O6']);
+    }],
+  );
+
   // エンジンでは扱えない出題要素（次に伸ばす候補）
   const UNSUPPORTED = [
-    '2026 III アセタール交換の平衡・光学分割の速度（アセタールの規則が未実装）',
-    '2026 IV メチル化分析・糖の立体（糖の立体を区別する表現が未実装）',
-    '2019 IV アルドースの立体・メソ体（フィッシャー投影が未実装）',
-    '2019 III(b) イミドの穏やかな加水分解（位置選択の規則が未実装）',
-    '2010 III(a) 第一級 OH の選択的アセチル化（与えられた規則が未実装）',
-    '2025 III 小員環のひずみによる水素化での開環（規則が未実装）',
-    '2024 III(b)・2002 III 臭素のアンチ付加・水素のシン付加、シクロプロパンの立体（三次元の立体配置が未実装）',
-    '2020 IV・2026 IV アセトンによるジオールの保護（アセタールの規則が未実装）',
-    '2001 III ジアゾカップリング（反応規則が未実装）',
-    '2018 III 配向性・合成経路の設計（置換反応が未実装）',
-    '2016 III(b) ジアリールエーテルの水素化分解（反応規則が未実装）',
+    '2026 IV 糖の立体を区別したメチル化分析（環状の糖の立体配置を読み書きする表現が未実装。立体なしのメチル化分析はできる）',
   ];
 
   let ok = 0;

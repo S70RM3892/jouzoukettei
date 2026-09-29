@@ -203,10 +203,13 @@ const CARD_TAG = {
   kmno4: 'side_chain_oxidation', mild_oxidation: 'alcohol_oxidation', ozonolysis: 'ozonolysis', kmno4_cleave: 'kmno4_cleavage',
   dehydration: 'dehydration', dehydration_count: 'dehydration', dehydration_ozonolysis: 'dehydration', h2_uptake: 'hydrogenation', hydrogenation: 'hydrogenation',
   chiral: 'chiral', cis_trans: 'cis_trans', carbon_env: 'symmetry_carbons', cl_sub: 'symmetry_carbons', ring_cl: 'symmetry_carbons', anhydride: 'anhydride',
-  periodate: 'novel_rule', markovnikov: 'addition_selectivity', bromine: 'hydrogenation', ninhydrin: 'amino_acid', alpha_amino: 'amino_acid', partial_hydrolysis: 'partial_hydrolysis',
+  periodate: 'novel_rule', markovnikov: 'addition_selectivity', bromine: 'hydrogenation',
+  nitration: 'nitration_reduction', bromine_water: 'symmetry_carbons', acetylation_primary: 'novel_rule', acetonide: 'novel_rule',
+  bromine_addition: 'addition_selectivity', stereo_count: 'stereo_3d', ninhydrin: 'amino_acid', alpha_amino: 'amino_acid', partial_hydrolysis: 'partial_hydrolysis',
 };
 const FRAG_CARDS = ['silver_mirror', 'iodoform', 'fecl3', 'kmno4', 'mild_oxidation', 'ozonolysis', 'kmno4_cleave', 'dehydration', 'dehydration_count',
-  'dehydration_ozonolysis', 'h2_uptake', 'hydrogenation', 'markovnikov', 'chiral', 'cis_trans', 'carbon_env', 'cl_sub', 'ring_cl', 'anhydride', 'periodate', 'bromine', 'naoh', 'hcl'];
+  'dehydration_ozonolysis', 'h2_uptake', 'hydrogenation', 'markovnikov', 'chiral', 'cis_trans', 'carbon_env', 'cl_sub', 'ring_cl', 'anhydride', 'periodate', 'bromine', 'naoh', 'hcl',
+  'nitration', 'bromine_water', 'acetylation_primary', 'acetonide', 'bromine_addition', 'stereo_count'];
 
 function valueTable(RDKit, pool, cards) {
   const table = {};

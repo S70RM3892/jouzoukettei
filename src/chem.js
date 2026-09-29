@@ -29,8 +29,15 @@ function parseMolblock(mb) {
     if (order < 1 || order > 3) throw new Unsupported('aromatic/query bond in molblock');
     bonds.push({ a, b, order });
   }
+  // 電荷（ニトロ基 N⁺–O⁻ など）。原子の chg に持たせ、H の数の計算に使う
   for (const l of lines) {
-    if (l.startsWith('M  CHG')) throw new Unsupported('charged species');
+    if (!l.startsWith('M  CHG')) continue;
+    const n = parseInt(l.slice(6, 9), 10);
+    for (let k = 0; k < n; k++) {
+      const idx = parseInt(l.slice(10 + 8 * k, 13 + 8 * k), 10) - 1;
+      const v = parseInt(l.slice(14 + 8 * k, 17 + 8 * k), 10);
+      if (v) atoms[idx].chg = v;
+    }
   }
   return { atoms, bonds };
 }
@@ -83,9 +90,15 @@ function neighbors(g, i) {
 }
 
 function hCount(g, i) {
-  const v = VALENCE[g.atoms[i].el];
-  if (v === undefined) throw new Unsupported(`element ${g.atoms[i].el}`);
+  const a = g.atoms[i];
+  let v = VALENCE[a.el];
+  if (v === undefined) throw new Unsupported(`element ${a.el}`);
   const used = neighbors(g, i).reduce((s, n) => s + n.order, 0);
+  const chg = a.chg || 0;
+  if (a.el === 'N' || a.el === 'O') v += chg; // N⁺ は 4 価、O⁻ は 1 価
+  else if (a.el === 'C') v -= Math.abs(chg);
+  else v -= chg;
+  if (a.el === 'S' && used > 2) v = used > 4 ? 6 : 4; // スルホン酸などの S
   const h = v - used;
   if (h < 0) throw new Unsupported('hypervalent atom');
   return h;
@@ -107,6 +120,11 @@ function toMolblock(g) {
     lines.push(`    0.0000    0.0000    0.0000 ${a.el.padEnd(3)} 0  0  0  0  0  0  0  0  0  0  0  0`);
   }
   for (const b of g.bonds) lines.push(`${pad(b.a + 1, 3)}${pad(b.b + 1, 3)}${pad(b.order, 3)}  0`);
+  const charged = g.atoms.map((a, i) => [i, a.chg || 0]).filter(([, c]) => c);
+  for (let k = 0; k < charged.length; k += 8) {
+    const part = charged.slice(k, k + 8);
+    lines.push(`M  CHG${pad(part.length, 3)}${part.map(([i, c]) => ` ${pad(i + 1, 3)} ${pad(c, 3)}`).join('')}`);
+  }
   lines.push('M  END');
   return lines.join('\n');
 }
@@ -185,8 +203,9 @@ function refine(g, fixed) {
   return { color, adj };
 }
 
-function chiralCount(g) {
-  let n = 0;
+// 不斉炭素の添字
+function chiralCenters(g) {
+  const out = [];
   g.atoms.forEach((a, i) => {
     if (a.el !== 'C') return;
     const nb = neighbors(g, i);
@@ -194,9 +213,12 @@ function chiralCount(g) {
     if (nb.length + hCount(g, i) !== 4 || hCount(g, i) > 1) return;
     const { color, adj } = refine(g, [i]);
     const cs = adj[i].map(([j]) => color[j]);
-    if (new Set(cs).size === 4) n++;
+    if (new Set(cs).size === 4) out.push(i);
   });
-  return n;
+  return out;
+}
+function chiralCount(g) {
+  return chiralCenters(g).length;
 }
 
 function bondInSmallRing(g, bond, maxSize) {
@@ -888,6 +910,45 @@ const CARDS = {
     kind: 'products', none: '付加しなかった',
     transform: markovnikov,
   },
+  // ---- 以下は reactions.js（与えられた規則・配向性）。require は循環を避けるため呼び出し時に行う ----
+  nitration: rx('nitration', 'ニトロ化', '濃硝酸と濃硫酸でベンゼン環をニトロ化する（1か所）。配向性に従い、オルトとパラの両方に入るなら混合物', '反応しない'),
+  bromination_fe: rx('bromination', '臭素化（鉄触媒）', '鉄粉を触媒にして臭素をベンゼン環に1つ置換させる。配向性に従う', '反応しない'),
+  chlorination: rx('chlorination', '塩素化（鉄触媒）', '鉄粉を触媒にして塩素をベンゼン環に1つ置換させる。配向性に従う', '反応しない'),
+  sulfonation: rx('sulfonation', 'スルホン化', '濃硫酸でスルホン化する（1か所）', '反応しない'),
+  bromine_water: rx('bromineWater', '臭素水（十分な量）', 'フェノール・アニリン類に十分な臭素水を加える。OH・NH₂ のオルト位とパラ位の空いた場所がすべて臭素化される', '臭素化されない'),
+  nitro_reduction: rx('nitroReduction', 'ニトロ基の還元', 'スズと塩酸で還元し、塩基で中和する（-NO₂ → -NH₂）', 'ニトロ基がない'),
+  acetylation: rx('acetylation', 'アセチル化', '十分な無水酢酸で OH と NH₂ をアセチル化する', 'アセチル化されない'),
+  acetylation_primary: rx('acetylationPrimary', '選択的アセチル化', '同じ物質量の無水酢酸を作用させる。反応の速い第一級アルコールの OH だけがアセチル化される（京大2010の規則）', 'アセチル化されない'),
+  deamination: rx('deamination', 'ジアゾ化と還元', '亜硝酸ナトリウムと塩酸で 5 ℃ でジアゾ化し、H₃PO₂ で還元する（Ar-NH₂ → Ar-H）', '反応しない'),
+  diazo_hydrolysis: rx('diazoHydrolysis', 'ジアゾ化と加熱', 'ジアゾ化した水溶液を温める（Ar-NH₂ → Ar-OH）', '反応しない'),
+  azo_coupling: {
+    name: 'ジアゾカップリング', action: 'ジアゾ化してナトリウムフェノキシド水溶液に加える（フェノールの OH のパラ位、ふさがっていればオルト位でカップリング）',
+    kind: 'products', none: '反応しない',
+    transform: (RDKit, g) => { const s = canonical(RDKit, toMolblock(g)); return require('./reactions').azoCoupling(RDKit, s); },
+  },
+  imide_hydrolysis: rx('imideHydrolysis', 'イミドの穏やかな加水分解', 'C(=O)–N–C(=O) の C–N 結合が1つだけ切れてアミドとカルボン酸になる。どちら側が切れるかは決まらない（京大2019の規則）', '反応しない'),
+  ether_hydrogenolysis: rx('etherHydrogenolysis', 'エーテルの水素化分解', '触媒と水素で、2つのベンゼン環をつなぐ C–O 結合を切る（Ar–O–Ar\' → Ar–OH + Ar\'–H、京大2016の規則）', '反応しない'),
+  ring_hydrogenolysis: rx('ringHydrogenolysis', '小員環の水素化開環', '触媒と H₂ で三員環・四員環の C–C 結合が1本切れる。生成物に小員環ができるだけ残らない結合が切れる（京大2025の規則）', '開環しない'),
+  acetal_hydrolysis: rx('acetalHydrolysis', 'アセタールの加水分解', '希酸と水でアセタールをカルボニル化合物とアルコールに戻す', '加水分解されない'),
+  acetal_etoh: rx('acetalExchangeEtOH', 'エタノール中の平衡', '少量の硫酸を含む大過剰のエタノール中に置く。五員環・六員環をつくれるアルデヒドは環状アセタール、つくれないものはジエチルアセタールになる（京大2026の規則）', '変化しない'),
+  acetal_meoh: rx('acetalExchangeMeOH', 'メタノール中の平衡', '少量の硫酸を含む大過剰のメタノール中に置く（京大2026の規則）', '変化しない'),
+  acetonide: rx('acetonide', 'アセトンによる保護', '酸触媒でアセトンと反応させる。隣り合う（1,2）か1つおいた（1,3）OH の組が環状アセタールになる。OH が3つ以上なら近い組が優先（京大2020の規則）', '反応しない'),
+  methylation_analysis: rx('methylationAnalysis', 'メチル化分析', 'すべての OH をメチル化してから、グリコシド結合だけを加水分解する', '反応しない'),
+  bromine_addition: rx('bromineAddition', '臭素付加の生成物', '臭素を C=C に付加させる', '付加しない'),
+  // ---- 立体を区別するカード（stereo.js。入力の SMILES の立体表記をそのまま使う） ----
+  br2_anti: st('antiAddition', '臭素付加（立体）', '臭素分子の2つの Br 原子が、C=C の平面をはさんで反対側から付加する（アンチ付加、京大2024の規則）'),
+  h2_syn: st('synAddition', '水素付加（立体）', '白金触媒で、2つの H 原子が C=C の平面の同じ側から付加する（シン付加、京大2024の規則）'),
+  nitric_oxidation: st('nitricOxidation', '硝酸酸化（糖）', 'アルドースを硝酸で酸化する。CHO と末端の CH₂OH がどちらも COOH になり、不斉炭素の配置は変わらない（京大2019）'),
+  sugar_degrade: st('degrade', '炭素を1つ減らす反応', 'アルドースの CHO の炭素が外れ、隣の炭素が CHO になる。ほかの不斉炭素の配置は変わらない（京大2019）'),
+  optically_active: {
+    name: '光学活性', action: '偏光面を回転させるか調べる（鏡像と重ならない分子だけが回転させる。メソ体は回転させない）',
+    kind: 'bool', yes: '回転させた', no: '回転させない',
+    stereoFn: (RDKit, s) => require('./stereo').opticallyActive(RDKit, s),
+  },
+  stereo_count: {
+    name: '立体異性体の数', action: '鏡像異性体・メソ体・シス-トランス異性体を区別して、立体異性体の数を数える',
+    kind: 'count', stereoFn: (RDKit, s) => require('./stereo').countStereoisomers(RDKit, s),
+  },
   mild_oxidation: {
     name: '二クロム酸酸化',
     action: '硫酸酸性の二クロム酸カリウムで穏やかに酸化する',
@@ -896,9 +957,27 @@ const CARDS = {
   },
 };
 
+// reactions.js の変換をカードにする
+function rx(fn, name, action, none) {
+  return {
+    name, action, kind: 'products', none,
+    transform: (RDKit, g) => {
+      const R = require('./reactions');
+      if (fn === 'acetalExchangeEtOH') return R.acetalExchange('CC')(RDKit, g);
+      if (fn === 'acetalExchangeMeOH') return R.acetalExchange('C')(RDKit, g);
+      return R[fn](RDKit, g);
+    },
+  };
+}
+
+function st(fn, name, action) {
+  return { name, action, kind: 'products', none: '反応しない', stereoFn: (RDKit, s) => require('./stereo')[fn](RDKit, s) };
+}
+
 function evaluate(RDKit, card, smiles) {
   const def = CARDS[card];
   if (!def) throw new Error(`unknown card: ${card}`);
+  if (def.stereoFn) return def.stereoFn(RDKit, expand(smiles));
   if (def.smarts) return matchesAny(RDKit, smiles, def.smarts);
   const g = graphFromSmiles(RDKit, smiles);
   if (def.transform) return def.transform(RDKit, g);
@@ -930,8 +1009,8 @@ function formulaMass(f) {
 }
 
 module.exports = {
-  formulaMass,
+  formulaMass, chiralCenters, stereoBondCount,
   CARDS, Unsupported, evaluate, normalizeResult, sameResult, consistent, expand,
   canonical, graphFromSmiles, formula, hCount, chiralCount, hasCisTrans, stereoCount, hydrolyze, partialProducts,
-  carbonEnvCount, h2Uptake, toMolblock, cloneGraph, neighbors, Unsupported: Unsupported, refine,
+  carbonEnvCount, h2Uptake, toMolblock, cloneGraph, neighbors, Unsupported: Unsupported, refine, graphToSmilesList,
 };
