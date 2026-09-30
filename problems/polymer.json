@@ -1,156 +1,336 @@
 [
-  {
-    "id": "poly-001",
-    "mode": "polymer",
-    "level": 2,
-    "title": "ナイロン66",
-    "story": "ナイロン66（平均分子量 {M}）を完全に加水分解すると、2種類の単量体 A・B が得られた。",
-    "unit": "*C(=O)CCCCC(=O)NCCCCCCN*",
-    "n": 100,
-    "bondsPerUnit": 2,
-    "perUnit": {"count": 2, "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か", "unit": "個"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "OC(=O)CCCCC(=O)O",
-        "candidates": ["OC(=O)CCCCC(=O)O", "CC(CCC(=O)O)C(=O)O", "CC(CC(=O)O)CC(=O)O", "COC(=O)CCC(=O)OC"],
-        "clues": [
-          {"card": "nahco3", "result": true},
-          {"card": "cl_sub", "result": 2}
-        ]
-      },
-      {
-        "label": "B",
-        "answer": "NCCCCCCN",
-        "candidates": ["NCCCCCCN", "CC(CN)CCCN", "CNCCCCNC", "NCCCCC(C)N"],
-        "clues": [
-          {"card": "chiral", "result": 0},
-          {"card": "ninhydrin", "result": true}
-        ]
-      }
-    ]
+ {
+  "id": "poly-001",
+  "mode": "polymer",
+  "level": 2,
+  "title": "ナイロン66",
+  "story": "ナイロン66（平均分子量 {M}）を完全に加水分解すると、2種類の単量体 A・B が得られた。",
+  "unit": "*C(=O)CCCCC(=O)NCCCCCCN*",
+  "n": 100,
+  "bondsPerUnit": 2,
+  "perUnit": {
+   "count": 2,
+   "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か",
+   "unit": "個"
   },
-  {
-    "id": "poly-002",
-    "mode": "polymer",
-    "level": 1,
-    "title": "ナイロン6",
-    "story": "ナイロン6（平均分子量 {M}）は ε-カプロラクタムの開環重合で得られる。これを完全に加水分解すると、単量体 A が得られた。",
-    "unit": "*NCCCCCC(=O)*",
-    "n": 200,
-    "bondsPerUnit": 1,
-    "perUnit": {"count": 1, "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か", "unit": "個"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "NCCCCCC(=O)O",
-        "candidates": ["NCCCCCC(=O)O", "CCCCC(N)C(=O)O", "CC(N)CCCC(=O)O", "CNCCCCC(=O)O"],
-        "clues": [
-          {"card": "chiral", "result": 0},
-          {"card": "ninhydrin", "result": true}
-        ]
-      }
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "OC(=O)CCCCC(=O)O",
+    "candidates": [
+     "OC(=O)CCCCC(=O)O",
+     "CC(CCC(=O)O)C(=O)O",
+     "CC(CC(=O)O)CC(=O)O",
+     "COC(=O)CCC(=O)OC"
+    ],
+    "clues": [
+     {
+      "card": "nahco3",
+      "result": true
+     },
+     {
+      "card": "cl_sub",
+      "result": 2
+     }
     ]
+   },
+   {
+    "label": "B",
+    "answer": "NCCCCCCN",
+    "candidates": [
+     "NCCCCCCN",
+     "CC(CN)CCCN",
+     "CNCCCCNC",
+     "NCCCCC(C)N"
+    ],
+    "clues": [
+     {
+      "card": "chiral",
+      "result": 0
+     },
+     {
+      "card": "ninhydrin",
+      "result": true
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "poly-002",
+  "mode": "polymer",
+  "level": 1,
+  "title": "ナイロン6",
+  "story": "ナイロン6（平均分子量 {M}）は ε-カプロラクタムの開環重合で得られる。これを完全に加水分解すると、単量体 A が得られた。",
+  "unit": "*NCCCCCC(=O)*",
+  "n": 200,
+  "bondsPerUnit": 1,
+  "perUnit": {
+   "count": 1,
+   "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か",
+   "unit": "個"
   },
-  {
-    "id": "poly-003",
-    "mode": "polymer",
-    "level": 1,
-    "title": "ポリエチレンテレフタラート（PET）",
-    "story": "PET（平均分子量 {M}）を完全に加水分解すると、芳香族化合物 A とエチレングリコール B が得られた。",
-    "unit": "*OCCOC(=O)c1ccc(C(=O)*)cc1",
-    "n": 100,
-    "bondsPerUnit": 2,
-    "perUnit": {"count": 2, "prompt": "この高分子 1 分子に含まれるエステル結合はおよそ何個か", "unit": "個"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "O=C(O)c1ccc(C(=O)O)cc1",
-        "candidates": ["O=C(O)c1ccccc1C(=O)O", "O=C(O)c1cccc(C(=O)O)c1", "O=C(O)c1ccc(C(=O)O)cc1"],
-        "clues": [
-          {"card": "anhydride", "result": false},
-          {"card": "ring_cl", "result": 1}
-        ]
-      },
-      {
-        "label": "B",
-        "answer": "OCCO",
-        "given": true,
-        "note": "エチレングリコール（1,2-エタンジオール）"
-      }
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "NCCCCCC(=O)O",
+    "candidates": [
+     "NCCCCCC(=O)O",
+     "CCCCC(N)C(=O)O",
+     "CC(N)CCCC(=O)O",
+     "CNCCCCC(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "chiral",
+      "result": 0
+     },
+     {
+      "card": "ninhydrin",
+      "result": true
+     }
     ]
+   }
+  ]
+ },
+ {
+  "id": "poly-003",
+  "mode": "polymer",
+  "level": 1,
+  "title": "ポリエチレンテレフタラート（PET）",
+  "story": "PET（平均分子量 {M}）を完全に加水分解すると、芳香族化合物 A とエチレングリコール B が得られた。",
+  "unit": "*OCCOC(=O)c1ccc(C(=O)*)cc1",
+  "n": 100,
+  "bondsPerUnit": 2,
+  "perUnit": {
+   "count": 2,
+   "prompt": "この高分子 1 分子に含まれるエステル結合はおよそ何個か",
+   "unit": "個"
   },
-  {
-    "id": "poly-004",
-    "mode": "polymer",
-    "level": 2,
-    "title": "ポリ乳酸",
-    "story": "生分解性高分子 P（平均分子量 {M}）は、ヒドロキシ酸 A の縮合重合で得られる鎖状のポリエステルである。P を完全に加水分解すると A だけが得られた。",
-    "unit": "*OC(C)C(=O)*",
-    "n": 250,
-    "bondsPerUnit": 1,
-    "perUnit": {"count": 1, "prompt": "P 1 分子を完全に加水分解すると、A はおよそ何分子得られるか", "unit": "分子"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "CC(O)C(=O)O",
-        "candidates": ["CC(O)C(=O)O", "OCCC(=O)O", "COC(=O)CO", "OCC(O)C=O", "OCC(=O)CO"],
-        "clues": [
-          {"card": "nahco3", "result": true},
-          {"card": "iodoform", "result": true}
-        ]
-      }
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "O=C(O)c1ccc(C(=O)O)cc1",
+    "candidates": [
+     "O=C(O)c1ccccc1C(=O)O",
+     "O=C(O)c1cccc(C(=O)O)c1",
+     "O=C(O)c1ccc(C(=O)O)cc1"
+    ],
+    "clues": [
+     {
+      "card": "anhydride",
+      "result": false
+     },
+     {
+      "card": "ring_cl",
+      "result": 1
+     }
     ]
+   },
+   {
+    "label": "B",
+    "answer": "OCCO",
+    "given": true,
+    "note": "エチレングリコール（1,2-エタンジオール）"
+   }
+  ]
+ },
+ {
+  "id": "poly-004",
+  "mode": "polymer",
+  "level": 2,
+  "title": "ポリ乳酸",
+  "story": "生分解性高分子 P（平均分子量 {M}）は、ヒドロキシ酸 A の縮合重合で得られる鎖状のポリエステルである。P を完全に加水分解すると A だけが得られた。",
+  "unit": "*OC(C)C(=O)*",
+  "n": 250,
+  "bondsPerUnit": 1,
+  "perUnit": {
+   "count": 1,
+   "prompt": "P 1 分子を完全に加水分解すると、A はおよそ何分子得られるか",
+   "unit": "分子"
   },
-  {
-    "id": "poly-005",
-    "mode": "polymer",
-    "level": 3,
-    "title": "ポリ酢酸ビニル",
-    "story": "高分子 P（平均分子量 {M}）は、エステル A の付加重合で得られる。P を NaOH 水溶液で完全にけん化するとポリビニルアルコールになる。",
-    "unit": "*CC(*)OC(C)=O",
-    "n": 500,
-    "bondsPerUnit": 0,
-    "perUnit": {"count": 1, "prompt": "P 1 分子を完全にけん化すると、酢酸イオンはおよそ何個生じるか", "unit": "個"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "CC(=O)OC=C",
-        "candidates": ["CC(=O)OC=C", "C=CC(=O)OC", "O=COCC=C", "CC=CC(=O)O", "C=C(C)C(=O)O"],
-        "clues": [
-          {"card": "nahco3", "result": false},
-          {"card": "hydrolysis", "result": ["CC(=O)O", "CC=O"]}
-        ]
-      }
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "CC(O)C(=O)O",
+    "candidates": [
+     "CC(O)C(=O)O",
+     "OCCC(=O)O",
+     "COC(=O)CO",
+     "OCC(O)C=O",
+     "OCC(=O)CO"
+    ],
+    "clues": [
+     {
+      "card": "nahco3",
+      "result": true
+     },
+     {
+      "card": "iodoform",
+      "result": true
+     }
     ]
+   }
+  ]
+ },
+ {
+  "id": "poly-005",
+  "mode": "polymer",
+  "level": 3,
+  "title": "ポリ酢酸ビニル",
+  "story": "高分子 P（平均分子量 {M}）は、エステル A の付加重合で得られる。P を NaOH 水溶液で完全にけん化するとポリビニルアルコールになる。",
+  "unit": "*CC(*)OC(C)=O",
+  "n": 500,
+  "bondsPerUnit": 0,
+  "perUnit": {
+   "count": 1,
+   "prompt": "P 1 分子を完全にけん化すると、酢酸イオンはおよそ何個生じるか",
+   "unit": "個"
   },
-  {
-    "id": "poly-006",
-    "mode": "polymer",
-    "level": 2,
-    "title": "アラミド繊維",
-    "story": "アラミド繊維 P（平均分子量 {M}）を完全に加水分解すると、芳香族化合物 A・B が得られた。A は NaHCO₃ 水溶液に溶け、B は希塩酸に溶けた。",
-    "unit": "*C(=O)c1ccc(C(=O)Nc2ccc(N*)cc2)cc1",
-    "n": 100,
-    "bondsPerUnit": 2,
-    "perUnit": {"count": 2, "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か", "unit": "個"},
-    "monomers": [
-      {
-        "label": "A",
-        "answer": "O=C(O)c1ccc(C(=O)O)cc1",
-        "candidates": ["O=C(O)c1ccccc1C(=O)O", "O=C(O)c1cccc(C(=O)O)c1", "O=C(O)c1ccc(C(=O)O)cc1"],
-        "clues": [
-          {"card": "ring_cl", "result": 1}
-        ]
-      },
-      {
-        "label": "B",
-        "answer": "Nc1ccc(N)cc1",
-        "candidates": ["Nc1ccccc1N", "Nc1cccc(N)c1", "Nc1ccc(N)cc1"],
-        "clues": [
-          {"card": "ring_cl", "result": 1}
-        ]
-      }
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "CC(=O)OC=C",
+    "candidates": [
+     "CC(=O)OC=C",
+     "C=CC(=O)OC",
+     "O=COCC=C",
+     "CC=CC(=O)O",
+     "C=C(C)C(=O)O"
+    ],
+    "clues": [
+     {
+      "card": "nahco3",
+      "result": false
+     },
+     {
+      "card": "hydrolysis",
+      "result": [
+       "CC(=O)O",
+       "CC=O"
+      ]
+     }
     ]
-  }
+   }
+  ]
+ },
+ {
+  "id": "poly-006",
+  "mode": "polymer",
+  "level": 2,
+  "title": "アラミド繊維",
+  "story": "アラミド繊維 P（平均分子量 {M}）を完全に加水分解すると、芳香族化合物 A・B が得られた。A は NaHCO₃ 水溶液に溶け、B は希塩酸に溶けた。",
+  "unit": "*C(=O)c1ccc(C(=O)Nc2ccc(N*)cc2)cc1",
+  "n": 100,
+  "bondsPerUnit": 2,
+  "perUnit": {
+   "count": 2,
+   "prompt": "この高分子 1 分子に含まれるアミド結合はおよそ何個か",
+   "unit": "個"
+  },
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "O=C(O)c1ccc(C(=O)O)cc1",
+    "candidates": [
+     "O=C(O)c1ccccc1C(=O)O",
+     "O=C(O)c1cccc(C(=O)O)c1",
+     "O=C(O)c1ccc(C(=O)O)cc1"
+    ],
+    "clues": [
+     {
+      "card": "ring_cl",
+      "result": 1
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "answer": "Nc1ccc(N)cc1",
+    "candidates": [
+     "Nc1ccccc1N",
+     "Nc1cccc(N)c1",
+     "Nc1ccc(N)cc1"
+    ],
+    "clues": [
+     {
+      "card": "ring_cl",
+      "result": 1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "poly-007",
+  "mode": "polymer",
+  "level": 2,
+  "title": "ポリメタクリル酸メチル（有機ガラス）",
+  "story": "透明な高分子 P（平均分子量 {M}）は、エステル A の付加重合で得られる。",
+  "unit": "*CC(*)(C)C(=O)OC",
+  "n": 1000,
+  "bondsPerUnit": 0,
+  "perUnit": {
+   "count": 1,
+   "prompt": "P 1 分子のエステル結合をすべて加水分解すると、メタノールはおよそ何分子生じるか",
+   "unit": "分子"
+  },
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "C=C(C)C(=O)OC",
+    "candidates": [
+     "C=C(C)C(=O)OC",
+     "CC=CC(=O)OC",
+     "C=CC(=O)OCC",
+     "CCC(=O)OC=C",
+     "CC(=O)OCC=C"
+    ],
+    "clues": [
+     {
+      "card": "cis_trans",
+      "result": false
+     },
+     {
+      "card": "hydrolysis",
+      "result": [
+       "C=C(C)C(=O)O",
+       "CO"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "poly-008",
+  "mode": "polymer",
+  "level": 1,
+  "title": "ポリプロピレン",
+  "story": "高分子 P（平均分子量 {M}）は、炭化水素 A の付加重合で得られる。",
+  "unit": "*CC(*)C",
+  "n": 2000,
+  "bondsPerUnit": 0,
+  "perUnit": {
+   "count": 1,
+   "prompt": "P 1 分子に含まれるメチル基（–CH₃）はおよそ何個か（両端は考えない）",
+   "unit": "個"
+  },
+  "monomers": [
+   {
+    "label": "A",
+    "answer": "C=CC",
+    "candidates": [
+     "C=CC",
+     "C1CC1"
+    ],
+    "clues": [
+     {
+      "card": "bromine",
+      "result": true
+     }
+    ]
+   }
+  ]
+ }
 ]

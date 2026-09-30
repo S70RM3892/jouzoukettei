@@ -323,6 +323,16 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .btn.small { min-height: 32px; padding: 4px 10px; font-size: 0.8rem; }
 .post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
 .namerow { align-items: center; }
+.klist { display: grid; gap: 6px; }
+.kt { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
+.kt small { grid-column: 1 / -1; color: var(--muted); font-size: 0.75rem; }
+.kt[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 3px 0 0 var(--ink); }
+.kq { font-size: 1.1rem; line-height: 1.6; }
+.kopts { display: grid; gap: 8px; }
+.kopt { text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; min-height: 44px; cursor: pointer; }
+.kopt.right { border-color: var(--ok, #1a7f37); box-shadow: inset 4px 0 0 var(--ok, #1a7f37); font-weight: 700; }
+.kopt.wrong { border-color: var(--pos); box-shadow: inset 4px 0 0 var(--pos); text-decoration: line-through; }
+.kwrong { padding-left: 1.2em; display: grid; gap: 10px; }
 .qrate { margin: 2px 0 0; font-size: 0.82rem; color: var(--muted); }
 .qrate.low { color: var(--pos); font-weight: 700; }
 .misscards { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
@@ -386,9 +396,9 @@ const MODES = [
 function loadStore() {
   try {
     const s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
-    if (s && s.stats && s.weak && s.history) return { qstat: {}, cardMiss: {}, daily: {}, ...s };
+    if (s && s.stats && s.weak && s.history) return { qstat: {}, cardMiss: {}, daily: {}, know: {}, ...s };
   } catch (e) {}
-  return { stats: {}, weak: {}, history: [], qstat: {}, cardMiss: {}, daily: {} };
+  return { stats: {}, weak: {}, history: [], qstat: {}, cardMiss: {}, daily: {}, know: {} };
 }
 function saveStore() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {}
@@ -606,6 +616,12 @@ function renderHome() {
         <div id="online-status">${onlineStatusHtml()}</div>
       </section>
       <section class="panel">
+        <h2>知識確認</h2>
+        <p class="hint">一問一答で高校有機の基本知識を確かめる。範囲は教科書の ${DATA.knowledge.sections.length} 章 ${DATA.knowledge.sections.reduce((a, x) => a + x.topics.length, 0)} 節すべて。京大は教科書にない反応を問題文で与えるが、使いこなすには基本知識が正確でないといけない。</p>
+        <p class="hint">覚えた問題 ${knowMastered()} / ${DATA.knowledge.items.length}（2回続けて正解したもの）</p>
+        <div class="row"><button class="btn primary" id="know-weak">苦手と未挑戦から ${KNOW_LEN} 問</button><button class="btn" id="go-know">範囲を選ぶ</button></div>
+      </section>
+      <section class="panel">
         <h2>条件を指定して出す</h2>
         <p class="hint">大問の型・断片の種類・難易度・計算・化合物どうしの関係を選んで、弱いところだけを狙って解く。</p>
         <div class="row"><button class="btn primary" id="go-custom">条件を選ぶ</button></div>
@@ -660,6 +676,8 @@ function renderHome() {
   $('#go-race').onclick = () => show('race');
   $('#go-daily').onclick = () => show('daily');
   $('#go-custom').onclick = () => show('custom');
+  $('#go-know').onclick = () => show('know');
+  $('#know-weak').onclick = () => startKnow(null);
   $('#go-miss').onclick = () => show('miss');
   $('#modes').onclick = (e) => {
     const b = e.target.closest('[data-mode]');
@@ -1140,6 +1158,110 @@ function countResultHtml() {
       <button class="btn" id="retry">もう一度</button>
       <button class="btn ghost" id="home">問題一覧</button>
     </div>`;
+}
+
+// ---------- 知識確認（一問一答） ----------
+// 範囲は data/curriculum.json の章・節。問題は problems/knowledge.json。4択で、選択肢は毎回並べ替える
+const KNOW_LEN = 10;
+const PRACTICE_NAMES = { narrow: '絞り込み型', big: '京大形式（基本）', gen: '京大形式（本番レベル）', count: '数え上げ型', polymer: '高分子型', survey: '異性体俯瞰型' };
+const quiz = { items: [], idx: 0, order: [], picked: null, results: [], topics: null };
+let knowSel = [];
+const kst = (id) => store.know[id] || { t: 0, c: 0, streak: 0 };
+const knowMastered = () => DATA.knowledge.items.filter((k) => kst(k.id).streak >= 2).length;
+const topicName = (id) => { for (const sec of DATA.knowledge.sections) for (const t of sec.topics) if (t.id === id) return t.name; return id; };
+
+// 前回まちがえた問題 > 未挑戦 > 正解したが覚えきっていない > 覚えた、の順に出やすくする
+function startKnow(topics) {
+  if (isNight()) { checkNight(); return; }
+  const pool = DATA.knowledge.items.filter((k) => !topics || topics.includes(k.topic));
+  const w = (k) => { const st = kst(k.id); return !st.t ? 3 : st.last === false ? 6 : st.streak >= 2 ? 0.3 : 1.5; };
+  const bag = pool.map((k) => ({ k, key: Math.random() ** (1 / w(k)) })).sort((a, b) => b.key - a.key).slice(0, KNOW_LEN).map((x) => x.k);
+  Object.assign(quiz, { items: bag, idx: 0, picked: null, results: [], topics });
+  quiz.order = bag.map((k) => [k.a, ...k.wrong].map((c) => ({ c, r: Math.random() })).sort((a, b) => a.r - b.r).map((x) => x.c));
+  show('quiz');
+}
+
+function renderKnowPick() {
+  const secs = DATA.knowledge.sections;
+  const prog = (tid) => { const ks = DATA.knowledge.items.filter((k) => k.topic === tid); return `${ks.filter((k) => kst(k.id).streak >= 2).length}/${ks.length}`; };
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>知識確認</h1>
+      <p class="hint">節を選んで ${KNOW_LEN} 問。数字は覚えた問題の数（2回続けて正解）。右の小さな文字は、その内容を構造決定などの問題で練習できるモード。書いていない節は、ここでしか練習できない。</p>
+      ${secs.map((sec) => `<section class="panel"><h2>${esc(sec.name)}</h2><div class="klist">
+        ${sec.topics.map((t) => `<button class="kt" data-topic="${t.id}" aria-pressed="${knowSel.includes(t.id)}">
+          <span>${esc(t.name)}</span><span class="mono">${prog(t.id)}</span>
+          <small>${t.practice.length ? t.practice.map((m) => esc(PRACTICE_NAMES[m] || m)).join('・') : 'ここだけ'}</small></button>`).join('')}
+      </div></section>`).join('')}
+      <div class="row"><button class="btn primary" id="know-go">${knowSel.length ? `選んだ ${knowSel.length} 節から` : '全範囲から'} ${KNOW_LEN} 問</button>
+        ${knowSel.length ? '<button class="btn ghost" id="know-clear">選択を消す</button>' : ''}</div>
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const app = $('#app');
+  app.onclick = (e) => {
+    const b = e.target.closest('[data-topic]');
+    if (b) {
+      const id = b.dataset.topic;
+      knowSel = knowSel.includes(id) ? knowSel.filter((x) => x !== id) : [...knowSel, id];
+      const y = window.scrollY; renderKnowPick(); window.scrollTo(0, y);
+      return;
+    }
+    if (e.target.id === 'know-go') startKnow(knowSel.length ? knowSel : null);
+    if (e.target.id === 'know-clear') { knowSel = []; renderKnowPick(); }
+  };
+}
+
+function renderQuiz() {
+  const done = quiz.idx >= quiz.items.length;
+  if (done) {
+    const ok = quiz.results.filter((r) => r.ok).length;
+    const wrong = quiz.results.filter((r) => !r.ok);
+    $('#app').innerHTML = `
+      <div class="stack">
+        <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+        <h1>知識確認の結果</h1>
+        <div class="verdict ${ok >= quiz.items.length * 0.8 ? 'ok' : 'ng'}"><h2>${ok} / ${quiz.items.length}</h2></div>
+        ${wrong.length ? `<section class="panel"><h2>まちがえた問題</h2><ul class="kwrong">${wrong.map(({ k }) => `<li><b>${esc(k.q)}</b><br>正解: ${esc(k.a)}<br><span class="muted">${esc(k.explain)}</span><br><small class="muted">${esc(topicName(k.topic))}</small></li>`).join('')}</ul>
+          <p class="hint">教科書のその節を読み直してから、もう一度解く。まちがえた問題は次から出やすくなる。</p></section>` : '<p class="hint">全問正解。</p>'}
+        <div class="row"><button class="btn primary" id="again">もう ${KNOW_LEN} 問</button><button class="btn" id="pick">範囲を選ぶ</button></div>
+      </div>`;
+    $('#back').onclick = () => show('home');
+    $('#again').onclick = () => startKnow(quiz.topics);
+    $('#pick').onclick = () => show('know');
+    return;
+  }
+  const k = quiz.items[quiz.idx];
+  const opts = quiz.order[quiz.idx];
+  const picked = quiz.picked;
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row" style="justify-content:space-between"><button class="btn ghost" id="back">← やめる</button><span class="mono">${quiz.idx + 1} / ${quiz.items.length}</span></div>
+      <p class="eyebrow">${esc(topicName(k.topic))}</p>
+      <h2 class="kq">${esc(k.q)}</h2>
+      <div class="kopts">${opts.map((c, i) => {
+        const cls = picked === null ? '' : c === k.a ? 'right' : i === picked ? 'wrong' : '';
+        return `<button class="kopt ${cls}" data-i="${i}" ${picked !== null ? 'disabled' : ''}>${esc(c)}</button>`;
+      }).join('')}</div>
+      ${picked !== null ? `<div class="expl"><p><b>${opts[picked] === k.a ? '〇 正解' : '× 不正解'}</b></p><p>${esc(k.explain)}</p></div>
+        <div class="row"><button class="btn primary" id="knext">${quiz.idx + 1 < quiz.items.length ? '次へ' : '結果を見る'}</button></div>` : '<p class="hint">答えを頭の中で言ってから選ぶ。</p>'}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const app = $('#app');
+  app.onclick = (e) => {
+    const b = e.target.closest('[data-i]');
+    if (b && quiz.picked === null) {
+      quiz.picked = Number(b.dataset.i);
+      const ok = opts[quiz.picked] === k.a;
+      const st = kst(k.id);
+      store.know[k.id] = { t: st.t + 1, c: st.c + (ok ? 1 : 0), streak: ok ? (st.streak || 0) + 1 : 0, last: ok, at: Date.now() };
+      saveStore();
+      quiz.results.push({ k, ok });
+      renderQuiz();
+      return;
+    }
+    if (e.target.id === 'knext') { quiz.idx++; quiz.picked = null; renderQuiz(); window.scrollTo(0, 0); }
+  };
 }
 
 // ---------- 条件を指定して出す ----------
@@ -2236,6 +2358,8 @@ function render() {
   else if (s === 'posts') renderPosts();
   else if (s === 'daily') renderDaily();
   else if (s === 'custom') renderCustom();
+  else if (s === 'know') renderKnowPick();
+  else if (s === 'quiz' && quiz.items.length) renderQuiz();
   else if (s === 'miss') renderMiss();
   else if (s === 'race') renderRaceHome();
   else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();

@@ -245,7 +245,13 @@ async function main() {
   for (const [k, v] of Object.entries(chem.CARDS)) {
     cards[k] = { name: v.name, action: v.action, kind: v.kind, yes: v.yes, no: v.no, none: v.none };
   }
-  const data = { version: 2, cards, molecules, problems: out, grades: G.GRADES, kyotoStats };
+  // 知識確認: 高校有機の範囲（章・節）と一問一答
+  const curriculum = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'curriculum.json'), 'utf8'));
+  const knowledge = {
+    sections: curriculum.sections.map((sec) => ({ id: sec.id, name: sec.name, topics: sec.topics.map((t) => ({ id: t.id, name: t.name, practice: t.modes })) })),
+    items: JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', 'knowledge.json'), 'utf8')),
+  };
+  const data = { version: 2, cards, molecules, problems: out, grades: G.GRADES, kyotoStats, knowledge };
 
   const template = fs.readFileSync(path.join(ROOT, 'src', 'index.html'), 'utf8');
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
