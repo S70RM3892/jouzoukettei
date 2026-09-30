@@ -1,0 +1,947 @@
+[
+ {
+  "id": "big-001/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 12.9,
+   "formulaX": "C12H14O4",
+   "formulaT": "C7H6O2",
+   "n": 1,
+   "answer": 7.09
+  }
+ },
+ {
+  "id": "big-002/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.53,
+   "formulaX": "C16H20O4",
+   "formulaT": "C5H12O",
+   "n": 1,
+   "answer": 3.04
+  }
+ },
+ {
+  "id": "big-004/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 18.3,
+   "formulaX": "C20H28O4",
+   "formulaT": "C6H14O",
+   "n": 1,
+   "answer": 5.62
+  }
+ },
+ {
+  "id": "big-005/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 20.1,
+   "formulaX": "C16H23NO3",
+   "formulaT": "C5H12O",
+   "n": 1,
+   "answer": 6.39
+  }
+ },
+ {
+  "id": "big-006/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 6.46,
+   "formulaX": "C16H20O6",
+   "formulaT": "C4H8O2",
+   "n": 1,
+   "answer": 1.85
+  }
+ },
+ {
+  "id": "big-007/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 12.2,
+   "formulaX": "C14H19N3O4",
+   "formulaT": "C2H5NO2",
+   "n": 1,
+   "answer": 3.12
+  }
+ },
+ {
+  "id": "big-008/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 19.7,
+   "formulaX": "C16H22N4O6S",
+   "formulaT": "C3H7NO2S",
+   "n": 1,
+   "answer": 5.99
+  }
+ },
+ {
+  "id": "kyoto-2003/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 18.9,
+   "V": 2.75,
+   "formula": "C9H14O2",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2003/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 16.8,
+   "formulaX": "C9H14O2",
+   "formulaT": "C2H4O2",
+   "n": 1,
+   "answer": 6.55
+  }
+ },
+ {
+  "id": "kyoto-2006/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 16.4,
+   "V": 1.41,
+   "formula": "C15H20N2O2",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2006/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 23.2,
+   "formulaX": "C15H20N2O2",
+   "formulaT": "C4H6O2",
+   "n": 1,
+   "answer": 7.67
+  }
+ },
+ {
+  "id": "kyoto-2008/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 7.64,
+   "formulaX": "C22H18O4",
+   "formulaT": "C7H8O",
+   "n": 2,
+   "answer": 4.77
+  }
+ },
+ {
+  "id": "kyoto-2009/fB",
+  "calc": {
+   "kind": "combustion",
+   "sample": 25.2,
+   "co2": 47.5,
+   "h2o": 6.48,
+   "M": 210,
+   "answer": "C9H6O6"
+  }
+ },
+ {
+  "id": "kyoto-2009/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 17.8,
+   "formulaX": "C30H25NO5",
+   "formulaT": "C9H6O6",
+   "n": 1,
+   "answer": 7.8
+  }
+ },
+ {
+  "id": "kyoto-2010/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 18.6,
+   "co2": 53.5,
+   "h2o": 9.25,
+   "M": 398,
+   "answer": "C26H22O4"
+  }
+ },
+ {
+  "id": "kyoto-2010/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 15.6,
+   "formulaX": "C26H22O4",
+   "formulaT": "C4H10O2",
+   "n": 1,
+   "answer": 3.53
+  }
+ },
+ {
+  "id": "kyoto-2013/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 22.7,
+   "V": 3.71,
+   "formula": "C16H18O4",
+   "answer": 2
+  }
+ },
+ {
+  "id": "kyoto-2013/fA",
+  "calc": {
+   "kind": "combustion",
+   "sample": 25,
+   "co2": 61.1,
+   "h2o": 25,
+   "M": 72,
+   "answer": "C4H8O"
+  }
+ },
+ {
+  "id": "kyoto-2013/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 10.2,
+   "formulaX": "C16H18O4",
+   "formulaT": "C8H6O4",
+   "n": 1,
+   "answer": 6.18
+  }
+ },
+ {
+  "id": "kyoto-2016/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 16.6,
+   "co2": 37.5,
+   "h2o": 12.6,
+   "M": 214,
+   "answer": "C11H18O4"
+  }
+ },
+ {
+  "id": "kyoto-2016/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 28.6,
+   "V": 2.99,
+   "formula": "C11H18O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2016/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 10.9,
+   "formulaX": "C11H18O4",
+   "formulaT": "C4H10O",
+   "n": 1,
+   "answer": 3.77
+  }
+ },
+ {
+  "id": "kyoto-2017/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 12.7,
+   "V": 0.93,
+   "formula": "C16H18O6",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2017/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 16,
+   "formulaX": "C16H18O6",
+   "formulaT": "C9H8O2",
+   "n": 1,
+   "answer": 7.74
+  }
+ },
+ {
+  "id": "kyoto-2020/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 32.5,
+   "co2": 78.1,
+   "h2o": 20.2,
+   "M": 348,
+   "answer": "C19H24O6"
+  }
+ },
+ {
+  "id": "kyoto-2020/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 3.62,
+   "V": 0.233,
+   "formula": "C19H24O6",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2020/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 10.5,
+   "formulaX": "C19H24O6",
+   "formulaT": "C5H12O",
+   "n": 1,
+   "answer": 2.66
+  }
+ },
+ {
+  "id": "kyoto-2016B/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 12.2,
+   "V": 1.28,
+   "formula": "C11H18O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "kyoto-2016B/fA",
+  "calc": {
+   "kind": "combustion",
+   "sample": 22.2,
+   "co2": 55.5,
+   "h2o": 27.2,
+   "M": 88,
+   "answer": "C5H12O"
+  }
+ },
+ {
+  "id": "kyoto-2016B/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 8.19,
+   "formulaX": "C11H18O4",
+   "formulaT": "C5H12O",
+   "n": 1,
+   "answer": 3.37
+  }
+ },
+ {
+  "id": "g20260929-01/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 13.3,
+   "co2": 33.7,
+   "h2o": 9.47,
+   "M": 278,
+   "answer": "C16H22O4"
+  }
+ },
+ {
+  "id": "g20260929-01/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 15.1,
+   "formulaX": "C16H22O4",
+   "formulaT": "C8H10O",
+   "n": 1,
+   "answer": 6.63
+  }
+ },
+ {
+  "id": "g20260929-02/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 26.8,
+   "V": 1.88,
+   "formula": "C17H20O6",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-02/fD",
+  "calc": {
+   "kind": "combustion",
+   "sample": 26.9,
+   "co2": 76.7,
+   "h2o": 17.9,
+   "M": 108,
+   "answer": "C7H8O"
+  }
+ },
+ {
+  "id": "g20260929-02/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 15,
+   "formulaX": "C17H20O6",
+   "formulaT": "C7H8O",
+   "n": 1,
+   "answer": 5.06
+  }
+ },
+ {
+  "id": "g20260929-03/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 4.46,
+   "V": 0.39,
+   "formula": "C14H24O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-03/fC",
+  "calc": {
+   "kind": "combustion",
+   "sample": 32.8,
+   "co2": 84.9,
+   "h2o": 40.5,
+   "M": 102,
+   "answer": "C6H14O"
+  }
+ },
+ {
+  "id": "g20260929-03/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 5.83,
+   "formulaX": "C14H24O4",
+   "formulaT": "C4H8O3",
+   "n": 1,
+   "answer": 2.37
+  }
+ },
+ {
+  "id": "g20260929-04/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 28.2,
+   "co2": 71.9,
+   "h2o": 18.4,
+   "M": 276,
+   "answer": "C16H20O4"
+  }
+ },
+ {
+  "id": "g20260929-04/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 29.4,
+   "V": 2.39,
+   "formula": "C16H20O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-04/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 24.8,
+   "formulaX": "C16H20O4",
+   "formulaT": "C4H10O",
+   "n": 1,
+   "answer": 6.65
+  }
+ },
+ {
+  "id": "g20260929-05/fX",
+  "calc": {
+   "kind": "combustion",
+   "sample": 19.3,
+   "co2": 52,
+   "h2o": 10.1,
+   "M": 310,
+   "answer": "C19H18O4"
+  }
+ },
+ {
+  "id": "g20260929-05/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 28.6,
+   "V": 2.07,
+   "formula": "C19H18O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-05/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 16.3,
+   "formulaX": "C19H18O4",
+   "formulaT": "C8H10O",
+   "n": 1,
+   "answer": 6.41
+  }
+ },
+ {
+  "id": "g20260929-06/fC",
+  "calc": {
+   "kind": "combustion",
+   "sample": 22.8,
+   "co2": 50.9,
+   "h2o": 8.92,
+   "M": 138,
+   "answer": "C7H6O3"
+  }
+ },
+ {
+  "id": "g20260929-06/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 17.3,
+   "formulaX": "C21H18O5",
+   "formulaT": "C7H6O3",
+   "n": 1,
+   "answer": 6.82
+  }
+ },
+ {
+  "id": "g20260929-07/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 26.9,
+   "V": 1.47,
+   "formula": "C24H26O6",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-07/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 13.5,
+   "formulaX": "C24H26O6",
+   "formulaT": "C8H6O4",
+   "n": 1,
+   "answer": 5.47
+  }
+ },
+ {
+  "id": "g20260929-08/ccX",
+  "calc": {
+   "kind": "h2",
+   "m": 15,
+   "V": 1.81,
+   "formula": "C9H14O4",
+   "answer": 1
+  }
+ },
+ {
+  "id": "g20260929-08/fC",
+  "calc": {
+   "kind": "combustion",
+   "sample": 27.8,
+   "co2": 68,
+   "h2o": 27.8,
+   "M": 72,
+   "answer": "C4H8O"
+  }
+ },
+ {
+  "id": "g20260929-08/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.89,
+   "formulaX": "C9H14O4",
+   "formulaT": "C4H8O",
+   "n": 1,
+   "answer": 3.83
+  }
+ },
+ {
+  "id": "g20260929-09/fC",
+  "calc": {
+   "kind": "combustion",
+   "sample": 35.5,
+   "co2": 88.8,
+   "h2o": 43.6,
+   "M": 88,
+   "answer": "C5H12O"
+  }
+ },
+ {
+  "id": "g20260929-09/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.71,
+   "formulaX": "C12H22O4",
+   "formulaT": "C5H10O2",
+   "n": 1,
+   "answer": 4.31
+  }
+ },
+ {
+  "id": "g20260929-10/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.43,
+   "formulaX": "C12H16N2O2",
+   "formulaT": "C7H7NO2",
+   "n": 1,
+   "answer": 5.87
+  }
+ },
+ {
+  "id": "g20260929-11/fC",
+  "calc": {
+   "kind": "combustion",
+   "sample": 24.8,
+   "co2": 70.7,
+   "h2o": 16.5,
+   "M": 108,
+   "answer": "C7H8O"
+  }
+ },
+ {
+  "id": "g20260929-11/massT",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 24.4,
+   "formulaX": "C17H14O4",
+   "formulaT": "C7H8O",
+   "n": 1,
+   "answer": 9.34
+  }
+ },
+ {
+  "id": "k26-6097036-1/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 20.9,
+   "formulaG": "C5H12O",
+   "formulaH": "C7H14O2",
+   "answer": 15.4,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6099061-2/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 20.3,
+   "formulaG": "C10H14O",
+   "formulaH": "C12H16O2",
+   "answer": 13,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6099061-2/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 12.9,
+   "b": 4.62,
+   "p": 19,
+   "q": 1,
+   "formulaG": "C10H14O",
+   "formulaH": "C12H16O2",
+   "answer": 67,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6116221-3/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 5.89,
+   "formulaX": "C8H18O2",
+   "formulaT": "C3H8O",
+   "n": 2,
+   "answer": 4.84,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6116221-3/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 29.9,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 21.1,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6116221-3/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 25.2,
+   "b": 11.4,
+   "p": 9,
+   "q": 1,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 69,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6100084-4/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.76,
+   "formulaX": "C9H20O2",
+   "formulaT": "C3H8O",
+   "n": 2,
+   "answer": 7.32,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6100084-4/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 22.8,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 16.1,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6100084-4/q5m",
+  "calc": {
+   "kind": "resolution_Y_remaining",
+   "w": 8.96,
+   "b": 4.17,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 6.01,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6100084-4/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 8.96,
+   "b": 4.17,
+   "p": 19,
+   "q": 1,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 72,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6107154-5/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 9.57,
+   "formulaX": "C6H14O2",
+   "formulaT": "C2H4O",
+   "n": 1,
+   "answer": 3.57,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6107154-5/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 3.24,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 2.29,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6107154-5/q5m",
+  "calc": {
+   "kind": "resolution_Y_remaining",
+   "w": 19.2,
+   "b": 14.6,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 8.86,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6107154-5/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 19.2,
+   "b": 14.6,
+   "p": 7,
+   "q": 3,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 73,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6101107-1/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 5.46,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 3.85,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6098087-2/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 11.1,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 7.84,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6098087-2/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 8.04,
+   "b": 4.65,
+   "p": 7,
+   "q": 3,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 64,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6096076-3/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 3.02,
+   "formulaX": "C8H18O2",
+   "formulaT": "C3H8O",
+   "n": 2,
+   "answer": 2.48,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6096076-3/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 27.3,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 19.3,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6096076-3/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 26.9,
+   "b": 19.4,
+   "p": 4,
+   "q": 1,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 81,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6096083-4/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 17.3,
+   "formulaX": "C8H18O2",
+   "formulaT": "C3H8O",
+   "n": 2,
+   "answer": 14.2,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6096083-4/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 4.47,
+   "formulaG": "C10H14O",
+   "formulaH": "C12H16O2",
+   "answer": 2.86,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6096083-4/q5m",
+  "calc": {
+   "kind": "resolution_Y_remaining",
+   "w": 14.2,
+   "b": 4,
+   "formulaG": "C10H14O",
+   "formulaH": "C12H16O2",
+   "answer": 11.1,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6096083-4/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 14.2,
+   "b": 4,
+   "p": 17,
+   "q": 3,
+   "formulaG": "C10H14O",
+   "formulaH": "C12H16O2",
+   "answer": 60,
+   "sig": 2
+  }
+ },
+ {
+  "id": "k26-6094072-5/q2m",
+  "calc": {
+   "kind": "hydrolysis_mass",
+   "w": 12.7,
+   "formulaX": "C6H14O2",
+   "formulaT": "C2H4O",
+   "n": 1,
+   "answer": 4.74,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6094072-5/q4X",
+  "calc": {
+   "kind": "resolution_X",
+   "w": 23.2,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 16.4,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6094072-5/q5m",
+  "calc": {
+   "kind": "resolution_Y_remaining",
+   "w": 22.4,
+   "b": 12.3,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 13.7,
+   "sig": 3
+  }
+ },
+ {
+  "id": "k26-6094072-5/q5Y",
+  "calc": {
+   "kind": "resolution_Y_fraction",
+   "w": 22.4,
+   "b": 12.3,
+   "p": 9,
+   "q": 1,
+   "formulaG": "C6H14O",
+   "formulaH": "C8H16O2",
+   "answer": 75,
+   "sig": 2
+  }
+ }
+]
