@@ -253,7 +253,8 @@ async function main() {
   const curriculum = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'curriculum.json'), 'utf8'));
   const knowledge = {
     sections: curriculum.sections.map((sec) => ({ id: sec.id, name: sec.name, topics: sec.topics.map((t) => ({ id: t.id, name: t.name, practice: t.modes })) })),
-    items: JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', 'knowledge.json'), 'utf8')),
+    // 一問一答と、数値を変えた計算問題（scripts/calcdrill.js）
+    items: ['knowledge.json', 'calc.json'].flatMap((f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', f), 'utf8'))),
   };
   const data = { version: 2, cards, molecules, problems: out, grades: G.GRADES, kyotoStats, knowledge };
 

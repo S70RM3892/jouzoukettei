@@ -10,7 +10,7 @@ const chem = require('../src/chem');
 
 const ROOT = path.join(__dirname, '..');
 const C = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'curriculum.json'), 'utf8'));
-const K = JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', 'knowledge.json'), 'utf8'));
+const K = ['knowledge.json', 'calc.json'].flatMap((f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', f), 'utf8')));
 const MIN = 3;
 
 const errors = [];
@@ -43,7 +43,7 @@ const RULES = new Set(require('../src/inference').RULE_CARDS.concat(['partial_hy
 orphan.filter((c) => !RULES.has(c)).forEach((c) => errors.push(`判定カード ${c}（${chem.CARDS[c].name}）がどの節にも入っていない`));
 
 const knowOnly = topics.filter((t) => !t.engine.length && !t.modes.length);
-console.log(`範囲: ${C.sections.length} 章 ${topics.length} 節、知識確認 ${K.length} 問`);
+console.log(`範囲: ${C.sections.length} 章 ${topics.length} 節、知識確認 ${K.filter((k) => !k.calc).length} 問・計算 ${K.filter((k) => k.calc).length} 問`);
 C.sections.forEach((s) => console.log(`  ${s.name}: ${s.topics.map((t) => `${t.name}(${K.filter((k) => k.topic === t.id).length}${t.engine.length || t.modes.length ? '' : '・知識のみ'})`).join('、')}`));
 console.log(`構造決定などの問題では練習できず、知識確認だけで扱う節 ${knowOnly.length}: ${knowOnly.map((t) => t.name).join('、')}`);
 if (errors.length) {
