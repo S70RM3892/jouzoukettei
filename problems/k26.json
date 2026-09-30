@@ -1,0 +1,5526 @@
+[
+ {
+  "id": "k26-6097036-1",
+  "mode": "k26",
+  "level": 1,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 1）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6097036,
+   "difficulty": 1,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 1,
+   "rule_priorities": 0,
+   "inverse_steps": {
+    "D": 4,
+    "G": 2
+   },
+   "stereo": false,
+   "calc_steps": 1,
+   "apply_cases": [
+    "exchange"
+   ]
+  },
+  "difficulty": 1,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CCCC(OC)OC"
+     }
+    ],
+    "tail": "図の化合物 P を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C5H12O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₅H₁₂O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 88,
+      "H": 130
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₈H₁₈O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C8H18O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "E": 1,
+      "F": 2
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F の分子量は 60 であった。",
+    "figs": [],
+    "hint": "分子量から分子式を決め、候補を絞る",
+    "fact": {
+     "subject": "F",
+     "card": "mw",
+     "value": 60
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示す化合物が得られた。",
+    "figs": [],
+    "hint": "第一級アルコール（–CH₂OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ald"
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 2 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（2 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 2
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCC(OCC)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCOC(C)OCCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）"
+    ],
+    "explain": "分子式 C₈H₁₈O₂ の構造異性体（1054 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 19 種類。F: 分子量から分子式を決め、候補を絞る。F: 第一級アルコール（–CH₂OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C8H18O2",
+     "count": 1
+    },
+    "no": 2
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 3
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC(C)C(C)O"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（オ）"
+    ],
+    "explain": "分子式 C₅H₁₂O の構造異性体（14 種類）のうち、不斉炭素原子を1個もつものは 4 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（2 種類）。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C5H12O",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 20.9 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 15.4,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 20.9,
+     "formulaG": "C5H12O",
+     "formulaH": "C7H14O2",
+     "answer": 15.4,
+     "sig": 3
+    },
+    "explain": "G の物質量は 20.9 ÷ 88 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。20.9 ÷ 88 ÷ 2 × 130 = 15.4 g。",
+    "no": 5
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6099061-2",
+  "mode": "k26",
+  "level": 2,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 2）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6099061,
+   "difficulty": 2,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 2,
+   "rule_priorities": 1,
+   "inverse_steps": {
+    "D": 5,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 2,
+   "apply_cases": [
+    "hemi",
+    "exchange"
+   ]
+  },
+  "difficulty": 2,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CC1(C)CCCC(O)O1"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCCOC(CCC)OCC"
+     }
+    ],
+    "tail": "図の化合物 P・Q を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C10H14O",
+     "arom": true,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₁₀H₁₄O）はベンゼン環を1つもち、それ以外に環や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 150,
+      "H": 192
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 12.9 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 4.62 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 19 : 1 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₉H₂₀O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C9H20O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 2,
+      "E": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "E",
+     "card": "iodoform",
+     "value": false
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F は不斉炭素原子をもたない。",
+    "figs": [],
+    "hint": "4つの異なる原子・原子団が結合した炭素がない。対称な形か、枝の2本が同じ",
+    "fact": {
+     "subject": "F",
+     "card": "chiral",
+     "value": 0
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 2 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（2 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 2
+    }
+   },
+   {
+    "label": "（キ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G のベンゼン環の水素原子1個を塩素原子で置き換えた化合物は、2 種類考えられる。",
+    "figs": [],
+    "hint": "ベンゼン環上の H の種類が 2。置換基の数と位置関係（オルト・メタ・パラ）が決まる",
+    "fact": {
+     "subject": "G",
+     "card": "ring_cl",
+     "value": 2
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1CCCC(C)(C)O1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 6 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCC(OCC)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(OC(C)C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₉H₂₀O₂ の構造異性体（2841 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 47 種類。F: 第二級アルコール（>CH–OH）。E: CH₃–CO– と CH₃–CH(OH)– のどちらももたない。F: 4つの異なる原子・原子団が結合した炭素がない。対称な形か、枝の2本が同じ。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C9H20O2",
+     "count": 1
+    },
+    "no": 3
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 4
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)c1ccc(C)cc1"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）",
+     "（キ）"
+    ],
+    "explain": "分子式 C₁₀H₁₄O の構造異性体（192 種類）のうち、不斉炭素原子を1個もつものは 37 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（2 種類）。ベンゼン環上の H の種類が 2。置換基の数と位置関係（オルト・メタ・パラ）が決まる。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "seed": "c1ccccc1",
+      "rings": 0
+     },
+     "formula": "C10H14O",
+     "count": 1
+    },
+    "no": 5
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 20.3 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 13,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 20.3,
+     "formulaG": "C10H14O",
+     "formulaH": "C12H16O2",
+     "answer": 13,
+     "sig": 3
+    },
+    "explain": "G の物質量は 20.3 ÷ 150 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。20.3 ÷ 150 ÷ 2 × 192 = 13.0 g。",
+    "no": 6
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 67,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 12.9,
+     "b": 4.62,
+     "p": 19,
+     "q": 1,
+     "formulaG": "C10H14O",
+     "formulaH": "C12H16O2",
+     "answer": 67,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 12.9 ÷ 150 ÷ 2 mol。反応した G（= H）4.62 ÷ 192 mol のうち (+) が 19/20、(−) が 1/20。残った (−)-G ÷ 残った G 全体 × 100 = 67 %。",
+    "no": 7
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6116221-3",
+  "mode": "k26",
+  "level": 3,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 3）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6116221,
+   "difficulty": 3,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 2,
+   "rule_priorities": 1,
+   "inverse_steps": {
+    "D": 4,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 3,
+   "apply_cases": [
+    "hemi",
+    "exchange"
+   ]
+  },
+  "difficulty": 3,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CC1CC(C)C(O)O1"
+     },
+     {
+      "label": "Q",
+      "smiles": "COC(C)OC"
+     }
+    ],
+    "tail": "図の化合物 P・Q を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 25.2 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 11.4 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 9 : 1 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₈H₁₈O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C8H18O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "E": 1,
+      "F": 2
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示す化合物が得られた。",
+    "figs": [],
+    "hint": "第一級アルコール（–CH₂OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ald"
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "F",
+     "card": "iodoform",
+     "value": false
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、特有のにおいをもつ黄色沈殿が生じた。",
+    "figs": [],
+    "hint": "CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": true
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 1 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（1 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 1
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1OC(C)CC1C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 5 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(C)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCOC(C)OCCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）"
+    ],
+    "explain": "分子式 C₈H₁₈O₂ の構造異性体（1054 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 19 種類。F: 第一級アルコール（–CH₂OH）。F: CH₃–CO– と CH₃–CH(OH)– のどちらももたない。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C8H18O2",
+     "count": 1
+    },
+    "no": 3
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 4
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 5.89 g を完全に加水分解すると、化合物 F は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 4.84,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 5.89,
+     "formulaX": "C8H18O2",
+     "formulaT": "C3H8O",
+     "n": 2,
+     "answer": 4.84,
+     "sig": 3
+    },
+    "explain": "D の分子量 146、F の分子量 60。D 1 mol から F は 2 mol。5.89 ÷ 146 × 2 × 60 = 4.84 g。",
+    "no": 5
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC(O)C(C)(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（オ）",
+     "（カ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（1 種類）。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 6
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 29.9 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 21.1,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 29.9,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 21.1,
+     "sig": 3
+    },
+    "explain": "G の物質量は 29.9 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。29.9 ÷ 102 ÷ 2 × 144 = 21.1 g。",
+    "no": 7
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 69,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 25.2,
+     "b": 11.4,
+     "p": 9,
+     "q": 1,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 69,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 25.2 ÷ 102 ÷ 2 mol。反応した G（= H）11.4 ÷ 144 mol のうち (+) が 9/10、(−) が 1/10。残った (−)-G ÷ 残った G 全体 × 100 = 69 %。",
+    "no": 8
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 9
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6100084-4",
+  "mode": "k26",
+  "level": 4,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 4）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6100084,
+   "difficulty": 4,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 3,
+   "rule_priorities": 2,
+   "inverse_steps": {
+    "D": 5,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 4,
+   "apply_cases": [
+    "hemi",
+    "exchange",
+    "trap"
+   ]
+  },
+  "difficulty": 4,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CC1CCCC(O)O1"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCCOC(CC(C)C)OC"
+     },
+     {
+      "label": "R",
+      "smiles": "COC(CCCCCCO)OC"
+     }
+    ],
+    "tail": "図の化合物 P・Q・R を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 8.96 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 4.17 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 19 : 1 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₉H₂₀O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C9H20O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 2,
+      "E": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F は不斉炭素原子をもたない。",
+    "figs": [],
+    "hint": "4つの異なる原子・原子団が結合した炭素がない。対称な形か、枝の2本が同じ",
+    "fact": {
+     "subject": "F",
+     "card": "chiral",
+     "value": 0
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E をアンモニア性硝酸銀水溶液と温めると、銀が析出した。",
+    "figs": [],
+    "hint": "ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性",
+    "fact": {
+     "subject": "E",
+     "card": "silver_mirror",
+     "value": true
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 3 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 3
+    }
+   },
+   {
+    "label": "（キ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": false
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1CCCC(C)O1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 6 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(CC(C)C)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q1R",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 R から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(CCCCCCO)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH はあるが、アルデヒドの炭素との間で五員環・六員環をつくれない（四員環や七員環以上になる）ので R4 は起こらない。R3 だけが起こり、OH はそのまま残る。",
+    "no": 3
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(OC(C)C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₉H₂₀O₂ の構造異性体（2841 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 47 種類。F: 第二級アルコール（>CH–OH）。F: 4つの異なる原子・原子団が結合した炭素がない。対称な形か、枝の2本が同じ。E: ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C9H20O2",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 5
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 9.76 g を完全に加水分解すると、化合物 F は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 7.32,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 9.76,
+     "formulaX": "C9H20O2",
+     "formulaT": "C3H8O",
+     "n": 2,
+     "answer": 7.32,
+     "sig": 3
+    },
+    "explain": "D の分子量 160、F の分子量 60。D 1 mol から F は 2 mol。9.76 ÷ 160 × 2 × 60 = 7.32 g。",
+    "no": 6
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）",
+     "（キ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）。CH₃–CO– と CH₃–CH(OH)– のどちらももたない。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 7
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 22.8 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 16.1,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 22.8,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 16.1,
+     "sig": 3
+    },
+    "explain": "G の物質量は 22.8 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。22.8 ÷ 102 ÷ 2 × 144 = 16.1 g。",
+    "no": 8
+   },
+   {
+    "id": "q5m",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 6.01,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_Y_remaining",
+     "w": 8.96,
+     "b": 4.17,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 6.01,
+     "sig": 3
+    },
+    "explain": "はじめの G: 8.96 ÷ 102 mol。反応した G = 生じた H = 4.17 ÷ 144 mol。差に 102 を掛けて 6.01 g。",
+    "no": 9
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [
+     "q5m"
+    ],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 72,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 8.96,
+     "b": 4.17,
+     "p": 19,
+     "q": 1,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 72,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 8.96 ÷ 102 ÷ 2 mol。反応した G（= H）4.17 ÷ 144 mol のうち (+) が 19/20、(−) が 1/20。残った (−)-G ÷ 残った G 全体 × 100 = 72 %。",
+    "no": 10
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 11
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6107154-5",
+  "mode": "k26",
+  "level": 5,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 5）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6107154,
+   "difficulty": 5,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "C",
+   "rule_applications": 3,
+   "rule_priorities": 2,
+   "inverse_steps": {
+    "D": 5,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 4,
+   "apply_cases": [
+    "ring",
+    "exchange",
+    "trap"
+   ]
+  },
+  "difficulty": 5,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 1,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CCOC(CC(C)CCO)OCC"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCCOC(C)OCCC"
+     },
+     {
+      "label": "R",
+      "smiles": "CCOC(CCO)OCC"
+     }
+    ],
+    "tail": "図の化合物 P・Q・R を、それぞれ少量の硫酸を含む大過剰のメタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 19.2 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 14.6 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 7 : 3 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₆H₁₄O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C6H14O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol、F 1 mol と K 1 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 1,
+      "E": 1,
+      "K": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E をアンモニア性硝酸銀水溶液と温めると、銀が析出した。",
+    "figs": [],
+    "hint": "ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性",
+    "fact": {
+     "subject": "E",
+     "card": "silver_mirror",
+     "value": true
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E に水酸化ナトリウム水溶液とヨウ素を加えて温めると、特有のにおいをもつ黄色沈殿が生じた。",
+    "figs": [],
+    "hint": "CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性",
+    "fact": {
+     "subject": "E",
+     "card": "iodoform",
+     "value": true
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 3 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 3
+    }
+   },
+   {
+    "label": "（キ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": false
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC1CC(C)CCO1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 6 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OCH₃ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC(C)OC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q1R",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 R から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC(CCO)OC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH はあるが、アルデヒドの炭素との間で五員環・六員環をつくれない（四員環や七員環以上になる）ので R4 は起こらない。R3 だけが起こり、OH はそのまま残る。",
+    "no": 3
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC(C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₆H₁₄O₂ の構造異性体（147 種類）のうち、Na と反応せず加水分解で E 1 mol、F 1 mol と K 1 mol を与えるアセタールは 9 種類。E: ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性。E: CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性。F: 第二級アルコール（>CH–OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C6H14O2",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 5
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 9.57 g を完全に加水分解すると、化合物 E は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 3.57,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 9.57,
+     "formulaX": "C6H14O2",
+     "formulaT": "C2H4O",
+     "n": 1,
+     "answer": 3.57,
+     "sig": 3
+    },
+    "explain": "D の分子量 118、E の分子量 44。D 1 mol から E は 1 mol。9.57 ÷ 118 × 1 × 44 = 3.57 g。",
+    "no": 6
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）",
+     "（キ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）。CH₃–CO– と CH₃–CH(OH)– のどちらももたない。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 7
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 3.24 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 2.29,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 3.24,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 2.29,
+     "sig": 3
+    },
+    "explain": "G の物質量は 3.24 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。3.24 ÷ 102 ÷ 2 × 144 = 2.29 g。",
+    "no": 8
+   },
+   {
+    "id": "q5m",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 8.86,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_Y_remaining",
+     "w": 19.2,
+     "b": 14.6,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 8.86,
+     "sig": 3
+    },
+    "explain": "はじめの G: 19.2 ÷ 102 mol。反応した G = 生じた H = 14.6 ÷ 144 mol。差に 102 を掛けて 8.86 g。",
+    "no": 9
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [
+     "q5m"
+    ],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 73,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 19.2,
+     "b": 14.6,
+     "p": 7,
+     "q": 3,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 73,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 19.2 ÷ 102 ÷ 2 mol。反応した G（= H）14.6 ÷ 144 mol のうち (+) が 7/10、(−) が 3/10。残った (−)-G ÷ 残った G 全体 × 100 = 73 %。",
+    "no": 10
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 11
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6101107-1",
+  "mode": "k26",
+  "level": 1,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 1）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6101107,
+   "difficulty": 1,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 1,
+   "rule_priorities": 0,
+   "inverse_steps": {
+    "D": 5,
+    "G": 2
+   },
+   "stereo": false,
+   "calc_steps": 1,
+   "apply_cases": [
+    "exchange"
+   ]
+  },
+  "difficulty": 1,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CCC(OC)OC"
+     }
+    ],
+    "tail": "図の化合物 P を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₉H₂₀O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C9H20O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "E": 1,
+      "F": 2
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E の分子量は 58 であった。",
+    "figs": [],
+    "hint": "分子量から分子式を決め、候補を絞る",
+    "fact": {
+     "subject": "E",
+     "card": "mw",
+     "value": 58
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示す化合物が得られた。",
+    "figs": [],
+    "hint": "第一級アルコール（–CH₂OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ald"
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "E",
+     "card": "iodoform",
+     "value": false
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 4 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（4 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 4
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(CC)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCOC(CC)OCCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₉H₂₀O₂ の構造異性体（2841 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 47 種類。E: 分子量から分子式を決め、候補を絞る。F: 第一級アルコール（–CH₂OH）。E: CH₃–CO– と CH₃–CH(OH)– のどちらももたない。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C9H20O2",
+     "count": 1
+    },
+    "no": 2
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 3
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCC(O)CC"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（4 種類）。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 5.46 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 3.85,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 5.46,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 3.85,
+     "sig": 3
+    },
+    "explain": "G の物質量は 5.46 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。5.46 ÷ 102 ÷ 2 × 144 = 3.85 g。",
+    "no": 5
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6098087-2",
+  "mode": "k26",
+  "level": 2,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 2）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6098087,
+   "difficulty": 2,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 2,
+   "rule_priorities": 1,
+   "inverse_steps": {
+    "D": 5,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 2,
+   "apply_cases": [
+    "ring",
+    "exchange"
+   ]
+  },
+  "difficulty": 2,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "COC1CCCCO1"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCCOC(OCC)C(C)C"
+     }
+    ],
+    "tail": "図の化合物 P・Q を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 8.04 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 4.65 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 7 : 3 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₉H₂₀O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C9H20O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "E": 1,
+      "F": 2
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F の分子量は 60 であった。",
+    "figs": [],
+    "hint": "分子量から分子式を決め、候補を絞る",
+    "fact": {
+     "subject": "F",
+     "card": "mw",
+     "value": 60
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "E",
+     "card": "iodoform",
+     "value": false
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示す化合物が得られた。",
+    "figs": [],
+    "hint": "第一級アルコール（–CH₂OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ald"
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 3 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 3
+    }
+   },
+   {
+    "label": "（キ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": false
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1CCCCO1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 6 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(OCC)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCCOC(CC)OCCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₉H₂₀O₂ の構造異性体（2841 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 47 種類。F: 分子量から分子式を決め、候補を絞る。E: CH₃–CO– と CH₃–CH(OH)– のどちらももたない。F: 第一級アルコール（–CH₂OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C9H20O2",
+     "count": 1
+    },
+    "no": 3
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 4
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）",
+     "（キ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）。CH₃–CO– と CH₃–CH(OH)– のどちらももたない。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 5
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 11.1 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 7.84,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 11.1,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 7.84,
+     "sig": 3
+    },
+    "explain": "G の物質量は 11.1 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。11.1 ÷ 102 ÷ 2 × 144 = 7.84 g。",
+    "no": 6
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 64,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 8.04,
+     "b": 4.65,
+     "p": 7,
+     "q": 3,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 64,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 8.04 ÷ 102 ÷ 2 mol。反応した G（= H）4.65 ÷ 144 mol のうち (+) が 7/10、(−) が 3/10。残った (−)-G ÷ 残った G 全体 × 100 = 64 %。",
+    "no": 7
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6096076-3",
+  "mode": "k26",
+  "level": 3,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 3）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6096076,
+   "difficulty": 3,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 2,
+   "rule_priorities": 1,
+   "inverse_steps": {
+    "D": 3,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 3,
+   "apply_cases": [
+    "ring",
+    "exchange"
+   ]
+  },
+  "difficulty": 3,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CCCOC(CCCO)OCCC"
+     },
+     {
+      "label": "Q",
+      "smiles": "COC(OC)C(C)C"
+     }
+    ],
+    "tail": "図の化合物 P・Q を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 26.9 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 19.4 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 4 : 1 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₈H₁₈O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C8H18O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 2,
+      "E": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 3 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 3
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": false
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1CCCO1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 5 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(OCC)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC(C)OC(C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）"
+    ],
+    "explain": "分子式 C₈H₁₈O₂ の構造異性体（1054 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 19 種類。F: 第二級アルコール（>CH–OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C8H18O2",
+     "count": 1
+    },
+    "no": 3
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 4
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 3.02 g を完全に加水分解すると、化合物 F は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 2.48,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 3.02,
+     "formulaX": "C8H18O2",
+     "formulaT": "C3H8O",
+     "n": 2,
+     "answer": 2.48,
+     "sig": 3
+    },
+    "explain": "D の分子量 146、F の分子量 60。D 1 mol から F は 2 mol。3.02 ÷ 146 × 2 × 60 = 2.48 g。",
+    "no": 5
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）。CH₃–CO– と CH₃–CH(OH)– のどちらももたない。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 6
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 27.3 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 19.3,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 27.3,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 19.3,
+     "sig": 3
+    },
+    "explain": "G の物質量は 27.3 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。27.3 ÷ 102 ÷ 2 × 144 = 19.3 g。",
+    "no": 7
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 81,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 26.9,
+     "b": 19.4,
+     "p": 4,
+     "q": 1,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 81,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 26.9 ÷ 102 ÷ 2 mol。反応した G（= H）19.4 ÷ 144 mol のうち (+) が 4/5、(−) が 1/5。残った (−)-G ÷ 残った G 全体 × 100 = 81 %。",
+    "no": 8
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 9
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6096083-4",
+  "mode": "k26",
+  "level": 4,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 4）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6096083,
+   "difficulty": 4,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "CC",
+   "rule_applications": 3,
+   "rule_priorities": 2,
+   "inverse_steps": {
+    "D": 3,
+    "G": 4
+   },
+   "stereo": true,
+   "calc_steps": 4,
+   "apply_cases": [
+    "hemi",
+    "exchange",
+    "trap"
+   ]
+  },
+  "difficulty": 4,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 2,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CC1CC(C)OC(O)C1"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCC(OC)OC"
+     },
+     {
+      "label": "R",
+      "smiles": "CCCOC(OCCC)C(C)C(C)O"
+     }
+    ],
+    "tail": "図の化合物 P・Q・R を、それぞれ少量の硫酸を含む大過剰のエタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C10H14O",
+     "arom": true,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₁₀H₁₄O）はベンゼン環を1つもち、それ以外に環や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 150,
+      "H": 192
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 14.2 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 4.00 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 17 : 3 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₈H₁₈O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C8H18O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol と F 2 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 2,
+      "E": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を硫酸酸性の過マンガン酸カリウム水溶液で十分に酸化すると、分子式 C₇H₆O₂ の芳香族化合物が得られた。",
+    "figs": [],
+    "hint": "ベンゼン環に直結した炭素はすべて –COOH になる。COOH の数 = 側鎖の数",
+    "fact": {
+     "subject": "G",
+     "card": "kmno4_formula",
+     "value": "C7H6O2"
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "G",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 1 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（1 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 1
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC1CC(C)CC(C)O1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 6 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OC₂H₅ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(CC)OCC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q1R",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 R から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCOC(OCC)C(C)C(C)O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のエタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH はあるが、アルデヒドの炭素との間で五員環・六員環をつくれない（四員環や七員環以上になる）ので R4 は起こらない。R3 だけが起こり、OH はそのまま残る。",
+    "no": 3
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC(C)OC(C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）"
+    ],
+    "explain": "分子式 C₈H₁₈O₂ の構造異性体（1054 種類）のうち、Na と反応せず加水分解で E 1 mol と F 2 mol を与えるアセタールは 19 種類。F: 第二級アルコール（>CH–OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C8H18O2",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 5
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 17.3 g を完全に加水分解すると、化合物 F は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 14.2,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 17.3,
+     "formulaX": "C8H18O2",
+     "formulaT": "C3H8O",
+     "n": 2,
+     "answer": 14.2,
+     "sig": 3
+    },
+    "explain": "D の分子量 146、F の分子量 60。D 1 mol から F は 2 mol。17.3 ÷ 146 × 2 × 60 = 14.2 g。",
+    "no": 6
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC(C)C(O)c1ccccc1"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（エ）",
+     "（オ）",
+     "（カ）"
+    ],
+    "explain": "分子式 C₁₀H₁₄O の構造異性体（192 種類）のうち、不斉炭素原子を1個もつものは 37 種類。ベンゼン環に直結した炭素はすべて –COOH になる。COOH の数 = 側鎖の数。第二級アルコール（>CH–OH）。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（1 種類）。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "seed": "c1ccccc1",
+      "rings": 0
+     },
+     "formula": "C10H14O",
+     "count": 1
+    },
+    "no": 7
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 4.47 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 2.86,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 4.47,
+     "formulaG": "C10H14O",
+     "formulaH": "C12H16O2",
+     "answer": 2.86,
+     "sig": 3
+    },
+    "explain": "G の物質量は 4.47 ÷ 150 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。4.47 ÷ 150 ÷ 2 × 192 = 2.86 g。",
+    "no": 8
+   },
+   {
+    "id": "q5m",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 11.1,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_Y_remaining",
+     "w": 14.2,
+     "b": 4,
+     "formulaG": "C10H14O",
+     "formulaH": "C12H16O2",
+     "answer": 11.1,
+     "sig": 3
+    },
+    "explain": "はじめの G: 14.2 ÷ 150 mol。反応した G = 生じた H = 4.00 ÷ 192 mol。差に 150 を掛けて 11.1 g。",
+    "no": 9
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [
+     "q5m"
+    ],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 60,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 14.2,
+     "b": 4,
+     "p": 17,
+     "q": 3,
+     "formulaG": "C10H14O",
+     "formulaH": "C12H16O2",
+     "answer": 60,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 14.2 ÷ 150 ÷ 2 mol。反応した G（= H）4.00 ÷ 192 mol のうち (+) が 17/20、(−) が 3/20。残った (−)-G ÷ 残った G 全体 × 100 = 60 %。",
+    "no": 10
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 11
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ },
+ {
+  "id": "k26-6094072-5",
+  "mode": "k26",
+  "level": 5,
+  "title": "京大2026型 ・ アセタールの規則と光学分割（難易度 5）",
+  "theme": "acetal_exchange+optical_resolution",
+  "params": {
+   "seed": 6094072,
+   "difficulty": 5,
+   "theme": [
+    "acetal_exchange",
+    "optical_resolution"
+   ],
+   "solvent": "C",
+   "rule_applications": 3,
+   "rule_priorities": 2,
+   "inverse_steps": {
+    "D": 5,
+    "G": 3
+   },
+   "stereo": true,
+   "calc_steps": 4,
+   "apply_cases": [
+    "ring",
+    "exchange",
+    "trap"
+   ]
+  },
+  "difficulty": 5,
+  "parts": [
+   {
+    "label": "(a)",
+    "theme": "acetal_exchange",
+    "solventC": 1,
+    "intro": "アルデヒドとアルコールの反応について、次の規則 R1〜R4 が成り立つ。",
+    "rules": [
+     {
+      "id": "R1",
+      "title": "ヘミアセタールの生成",
+      "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+      "scheme": [
+       "O=CC1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(O)C1CCCCC1"
+      ]
+     },
+     {
+      "id": "R2",
+      "title": "アセタールの生成と加水分解",
+      "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+      "scheme": [
+       "COC(O)C1CCCCC1",
+       "+",
+       "CO",
+       "⇄",
+       "COC(OC)C1CCCCC1",
+       "+",
+       "O"
+      ]
+     },
+     {
+      "id": "R3",
+      "title": "アセタール交換",
+      "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+      "scheme": [
+       "COC(OC)C1CCCCC1",
+       "→",
+       "CCOC(OCC)C1CCCCC1"
+      ],
+      "schemeNote": "大過剰のエタノール・酸触媒"
+     },
+     {
+      "id": "R4",
+      "title": "環状構造の優先",
+      "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+      "scheme": [
+       "O=CCCC(O)c1ccccc1",
+       "⇄",
+       "OC1CCC(c2ccccc2)O1"
+      ]
+     }
+    ],
+    "limitation": "この問題では、R1〜R4 の反応のみが起こるものとする。酸触媒がなければ R2〜R4 は起こらない。ケトン・エーテル・エステルは反応しない。立体異性体は区別しない。",
+    "figs": [
+     {
+      "label": "P",
+      "smiles": "CCCOC(CCCO)OCC"
+     },
+     {
+      "label": "Q",
+      "smiles": "CCCOC(CC)OCCC"
+     },
+     {
+      "label": "R",
+      "smiles": "CCCOC(CC(C)(C)O)OCCC"
+     }
+    ],
+    "tail": "図の化合物 P・Q・R を、それぞれ少量の硫酸を含む大過剰のメタノールの中に十分な時間置いた。",
+    "expLead": "次に、構造のわからない化合物 D について、次の実験を行った。"
+   },
+   {
+    "label": "(b)",
+    "theme": "optical_resolution",
+    "premise": {
+     "formula": "C6H14O",
+     "arom": false,
+     "chiral": 1
+    },
+    "intro": "化合物 G（分子式 C₆H₁₄O）は環構造や多重結合をもたない化合物で、不斉炭素原子を1個もち、1対の鏡像異性体 (+)-G と (−)-G がある。G は触媒の存在下で無水酢酸と反応して、酢酸エステル H になる（式1）。はじめに用いる G は (+)-G と (−)-G を同じ物質量ずつ含む混合物（ラセミ体）である。",
+    "equation": {
+     "lhs": [
+      "G",
+      "(CH₃CO)₂O"
+     ],
+     "rhs": [
+      "H",
+      "CH₃COOH"
+     ],
+     "masses": {
+      "G": 102,
+      "H": 144
+     }
+    },
+    "rules": [
+     {
+      "id": "X",
+      "title": "触媒 X",
+      "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。"
+     },
+     {
+      "id": "Y",
+      "title": "触媒 Y",
+      "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。"
+     }
+    ],
+    "expLead": "化合物 G について、次のことがわかっている。",
+    "limitation": "触媒がなければ式1 の反応は起こらない。無水酢酸は十分な量を用いる。H の加水分解、G と H のラセミ化（鏡像異性体どうしの変化）は起こらない。",
+    "tailY": "ラセミ体の G 22.4 g を、触媒 Y の存在下で無水酢酸と反応させ、途中で反応を止めた。反応後の混合物から H 12.3 g と、反応しなかった G を分離した。分離した H をすべて加水分解して得た G は、(+)-G と (−)-G を物質量の比 9 : 1 で含んでいた。"
+   }
+  ],
+  "experiments": [
+   {
+    "label": "（ア）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D は分子式 C₆H₁₄O₂ で、環構造や多重結合をもたない化合物である。化合物 D は金属ナトリウムと反応しなかった。",
+    "figs": [],
+    "hint": "OH も COOH ももたない。O が2つあるのにエーテルやアセタール",
+    "fact": {
+     "subject": "D",
+     "card": "sodium",
+     "value": false,
+     "premise": {
+      "formula": "C6H14O2",
+      "arom": false
+     }
+    }
+   },
+   {
+    "label": "（イ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 D を希硫酸と加熱すると R2 の逆反応が完全に進み、D 1 mol から E 1 mol、F 1 mol と K 1 mol が得られた（ほかの生成物は水だけ）。",
+    "figs": [],
+    "hint": "アセタールの加水分解。生成物の物質量の比から、2つの –OR が同じか違うかがわかる",
+    "fact": {
+     "subject": "D",
+     "card": "hydrolysis_pattern",
+     "value": {
+      "F": 1,
+      "E": 1,
+      "K": 1
+     }
+    }
+   },
+   {
+    "label": "（ウ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E をアンモニア性硝酸銀水溶液と温めると、銀が析出した。",
+    "figs": [],
+    "hint": "ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性",
+    "fact": {
+     "subject": "E",
+     "card": "silver_mirror",
+     "value": true
+    }
+   },
+   {
+    "label": "（エ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 E に水酸化ナトリウム水溶液とヨウ素を加えて温めると、特有のにおいをもつ黄色沈殿が生じた。",
+    "figs": [],
+    "hint": "CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性",
+    "fact": {
+     "subject": "E",
+     "card": "iodoform",
+     "value": true
+    }
+   },
+   {
+    "label": "（オ）",
+    "part": "(a)",
+    "group": "D",
+    "text": "化合物 F を硫酸酸性の二クロム酸カリウム水溶液で穏やかに酸化すると、銀鏡反応を示さない化合物が得られた。",
+    "figs": [],
+    "hint": "第二級アルコール（>CH–OH）",
+    "fact": {
+     "subject": "F",
+     "card": "oxid",
+     "value": "ket"
+    }
+   },
+   {
+    "label": "（カ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G を脱水して得られるアルケンは、シス-トランス異性体を区別して 3 種類であった。",
+    "figs": [],
+    "hint": "OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）",
+    "fact": {
+     "subject": "G",
+     "card": "dehydration_count",
+     "value": 3
+    }
+   },
+   {
+    "label": "（キ）",
+    "part": "(b)",
+    "group": "G",
+    "text": "化合物 G に水酸化ナトリウム水溶液とヨウ素を加えて温めると、沈殿は生じなかった。",
+    "figs": [],
+    "hint": "CH₃–CO– と CH₃–CH(OH)– のどちらももたない",
+    "fact": {
+     "subject": "G",
+     "card": "iodoform",
+     "value": false
+    }
+   }
+  ],
+  "questions": [
+   {
+    "id": "q1P",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 P から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC1CCCO1"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "ヒドロキシ基とアルデヒドの炭素で 5 員環がつくれるので R4 が優先し、環状アセタールになる。環の外の –OR は R3 で溶媒の –OCH₃ に置き換わる。",
+    "no": 1
+   },
+   {
+    "id": "q1Q",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 Q から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(OC)OC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH がないので R3 だけが起こり、–OR はすべて溶媒のアルコールの –OR に置き換わる。",
+    "no": 2
+   },
+   {
+    "id": "q1R",
+    "part": "(a)",
+    "kind": "apply",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "化合物 R から得られる主生成物の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC(CC(C)(C)O)OC"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない",
+     "溶媒のメタノール・水・OH を1つだけもつアルコール（放出されたもの）は書かなくてよい"
+    ],
+    "explain": "OH はあるが、アルデヒドの炭素との間で五員環・六員環をつくれない（四員環や七員環以上になる）ので R4 は起こらない。R3 だけが起こり、OH はそのまま残る。",
+    "no": 3
+   },
+   {
+    "id": "q2D",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 D の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "COC(C)OC(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "refs": [
+     "（ア）",
+     "（イ）",
+     "（ウ）",
+     "（エ）",
+     "（オ）"
+    ],
+    "explain": "分子式 C₆H₁₄O₂ の構造異性体（147 種類）のうち、Na と反応せず加水分解で E 1 mol、F 1 mol と K 1 mol を与えるアセタールは 9 種類。E: ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性。E: CH₃–CO–C（メチルケトン）か CH₃–CH(OH)–C の部分構造をもつ。エタノールとアセトアルデヒドも陽性。F: 第二級アルコール（>CH–OH）。これをすべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0,
+      "allowAcetal": true
+     },
+     "formula": "C6H14O2",
+     "count": 1
+    },
+    "no": 4
+   },
+   {
+    "id": "q2E",
+    "part": "(a)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "prompt": "化合物 E の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CC=O"
+     ]
+    },
+    "notes": [
+     "立体異性体は区別しない"
+    ],
+    "explain": "D のアセタール炭素が –CHO に戻ったものが E。",
+    "no": 5
+   },
+   {
+    "id": "q2m",
+    "part": "(a)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [
+     "q2D"
+    ],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "D 12.7 g を完全に加水分解すると、化合物 E は何 g 得られるか。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 4.74,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "hydrolysis_mass",
+     "w": 12.7,
+     "formulaX": "C6H14O2",
+     "formulaT": "C2H4O",
+     "n": 1,
+     "answer": 4.74,
+     "sig": 3
+    },
+    "explain": "D の分子量 118、E の分子量 44。D 1 mol から E は 1 mol。12.7 ÷ 118 × 1 × 44 = 4.74 g。",
+    "no": 6
+   },
+   {
+    "id": "q3G",
+    "part": "(b)",
+    "kind": "identify",
+    "type": "draw",
+    "points": 6,
+    "depends_on": [],
+    "prompt": "化合物 G の構造式を書け。",
+    "answer": {
+     "smiles": [
+      "CCC(O)C(C)C"
+     ]
+    },
+    "notes": [
+     "立体異性体（鏡像異性体）は区別しない"
+    ],
+    "refs": [
+     "（カ）",
+     "（キ）"
+    ],
+    "explain": "分子式 C₆H₁₄O の構造異性体（32 種類）のうち、不斉炭素原子を1個もつものは 12 種類。OH の炭素の隣にある H をもつ炭素の数と、できる C=C のシス-トランスから、OH の位置がわかる（3 種類）。CH₃–CO– と CH₃–CH(OH)– のどちらももたない。すべて満たすのは1つだけ。",
+    "unique": {
+     "universe": {
+      "rings": 0
+     },
+     "formula": "C6H14O",
+     "count": 1
+    },
+    "no": 7
+   },
+   {
+    "id": "q4X",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 5,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "ラセミ体の G 23.2 g を、触媒 X の存在下で十分な量の無水酢酸と反応させた。反応が終わったとき、得られた H は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 16.4,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_X",
+     "w": 23.2,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 16.4,
+     "sig": 3
+    },
+    "explain": "G の物質量は 23.2 ÷ 102 mol。反応するのは (+)-G（半分）だけなので H はその半分の物質量。23.2 ÷ 102 ÷ 2 × 144 = 16.4 g。",
+    "no": 8
+   },
+   {
+    "id": "q5m",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 4,
+    "depends_on": [],
+    "unit": "g",
+    "sig_figs": 3,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G は何 g か。有効数字 3 けたで答えよ。",
+    "answer": {
+     "value": 13.7,
+     "sig_figs": 3
+    },
+    "notes": [
+     "有効数字 3 けた"
+    ],
+    "calc": {
+     "kind": "resolution_Y_remaining",
+     "w": 22.4,
+     "b": 12.3,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 13.7,
+     "sig": 3
+    },
+    "explain": "はじめの G: 22.4 ÷ 102 mol。反応した G = 生じた H = 12.3 ÷ 144 mol。差に 102 を掛けて 13.7 g。",
+    "no": 9
+   },
+   {
+    "id": "q5Y",
+    "part": "(b)",
+    "kind": "calc",
+    "type": "number",
+    "points": 6,
+    "depends_on": [
+     "q5m"
+    ],
+    "unit": "%",
+    "sig_figs": 2,
+    "prompt": "触媒 Y を用いた実験で、反応しなかった G に含まれる (−)-G の割合は、物質量で何 % か。有効数字 2 けたで答えよ。",
+    "answer": {
+     "value": 75,
+     "sig_figs": 2
+    },
+    "notes": [
+     "有効数字 2 けた",
+     "物質量の割合（%）で答える"
+    ],
+    "calc": {
+     "kind": "resolution_Y_fraction",
+     "w": 22.4,
+     "b": 12.3,
+     "p": 9,
+     "q": 1,
+     "formulaG": "C6H14O",
+     "formulaH": "C8H16O2",
+     "answer": 75,
+     "sig": 2
+    },
+    "explain": "はじめの (+)-G・(−)-G はそれぞれ 22.4 ÷ 102 ÷ 2 mol。反応した G（= H）12.3 ÷ 144 mol のうち (+) が 9/10、(−) が 1/10。残った (−)-G ÷ 残った G 全体 × 100 = 75 %。",
+    "no": 10
+   },
+   {
+    "id": "q6",
+    "part": "(b)",
+    "kind": "essay",
+    "type": "essay",
+    "points": 4,
+    "depends_on": [],
+    "prompt": "触媒 Y を用いて反応を長く続けると、残る G に含まれる (−)-G の割合は高くなるが、得られる (−)-G の量は少なくなる。その理由を 50 字程度で説明せよ。",
+    "model": "触媒 Y は (−)-G とも反応するので、反応を続けると (+)-G が減るだけでなく (−)-G も H に変わって減っていくから。",
+    "rubric": [
+     "触媒 Y は (−)-G とも反応する（両方の鏡像異性体が反応する）",
+     "(+)-G の方が速く減るので割合は上がるが、(−)-G も H に変わって量が減る"
+    ],
+    "notes": [
+     "50 字程度"
+    ],
+    "explain": "採点基準の要素がすべて入っていれば満点。",
+    "no": 11
+   }
+  ],
+  "rules": [
+   {
+    "id": "R1",
+    "title": "ヘミアセタールの生成",
+    "text": "アルデヒド R¹–CHO にアルコール R²–OH が付加すると、ヘミアセタール R¹–CH(OH)–O–R² が生じる。この反応は可逆で、ヘミアセタールは単離できず、もとのアルデヒド・アルコールとの平衡混合物として存在する。",
+    "scheme": [
+     "O=CC1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(O)C1CCCCC1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CC1CCCCC1",
+     "CO",
+     "COC(O)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R2",
+    "title": "アセタールの生成と加水分解",
+    "text": "酸触媒があると、ヘミアセタールはもう1分子のアルコール R³–OH と反応して水を失い、アセタール R¹–CH(OR²)(OR³) になる。この反応も可逆で、酸触媒と多量の水があると、アセタールはもとのアルデヒドとアルコールに戻る（加水分解）。",
+    "scheme": [
+     "COC(O)C1CCCCC1",
+     "+",
+     "CO",
+     "⇄",
+     "COC(OC)C1CCCCC1",
+     "+",
+     "O"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(O)C1CCCCC1",
+     "CO",
+     "COC(OC)C1CCCCC1",
+     "O"
+    ]
+   },
+   {
+    "id": "R3",
+    "title": "アセタール交換",
+    "text": "アセタールを、酸触媒とともに大過剰のアルコール R⁴–OH の中に十分な時間置くと、R1・R2 の平衡がくり返され、–OR² と –OR³ はすべて –OR⁴ に置き換わる（R⁴–OH が大過剰なので、平衡は R⁴–OH が結合した側に偏る）。",
+    "scheme": [
+     "COC(OC)C1CCCCC1",
+     "→",
+     "CCOC(OCC)C1CCCCC1"
+    ],
+    "schemeNote": "大過剰のエタノール・酸触媒",
+    "part": "(a)",
+    "figure_smiles": [
+     "COC(OC)C1CCCCC1",
+     "CCOC(OCC)C1CCCCC1"
+    ]
+   },
+   {
+    "id": "R4",
+    "title": "環状構造の優先",
+    "text": "同じ分子の中に、アルデヒドの炭素と五員環または六員環をつくれる位置にヒドロキシ基があるときは、そのヒドロキシ基が R1 の R²–OH としてはたらき、環状のヘミアセタール・アセタールが主生成物となる。このとき R3 の条件でも環は開かず、環の外側の –OR だけが –OR⁴ に置き換わる。三員環・四員環・七員環以上の環はできない。",
+    "scheme": [
+     "O=CCCC(O)c1ccccc1",
+     "⇄",
+     "OC1CCC(c2ccccc2)O1"
+    ],
+    "part": "(a)",
+    "figure_smiles": [
+     "O=CCCC(O)c1ccccc1",
+     "OC1CCC(c2ccccc2)O1"
+    ]
+   },
+   {
+    "id": "X",
+    "title": "触媒 X",
+    "text": "触媒 X の存在下では、(+)-G だけが式1 の反応をする。(−)-G はまったく反応しない。",
+    "part": "(b)",
+    "figure_smiles": []
+   },
+   {
+    "id": "Y",
+    "title": "触媒 Y",
+    "text": "触媒 Y の存在下では、(+)-G と (−)-G の両方が式1 の反応をするが、(+)-G のほうが速く反応する。",
+    "part": "(b)",
+    "figure_smiles": []
+   }
+  ],
+  "validation": {
+   "unique": true,
+   "leak_free": true,
+   "deps_ok": true,
+   "notes_ok": true,
+   "solver_agree": true,
+   "numeric_checked": true,
+   "reproducible": true,
+   "rubric": true
+  }
+ }
+]
