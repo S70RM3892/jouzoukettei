@@ -37,6 +37,29 @@ service cloud.firestore {
         && request.resource.data.items.size() <= 50;
     }
 
+    // みんなの間違い（問題ごとの挑戦・正解の回数、設問ごと・カードごとの間違いの回数）
+    match /mistakes/{uid} {
+      allow read: if true;
+      allow write: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['p', 'k', 'updatedAt'])
+        && request.resource.data.p is map && request.resource.data.p.size() <= 500
+        && request.resource.data.k is map && request.resource.data.k.size() <= 100;
+    }
+
+    // 今日のタイムアタック（文書 id は <日付>_<uid>。その日の最初の採点だけ。あとから書き換えられない）
+    match /daily/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['day', 'uid', 'pid', 'score', 'ms', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.day is string && request.resource.data.day.size() <= 20
+        && id == request.resource.data.day + '_' + request.auth.uid
+        && request.resource.data.pid is string
+        && request.resource.data.score is int && request.resource.data.score >= 0 && request.resource.data.score <= 100
+        && request.resource.data.ms is int && request.resource.data.ms > 0 && request.resource.data.ms <= 86400000
+        && request.resource.data.at is int;
+    }
+
     // 早解き対戦
     match /rooms/{room}/peers/{peer} {
       allow read: if signedIn();
