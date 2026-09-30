@@ -320,8 +320,13 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .posts li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
 .posts p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .post-head { display: flex; gap: 10px; align-items: center; font-size: 0.85rem; }
+.btn.small { min-height: 32px; padding: 4px 10px; font-size: 0.8rem; }
 .post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
 .namerow { align-items: center; }
+.qrate { margin: 2px 0 0; font-size: 0.82rem; color: var(--muted); }
+.qrate.low { color: var(--pos); font-weight: 700; }
+.misscards { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.misscards li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--line); padding: 4px 0; }
 .namerow .codein { width: 12em; font-family: inherit; font-size: 1rem; }
 .codein { font: inherit; font-family: var(--f-mono); font-size: 1.1rem; width: 9em; padding: 10px 12px; min-height: 44px;
   border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); text-transform: lowercase; }
@@ -380,9 +385,9 @@ const MODES = [
 function loadStore() {
   try {
     const s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
-    if (s && s.stats && s.weak && s.history) return s;
+    if (s && s.stats && s.weak && s.history) return { qstat: {}, cardMiss: {}, daily: {}, ...s };
   } catch (e) {}
-  return { stats: {}, weak: {}, history: [] };
+  return { stats: {}, weak: {}, history: [], qstat: {}, cardMiss: {}, daily: {} };
 }
 function saveStore() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {}
@@ -399,8 +404,12 @@ function record(id, correct, score) {
   store.history = store.history.slice(-200);
   saveStore();
   if (correct) syncScore();
+  syncMistakes();
 }
-const bump = (card, d) => { store.weak[card] = Math.max(0, (store.weak[card] || 0) + d); };
+const bump = (card, d) => {
+  store.weak[card] = Math.max(0, (store.weak[card] || 0) + d);
+  if (d > 0) store.cardMiss[card] = (store.cardMiss[card] || 0) + d; // みんなの間違いに出す回数（減らさない）
+};
 
 // ---------- 小道具 ----------
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -495,6 +504,7 @@ function show(screen) {
 
 function startProblem(p) {
   if (isNight()) { checkNight(); return; }
+  startDaily(p);
   if (p.exam) {
     game = { exam: { P: p, ans: {}, hints: new Set(), graded: false } };
     show('exam');
@@ -561,8 +571,8 @@ function renderHome() {
   const solved = DATA.problems.filter((p) => store.stats[p.id] && store.stats[p.id].everCorrect).length;
   const weak = Object.entries(store.weak).filter(([c, n]) => n > 0 && DATA.cards[c]).sort((a, b) => b[1] - a[1]).slice(0, 6);
   const list = inMode.filter((p) => !view.level || gradeOfP(p) === view.level);
-  // 今日の一問: 京大形式の自動生成から、まだ正解していない問題を1つ
-  const todayP = DATA.problems.filter((p) => p.mode === 'gen' && !p.kyoto).find((p) => !(store.stats[p.id] && store.stats[p.id].everCorrect)) || DATA.problems.find((p) => p.mode === 'gen');
+  // 今日の一問: 全員が同じ問題を解くタイムアタック
+  const todayP = dailyProblem();
   $('#app').innerHTML = `
     <div class="stack">
       <header class="cover">
@@ -572,7 +582,8 @@ function renderHome() {
         <p>問題文と実験をすべて読み、化合物どうしの関係から構造を決める。答えは紙に書いてから選ぶ。採点は赤ペンで。</p>
       </header>
       ${todayP ? `<button class="today g${gradeOfP(todayP)}" id="go-today" style="font:inherit;text-align:left;cursor:pointer;color:inherit">
-        <span><span class="s">今日の一問</span><br><span class="t">${esc(todayP.title || '')}</span><br>${gradeBadge(todayP)}</span>
+        <span><span class="s">今日の一問 ・ タイムアタック</span><br><span class="t">${esc(todayP.title || '')}</span><br>${gradeBadge(todayP)}
+          <br><span class="s" id="daily-line">${dailyLineHtml()}</span></span>
         <span class="btn primary" aria-hidden="true">解く</span></button>` : ''}
       <section class="stats" aria-label="成績">
         <div class="stat"><b>${acc === null ? '—' : acc + '%'}</b><span>直近20問の正答率</span></div>
@@ -585,6 +596,8 @@ function renderHome() {
           <button class="btn" id="go-rank">ランキング</button>
           <button class="btn" id="go-posts">みんなの意見</button>
           <button class="btn" id="go-race">早解き対戦</button>
+          <button class="btn" id="go-daily">タイムアタックの順位</button>
+          <button class="btn" id="go-miss">みんなの間違い</button>
         </div>
         <div id="name-box">${online.ready ? nameFormHtml() : ''}</div>
         <div id="online-status">${onlineStatusHtml()}</div>
@@ -637,6 +650,8 @@ function renderHome() {
   $('#go-rank').onclick = () => show('rank');
   $('#go-posts').onclick = () => show('posts');
   $('#go-race').onclick = () => show('race');
+  $('#go-daily').onclick = () => show('daily');
+  $('#go-miss').onclick = () => show('miss');
   $('#modes').onclick = (e) => {
     const b = e.target.closest('[data-mode]');
     if (!b) return;
@@ -1125,7 +1140,7 @@ function countResultHtml() {
 const RACE_LEN = 5;
 const RACE_PENALTY = 10000;
 const POST_MAX = 300;
-const online = { ready: false, off: false, provider: null, user: null, db: null, room: null, uid: null, scores: [], posts: [], writeErr: null };
+const online = { ready: false, off: false, provider: null, user: null, db: null, room: null, uid: null, scores: [], posts: [], mistakes: [], daily: [], writeErr: null };
 let writeChain = Promise.resolve();
 
 async function initOnline() {
@@ -1156,7 +1171,15 @@ async function initOnline() {
       online.posts = s.docs.map((d) => ({ id: d.id, ...d.data() }));
       refreshOnline();
     }, () => { online.posts = []; });
-    if (online.uid) mergeRemoteScore();
+    db.collection('mistakes').limit(300).onSnapshot((s) => {
+      online.mistakes = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.mistakes = []; });
+    db.collection('daily').orderBy('at', 'desc').limit(300).onSnapshot((s) => {
+      online.daily = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+      refreshOnline();
+    }, () => { online.daily = []; });
+    if (online.uid) { mergeRemoteScore(); syncMistakes(); submitDaily(); }
   }
   refreshOnline();
 }
@@ -1167,6 +1190,9 @@ function refreshOnline() {
   if (view.screen === 'posts') { const el = $('#post-list'); if (el) { el.innerHTML = postListHtml(); fillNames(el); bindPostDeletes(); } }
   if (view.screen === 'home') { const el = $('#online-status'); if (el) el.innerHTML = onlineStatusHtml(); }
   if (view.screen === 'home') { const el = $('#name-box'); if (el && !el.firstChild) el.innerHTML = nameFormHtml(); }
+  if (view.screen === 'home') { const el = $('#daily-line'); if (el) el.innerHTML = dailyLineHtml(); }
+  if (view.screen === 'daily') { const el = $('#daily-list'); if (el) { el.innerHTML = dailyListHtml(); fillNames(el); } }
+  if (view.screen === 'miss') { const el = $('#miss-list'); if (el) el.innerHTML = missListHtml(); }
 }
 
 // data-uid を持つ要素に名前を入れる。名前は保存せず、表示のたびに引く
@@ -1379,6 +1405,186 @@ async function firebaseBackend(cfg) {
     },
   };
   return { user, db, room };
+}
+
+// ---- D: みんなの間違い ----
+// mistakes/<自分のid> に、問題ごとの挑戦・正解の回数と、大問の設問ごとの間違いの回数、間違えたカードの回数を書く。
+// 全員分を足して、正答率の低い問題・設問・カードを並べる
+function syncMistakes() {
+  if (!online.db || !online.uid) return;
+  const pm = {};
+  Object.keys(store.stats).filter(byId).forEach((id) => {
+    const st = store.stats[id], qs = store.qstat[id];
+    pm[id] = { t: st.tries || 0, c: st.correct || 0, ...(qs ? { n: qs.n, m: qs.m } : {}) };
+  });
+  const k = {};
+  Object.entries(store.cardMiss).forEach(([c, n]) => { if (DATA.cards[c] && n > 0) k[c] = n; });
+  writeChain = writeChain
+    .then(() => online.db.doc('mistakes/' + online.uid).set({ p: pm, k, updatedAt: Date.now() }))
+    .catch(() => {});
+}
+
+// 全員分を足す: { p: { id: { t, c, n, m: { no: 回数 } } }, k: { card: 回数 }, people }
+function missTotals() {
+  const p = {}, k = {};
+  online.mistakes.forEach((d) => {
+    Object.entries(d.p && typeof d.p === 'object' ? d.p : {}).forEach(([id, v]) => {
+      if (!byId(id) || !v) return;
+      const a = p[id] || (p[id] = { t: 0, c: 0, n: 0, m: {}, who: 0 });
+      a.t += Number(v.t) || 0; a.c += Number(v.c) || 0; a.n += Number(v.n) || 0; a.who++;
+      Object.entries(v.m && typeof v.m === 'object' ? v.m : {}).forEach(([no, x]) => { a.m[no] = (a.m[no] || 0) + (Number(x) || 0); });
+    });
+    Object.entries(d.k && typeof d.k === 'object' ? d.k : {}).forEach(([c, x]) => { if (DATA.cards[c]) k[c] = (k[c] || 0) + (Number(x) || 0); });
+  });
+  return { p, k, people: online.mistakes.length };
+}
+
+function qRateHtml(id, no) {
+  if (!online.db) return '';
+  const a = missTotals().p[id];
+  if (!a || a.n < 2) return '';
+  const r = Math.round((100 * (a.n - (a.m[no] || 0))) / a.n);
+  return `<p class="qrate ${r < 50 ? 'low' : ''}">みんなの正答率 ${r}%（${a.n} 回）</p>`;
+}
+
+function missListHtml() {
+  if (!online.mistakes.length) return '<p class="hint">まだ記録がない。</p>';
+  const { p, k, people } = missTotals();
+  const rows = Object.entries(p).filter(([, a]) => a.t >= 2)
+    .map(([id, a]) => ({ P: byId(id), a, r: a.c / a.t }))
+    .sort((x, y) => x.r - y.r || y.a.t - x.a.t).slice(0, 30);
+  const worstQ = (P, a) => {
+    if (!P.exam || a.n < 2) return '';
+    const qs = P.exam.questions.filter((q) => q.type !== 'essay').map((q) => ({ q, r: (a.n - (a.m[q.no] || 0)) / a.n })).sort((x, y) => x.r - y.r);
+    return qs.length && qs[0].r < 1 ? `問${qs[0].q.no}（正答率 ${Math.round(100 * qs[0].r)}%）` : '';
+  };
+  const cards = Object.entries(k).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  return `<p class="hint">${people} 人分の記録。</p>
+    <h2>正答率の低い問題</h2>
+    ${rows.length ? `<div class="tbl-wrap"><table class="key rank">
+      <thead><tr><th>問題</th><th>正答率</th><th>挑戦</th><th>いちばん間違える設問</th><th></th></tr></thead>
+      <tbody>${rows.map(({ P, a, r }) => `<tr><td>${esc(P.title || P.id)}<br>${gradeBadge(P)}</td>
+        <td class="mono">${Math.round(100 * r)}%</td><td class="mono">${a.t}<span class="muted"> 回・${a.who} 人</span></td>
+        <td>${esc(worstQ(P, a))}</td><td><button class="btn small" data-solve="${esc(P.id)}">解く</button></td></tr>`).join('')}</tbody></table></div>`
+      : '<p class="hint">2 回以上挑戦された問題がまだない。</p>'}
+    <h2>みんなが間違えた手がかりカード</h2>
+    ${cards.length ? `<ul class="misscards">${cards.map(([c, n]) => `<li><b>${esc(DATA.cards[c].name)}</b><span class="mono">${n} 回</span></li>`).join('')}</ul>`
+      : '<p class="hint">まだない。</p>'}`;
+}
+
+function renderMiss() {
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>みんなの間違い</h1>
+      <p class="hint">全員の記録を足して、正答率の低い問題・設問と、見落としやすい手がかりを並べる。みんなが落とす問題を落とさなければ差がつく。</p>
+      ${online.db ? '<div id="miss-list"></div>' : onlineStatusHtml()}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  const el = $('#miss-list');
+  if (el) {
+    el.innerHTML = missListHtml();
+    el.onclick = (e) => { const b = e.target.closest('[data-solve]'); if (b && byId(b.dataset.solve)) startProblem(byId(b.dataset.solve)); };
+  }
+}
+
+// ---- E: 今日のタイムアタック ----
+// 毎朝5時に入れ替わる自動生成の大問から、日付で決まる1問（京大下位〜京大平均）を全員が解く。
+// 最初に開いた時刻から採点までの時間を測り、その日の最初の採点だけを daily/<日付>_<自分のid> に書く。
+// 並べ方は得点の高い順、同点なら時間の短い順
+function dailyProblem() {
+  const gens = DATA.problems.filter((p) => p.mode === 'gen' && !p.kyoto && p.exam);
+  if (!gens.length) return null;
+  const pool = gens.filter((p) => [3, 4].includes(gradeOfP(p))).length ? gens.filter((p) => [3, 4].includes(gradeOfP(p))) : gens;
+  const seed = String(gens[0].seed || '');
+  const h = [...seed].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 17);
+  return pool[h % pool.length];
+}
+const dailyKey = () => { const p = dailyProblem(); return p ? String(p.seed || p.id) : ''; };
+
+function startDaily(p) {
+  const key = dailyKey();
+  if (!key || p !== dailyProblem()) return;
+  if (!store.daily[key] && !isNight()) { store.daily = { [key]: { start: Date.now(), done: null } }; saveStore(); }
+}
+
+function finishDaily(P, pct) {
+  const key = dailyKey();
+  const d = store.daily[key];
+  if (!d || P !== dailyProblem() || d.done) return;
+  d.done = { score: pct, ms: Date.now() - d.start };
+  saveStore();
+  submitDaily();
+}
+
+// 書けなかったとき（オフラインなど）は、次に開いたときにもう一度書く
+function submitDaily() {
+  const key = dailyKey();
+  const d = store.daily[key];
+  if (!online.db || !online.uid || !d || !d.done || d.sent) return;
+  const docId = key + '_' + online.uid;
+  writeChain = writeChain
+    .then(() => online.db.doc('daily/' + docId).get())
+    .then((snap) => (snap.exists ? null : online.db.doc('daily/' + docId).set({ day: key, uid: online.uid, pid: dailyProblem().id, score: d.done.score, ms: d.done.ms, at: Date.now() })))
+    .then(() => { d.sent = true; saveStore(); refreshOnline(); })
+    .catch(() => {});
+}
+
+function dailyRows() {
+  const key = dailyKey();
+  return online.daily.filter((r) => r.day === key && typeof r.uid === 'string' && r.id === key + '_' + r.uid)
+    .sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0) || (Number(a.ms) || 0) - (Number(b.ms) || 0));
+}
+
+const fmtTime = (ms) => { const s = Math.round(ms / 1000); return s >= 3600 ? `${Math.floor(s / 3600)}時間${Math.floor((s % 3600) / 60)}分` : `${Math.floor(s / 60)}分${String(s % 60).padStart(2, '0')}秒`; };
+
+function dailyLineHtml() {
+  const d = store.daily[dailyKey()];
+  const rows = online.db ? dailyRows() : [];
+  const mine = rows.findIndex((r) => r.uid === online.uid);
+  if (d && d.done) return `あなた ${d.done.score} 点・${fmtTime(d.done.ms)}${mine >= 0 ? `・${mine + 1} 位（${rows.length} 人中）` : ''}`;
+  if (d) return `計測中（${new Date(d.start).getHours()}:${String(new Date(d.start).getMinutes()).padStart(2, '0')} から）`;
+  return `開いた時刻から採点までを測る${rows.length ? `・${rows.length} 人が挑戦済み` : ''}`;
+}
+
+function dailyVerdictHtml(P) {
+  if (P !== dailyProblem()) return '';
+  const d = store.daily[dailyKey()];
+  if (!d || !d.done) return '';
+  return `<p class="hint">今日のタイムアタック: ${d.done.score} 点・${fmtTime(d.done.ms)}（最初の採点だけが記録に残る）。<a href="#" id="to-daily">順位を見る</a></p>`;
+}
+document.addEventListener('click', (e) => { if (e.target && e.target.id === 'to-daily') { e.preventDefault(); show('daily'); } });
+
+function dailyListHtml() {
+  const rows = dailyRows();
+  if (!rows.length) return '<p class="hint">今日はまだ誰も記録していない。</p>';
+  let rank = 0, prev = null;
+  return `<div class="tbl-wrap"><table class="key rank">
+    <thead><tr><th>順位</th><th>名前</th><th>得点</th><th>時間</th></tr></thead>
+    <tbody>${rows.map((r, i) => {
+      const key = `${r.score}/${r.ms}`;
+      if (key !== prev) { rank = i + 1; prev = key; }
+      return `<tr class="${r.uid === online.uid ? 'me' : ''}"><td class="mono">${rank}</td><td><span data-uid="${esc(r.uid)}">…</span></td>
+        <td class="mono">${Number(r.score) || 0}</td><td class="mono">${fmtTime(Number(r.ms) || 0)}</td></tr>`;
+    }).join('')}</tbody></table></div>`;
+}
+
+function renderDaily() {
+  const P = dailyProblem();
+  const d = store.daily[dailyKey()];
+  $('#app').innerHTML = `
+    <div class="stack">
+      <div class="row"><button class="btn ghost" id="back">← 戻る</button></div>
+      <h1>今日のタイムアタック</h1>
+      <p class="hint">毎朝5時に全員同じ大問が1つ決まる。最初に開いた時刻から採点までを測り、その日の最初の採点だけを記録する。得点の高い順、同点なら速い順。京大の化学は2科目で 150 分なので、大問1つは 30 分が目安。</p>
+      ${P ? `<div class="row"><button class="btn primary" id="solve">${d && d.done ? '解き直す（記録は変わらない）' : d ? '続きを解く（計測中）' : '解く（ここから計測）'}</button>${gradeBadge(P)}</div>` : ''}
+      ${online.db ? '<div id="daily-list"></div>' : onlineStatusHtml()}
+    </div>`;
+  $('#back').onclick = () => show('home');
+  if ($('#solve')) $('#solve').onclick = () => startProblem(P);
+  const el = $('#daily-list');
+  if (el) { el.innerHTML = dailyListHtml(); fillNames(el); }
+  submitDaily();
 }
 
 // ---- A: ランキング ----
@@ -1775,6 +1981,7 @@ function renderExam() {
     return `<section class="q ${graded ? (sc === q.points ? 'ok' : sc > 0 ? 'part' : 'ng') : ''}" id="q${q.no}">
       ${graded ? `<span class="stamp" aria-hidden="true">${sc === q.points ? '〇' : sc > 0 ? '△' : '×'}</span>` : ''}
       <div class="qhead"><b>問${q.no}</b><span class="pts">${graded ? `${sc} / ` : ''}${q.points} 点</span></div>
+      ${graded && q.type !== 'essay' ? qRateHtml(P.id, q.no) : ''}
       <p class="qp">${esc(q.prompt)}${q.type === 'multi' ? '<span class="muted">（複数選択）</span>' : ''}</p>
       ${input}
       ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p>${selfBtns}</div>` : ''}
@@ -1801,6 +2008,7 @@ function renderExam() {
       ${X.questions.map(qHtml).join('')}
       ${graded ? `<div class="verdict ${got >= X.total * 0.8 ? 'ok' : 'ng'}"><h2>${got} / ${X.total} 点</h2>
         <span class="score">${E.hints.size ? `ヒント ${E.hints.size} 回で −${E.hints.size * HINT_COST}` : 'ヒントなし'}</span></div>
+        ${dailyVerdictHtml(P)}
         <div class="row"><button class="btn primary" id="next">次の問題（おまかせ）</button><button class="btn" id="retry">解き直す</button><button class="btn ghost" id="home">問題一覧</button></div>` : ''}
     </div>
     ${graded ? '' : `<div class="dock"><div class="dock-in"><p class="hint">${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答</p><button class="btn primary" id="grade">採点する</button></div></div>`}`;
@@ -1859,7 +2067,14 @@ function renderExam() {
       E.graded = true;
       const sc = X.questions.map((q) => examScore(q, E.ans[q.no], E.self));
       const total = sc.reduce((a, b) => a + b, 0) - E.hints.size * HINT_COST;
-      record(P.id, sc.every((v, i) => v === X.questions[i].points), Math.max(0, Math.round((100 * total) / X.total)));
+      const qs = store.qstat[P.id] || { n: 0, m: {} };
+      qs.n++;
+      // 記述は自己採点の前なので数えない
+      X.questions.forEach((q, i) => { if (q.type !== 'essay' && sc[i] < q.points) qs.m[q.no] = (qs.m[q.no] || 0) + 1; });
+      store.qstat[P.id] = qs;
+      const pct = Math.max(0, Math.round((100 * total) / X.total));
+      finishDaily(P, pct);
+      record(P.id, sc.every((v, i) => v === X.questions[i].points), pct);
       render(); window.scrollTo(0, 0);
       return;
     }
@@ -1881,6 +2096,8 @@ function render() {
   else if (s === 'calc' && game && game.calc) renderCalc();
   else if (s === 'rank') renderRank();
   else if (s === 'posts') renderPosts();
+  else if (s === 'daily') renderDaily();
+  else if (s === 'miss') renderMiss();
   else if (s === 'race') renderRaceHome();
   else if (s === 'raceplay' && race.rm && race.round) renderRacePlay();
   else if (s === 'count' && game && game.count) renderCount();
