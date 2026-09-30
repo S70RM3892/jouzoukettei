@@ -323,6 +323,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .btn.small { min-height: 32px; padding: 4px 10px; font-size: 0.8rem; }
 .post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
 .namerow { align-items: center; }
+.sacname { font-family: var(--f-mono); font-size: 0.85rem; margin-right: auto; margin-left: 8px; }
 .klist { display: grid; gap: 6px; }
 .kt { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
 .kt small { grid-column: 1 / -1; color: var(--muted); font-size: 0.75rem; }
@@ -387,6 +388,7 @@ const MODES = [
   { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答え 11 題の再現と、基礎から京大超えまで6段階の自動生成の大問。化合物どうしの関係を使う問題が中心' },
   { key: 'big', name: '京大形式（基本）', note: '手作りの大問を京大形式で。問題文と実験を全部読んでから、問1〜に答える' },
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
+  { key: 'sugar', name: '糖の構造決定', note: '二糖・三糖を、還元性・加水分解の生成物・メチル化分析・酵素（マルターゼ・インベルターゼ・ラクターゼ・セロビアーゼ）の組み合わせで決める。α と β、グルコースとガラクトースは立体でしか区別できないので、構造式のくさび形の線をよく見る' },
   { key: 'survey', name: '異性体俯瞰型', note: '分子式の構造異性体を環・三重結合まで全部挙げてから、性質と反応の組み合わせで1つに決める。難易度は候補の数と手がかりの数で3段階。候補を見る前に、分子式の異性体を紙に全部書き出してから始める' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
@@ -617,9 +619,9 @@ function renderHome() {
       </section>
       <section class="panel">
         <h2>知識確認</h2>
-        <p class="hint">一問一答で高校有機の基本知識を確かめる。範囲は教科書の ${DATA.knowledge.sections.length} 章 ${DATA.knowledge.sections.reduce((a, x) => a + x.topics.length, 0)} 節すべて。京大は教科書にない反応を問題文で与えるが、使いこなすには基本知識が正確でないといけない。</p>
+        <p class="hint">一問一答と計算（けん化価・ヨウ素価・等電点・アセタール化・ペプチドの分子量・元素分析など）で、高校有機の基本を確かめる。範囲は教科書の ${DATA.knowledge.sections.length} 章 ${DATA.knowledge.sections.reduce((a, x) => a + x.topics.length, 0)} 節すべて。京大は教科書にない反応を問題文で与えるが、使いこなすには基本知識が正確でないといけない。</p>
         <p class="hint">覚えた問題 ${knowMastered()} / ${DATA.knowledge.items.length}（2回続けて正解したもの）</p>
-        <div class="row"><button class="btn primary" id="know-weak">苦手と未挑戦から ${KNOW_LEN} 問</button><button class="btn" id="go-know">範囲を選ぶ</button></div>
+        <div class="row"><button class="btn primary" id="know-weak">苦手と未挑戦から ${KNOW_LEN} 問</button><button class="btn" id="know-calc">計算問題から ${KNOW_LEN} 問</button><button class="btn" id="go-know">範囲を選ぶ</button></div>
       </section>
       <section class="panel">
         <h2>条件を指定して出す</h2>
@@ -678,6 +680,7 @@ function renderHome() {
   $('#go-custom').onclick = () => show('custom');
   $('#go-know').onclick = () => show('know');
   $('#know-weak').onclick = () => startKnow(null);
+  $('#know-calc').onclick = () => startKnow(null, true);
   $('#go-miss').onclick = () => show('miss');
   $('#modes').onclick = (e) => {
     const b = e.target.closest('[data-mode]');
@@ -720,11 +723,11 @@ function renderPlay() {
       </div>
       ${solvedSoFar()}
       <p class="hint">手がかりを開いて、矛盾する候補を自分で消す。左右にスワイプか「消す」で消し、もう一度押すと戻る。</p>
-      <section class="cands ${game.big && p.label === 'X' ? 'one' : ''}" id="cands">
+      <section class="cands ${(game.big && p.label === 'X') || p.mode === 'sugar' ? 'one' : ''}" id="cands">
         ${p.candidates.map((s, i) => `
           <div class="cand ${game.struck.has(i) ? 'struck' : ''}" data-i="${i}">
             <div class="mol">${molSvg(s)}</div>
-            <div class="bar"><span class="tag">${letter(i)}</span>
+            <div class="bar"><span class="tag">${letter(i)}</span>${DATA.molecules[s].sac ? `<span class="sacname">${esc(DATA.molecules[s].sac)}</span>` : ''}
               <button class="x-btn" data-x="${i}" aria-label="候補${letter(i)}を${game.struck.has(i) ? '戻す' : '消す'}">${game.struck.has(i) ? '戻す' : '消す'}</button></div>
           </div>`).join('')}
       </section>
@@ -1163,20 +1166,20 @@ function countResultHtml() {
 // ---------- 知識確認（一問一答） ----------
 // 範囲は data/curriculum.json の章・節。問題は problems/knowledge.json。4択で、選択肢は毎回並べ替える
 const KNOW_LEN = 10;
-const PRACTICE_NAMES = { narrow: '絞り込み型', big: '京大形式（基本）', gen: '京大形式（本番レベル）', count: '数え上げ型', polymer: '高分子型', survey: '異性体俯瞰型' };
-const quiz = { items: [], idx: 0, order: [], picked: null, results: [], topics: null };
+const PRACTICE_NAMES = { sugar: '糖の構造決定', narrow: '絞り込み型', big: '京大形式（基本）', gen: '京大形式（本番レベル）', count: '数え上げ型', polymer: '高分子型', survey: '異性体俯瞰型' };
+const quiz = { items: [], idx: 0, order: [], picked: null, results: [], topics: null, calcOnly: false };
 let knowSel = [];
 const kst = (id) => store.know[id] || { t: 0, c: 0, streak: 0 };
 const knowMastered = () => DATA.knowledge.items.filter((k) => kst(k.id).streak >= 2).length;
 const topicName = (id) => { for (const sec of DATA.knowledge.sections) for (const t of sec.topics) if (t.id === id) return t.name; return id; };
 
 // 前回まちがえた問題 > 未挑戦 > 正解したが覚えきっていない > 覚えた、の順に出やすくする
-function startKnow(topics) {
+function startKnow(topics, calcOnly = false) {
   if (isNight()) { checkNight(); return; }
-  const pool = DATA.knowledge.items.filter((k) => !topics || topics.includes(k.topic));
+  const pool = DATA.knowledge.items.filter((k) => (!topics || topics.includes(k.topic)) && (!calcOnly || k.calc));
   const w = (k) => { const st = kst(k.id); return !st.t ? 3 : st.last === false ? 6 : st.streak >= 2 ? 0.3 : 1.5; };
   const bag = pool.map((k) => ({ k, key: Math.random() ** (1 / w(k)) })).sort((a, b) => b.key - a.key).slice(0, KNOW_LEN).map((x) => x.k);
-  Object.assign(quiz, { items: bag, idx: 0, picked: null, results: [], topics });
+  Object.assign(quiz, { items: bag, idx: 0, picked: null, results: [], topics, calcOnly });
   quiz.order = bag.map((k) => [k.a, ...k.wrong].map((c) => ({ c, r: Math.random() })).sort((a, b) => a.r - b.r).map((x) => x.c));
   show('quiz');
 }
@@ -1227,7 +1230,7 @@ function renderQuiz() {
         <div class="row"><button class="btn primary" id="again">もう ${KNOW_LEN} 問</button><button class="btn" id="pick">範囲を選ぶ</button></div>
       </div>`;
     $('#back').onclick = () => show('home');
-    $('#again').onclick = () => startKnow(quiz.topics);
+    $('#again').onclick = () => startKnow(quiz.topics, quiz.calcOnly);
     $('#pick').onclick = () => show('know');
     return;
   }
@@ -1237,7 +1240,7 @@ function renderQuiz() {
   $('#app').innerHTML = `
     <div class="stack">
       <div class="row" style="justify-content:space-between"><button class="btn ghost" id="back">← やめる</button><span class="mono">${quiz.idx + 1} / ${quiz.items.length}</span></div>
-      <p class="eyebrow">${esc(topicName(k.topic))}</p>
+      <p class="eyebrow">${esc(topicName(k.topic))}${k.calc ? ' ・ 計算（紙に式を書いてから選ぶ）' : ''}</p>
       <h2 class="kq">${esc(k.q)}</h2>
       <div class="kopts">${opts.map((c, i) => {
         const cls = picked === null ? '' : c === k.a ? 'right' : i === picked ? 'wrong' : '';

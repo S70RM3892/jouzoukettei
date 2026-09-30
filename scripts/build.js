@@ -30,7 +30,8 @@ function drawSvg(RDKit, smiles) {
     mol.set_new_coords && mol.set_new_coords(true);
     // 原子の多い分子（X など）は枠を広げて描く（縮めて文字が読めなくならないように）
     const heavy = mol.get_num_atoms ? mol.get_num_atoms() : 0;
-    const big = heavy > 16;
+    const sugar = smiles.startsWith('sac:');
+    const big = heavy > 16 || sugar;
     const details = {
       width: big ? Math.min(560, 200 + heavy * 12) : 240,
       height: big ? 240 : 170,
@@ -38,7 +39,8 @@ function drawSvg(RDKit, smiles) {
       fixedBondLength: 38,
       minFontSize: 13,
       clearBackground: false,
-      atomLabels: carbonLabels(RDKit, smiles),
+      // 糖は CH の文字を入れると立体のくさび形の線が見えなくなるので骨格式で描く
+      ...(sugar ? {} : { atomLabels: carbonLabels(RDKit, smiles) }),
     };
     let svg = mol.get_svg_with_highlights(JSON.stringify(details));
     svg = svg.replace(/<\?xml[^>]*>\s*/, '').replace(/<!-- END OF HEADER -->\s*/, '');
@@ -124,7 +126,9 @@ async function main() {
   let molecules = {};
   const addMol = (s) => {
     if (!molecules[s]) {
-      molecules[s] = { name: names[s] || null, svg: drawSvg(RDKit, s) };
+      // 糖は立体でしか区別できないので、結合の略記（α-Glc(1→4)Glc）も持たせて候補の下に出す。慣用名（マルトースなど）は答えたあとに出す
+      const sac = s.startsWith('sac:') ? require('../src/sugar').displayName(s) : null;
+      molecules[s] = { name: names[s] || sac, svg: drawSvg(RDKit, s), ...(sac ? { sac } : {}) };
       // 名前のない構造（自動生成の断片など）は分子式で呼ぶ
       if (!molecules[s].name) { try { molecules[s].formula = chem.formula(chem.graphFromSmiles(RDKit, chem.expand(s))); } catch (e) { /* なし */ } }
     }
@@ -168,7 +172,7 @@ async function main() {
       grade = G.gradeOf(d, kyotoStats);
     }
     // 異性体俯瞰型は絞り込み型と同じ形で、別のモードとして出す
-    const base = { id: p.id, mode: p.kind === 'survey' ? 'survey' : p.mode, level: p.level || 1, grade, formula: p.formula, ...(p.title ? { title: p.title } : {}) };
+    const base = { id: p.id, mode: p.kind === 'survey' || p.kind === 'sugar' ? p.kind : p.mode, level: p.level || 1, grade, formula: p.formula, ...(p.title ? { title: p.title } : {}) };
     if (p.mode === 'narrow') {
       out.push(narrowData(r, p.clues, base));
     } else if (p.mode === 'big') {
@@ -249,7 +253,8 @@ async function main() {
   const curriculum = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'curriculum.json'), 'utf8'));
   const knowledge = {
     sections: curriculum.sections.map((sec) => ({ id: sec.id, name: sec.name, topics: sec.topics.map((t) => ({ id: t.id, name: t.name, practice: t.modes })) })),
-    items: JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', 'knowledge.json'), 'utf8')),
+    // 一問一答と、数値を変えた計算問題（scripts/calcdrill.js）
+    items: ['knowledge.json', 'calc.json'].flatMap((f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', f), 'utf8'))),
   };
   const data = { version: 2, cards, molecules, problems: out, grades: G.GRADES, kyotoStats, knowledge };
 

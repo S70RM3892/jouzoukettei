@@ -33,6 +33,32 @@ const CASES = [
   ['fecl3', 'OCc1ccccc1', false, 'ベンジルアルコール'],
   ['bromine', 'C=CC', true, 'プロペン'],
   ['bromine', 'C#C', true, 'アセチレン'],
+  // 糖: 環状構造でも還元性を示す（水溶液中で鎖状構造と平衡）。スクロース・トレハロースは示さない。グリコシド結合は加水分解される
+  ['silver_mirror', 'OCC1OC(O)C(O)C(O)C1O', true, 'グルコース（環状構造）'],
+  ['fehling', 'OCC(=O)C(O)C(O)C(O)CO', true, 'フルクトース（鎖状構造）'],
+  ['fehling', 'sac:Fru', true, 'フルクトース'],
+  ['fehling', 'sac:Glc(a1-4)Glc', true, 'マルトース'],
+  ['fehling', 'sac:Gal(b1-4)Glc', true, 'ラクトース'],
+  ['fehling', 'sac:Glc(a1-2b)Fru', false, 'スクロース'],
+  ['fehling', 'sac:Glc(a1-1a)Glc', false, 'トレハロース'],
+  ['silver_mirror', 'OCC1OC(OC2(CO)OC(CO)C(O)C2O)C(O)C(O)C1O', false, 'スクロース（立体なし）'],
+  ['hydrolysis', 'OCC1OC(OC2C(CO)OC(O)C(O)C2O)C(O)C(O)C1O', ['OCC1OC(O)C(O)C(O)C1O', 'OCC1OC(O)C(O)C(O)C1O'], 'マルトース（立体なし）→ グルコース2分子'],
+  ['hydrolysis', 'sac:Glc(a1-2b)Fru', ['sac:Fru', 'sac:Glc'], 'スクロース → グルコースとフルクトース（転化糖）'],
+  ['hydrolysis', 'sac:Gal(b1-4)Glc', ['sac:Gal', 'sac:Glc'], 'ラクトース → ガラクトースとグルコース'],
+  ['maltase', 'sac:Glc(a1-4)Glc', true, 'マルトースにマルターゼ'],
+  ['maltase', 'sac:Glc(b1-4)Glc', false, 'セロビオースにマルターゼ'],
+  ['cellobiase', 'sac:Glc(b1-4)Glc', true, 'セロビオースにセロビアーゼ'],
+  ['invertase', 'sac:Glc(a1-2b)Fru', true, 'スクロースにインベルターゼ'],
+  ['invertase', 'sac:Glc(a1-4)Glc', false, 'マルトースにインベルターゼ'],
+  ['lactase', 'sac:Gal(b1-4)Glc', true, 'ラクトースにラクターゼ'],
+  ['methylation_analysis', 'sac:Glc(a1-4)Glc', ['sac:Glc{2,3,4,6}', 'sac:Glc{2,3,6}'], 'マルトースのメチル化分析'],
+  ['methylation_analysis', 'sac:Glc(a1-4)[Glc(a1-6)]Glc', ['sac:Glc{2,3,4,6}', 'sac:Glc{2,3}'], 'アミロペクチンの枝分かれ部分（2,3-ジ-O-メチル）'],
+  ['cis_trans', 'CC1CC1C', true, '1,2-ジメチルシクロプロパン（環のシス-トランス）'],
+  ['cis_trans', 'CC1CCC(O)CC1', true, '4-メチルシクロヘキサノール'],
+  ['cis_trans', 'OC1CCCCC1O', true, '1,2-シクロヘキサンジオール'],
+  ['cis_trans', 'CC1(C)CC1', false, '1,1-ジメチルシクロプロパン'],
+  ['cis_trans', 'CC1CCCCC1', false, 'メチルシクロヘキサン'],
+  ['cis_trans', 'Cc1ccccc1C', false, 'o-キシレン'],
   ['acetylide', 'C#C', true, 'アセチレン'],
   ['acetylide', 'C#CCC', true, '1-ブチン'],
   ['acetylide', 'CC#CC', false, '2-ブチン'],
@@ -135,6 +161,22 @@ async function main() {
       console.error(`NG ${card} ${label} (${smi}): got ${JSON.stringify(got)}, want ${JSON.stringify(exp)}`);
     }
   }
+  // 糖の立体つき構造が PubChem の異性体 SMILES と一致する（α/β、グルコースとガラクトースの区別）
+  const PUBCHEM = {
+    'sac:aGlc': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O',
+    'sac:bGlc': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@@H](O1)O)O)O)O)O',
+    'sac:aGal': 'C([C@@H]1[C@@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O',
+    'sac:bFru': 'C([C@@H]1[C@H]([C@@H]([C@](O1)(CO)O)O)O)O',
+    'sac:Glc(a1-2b)Fru': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O[C@]2([C@H]([C@@H]([C@H](O2)CO)O)O)CO)O)O)O)O',
+    'sac:Glc(a1-4)Glc': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O[C@@H]2[C@H](OC([C@@H]([C@H]2O)O)O)CO)O)O)O)O',
+    'sac:Gal(b1-4)bGlc': 'C([C@@H]1[C@@H]([C@@H]([C@H]([C@@H](O1)O[C@@H]2[C@H](O[C@H]([C@@H]([C@H]2O)O)O)CO)O)O)O)O',
+    'sac:Glc(b1-4)Glc': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@@H](O1)O[C@@H]2[C@H](OC([C@@H]([C@H]2O)O)O)CO)O)O)O)O',
+    'sac:Glc(a1-1a)Glc': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O[C@@H]2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O',
+  };
+  const iso = (x) => { const m = RDKit.get_mol(x); try { return m.get_smiles(); } finally { m.delete(); } };
+  for (const [k, v] of Object.entries(PUBCHEM)) {
+    if (iso(chem.expand(k)) !== iso(v)) { fail++; console.error(`NG sugar stereo ${k}: ${iso(chem.expand(k))} != PubChem ${iso(v)}`); }
+  }
   // 分子式
   const f = chem.formula(chem.graphFromSmiles(RDKit, 'CCC(C)=O'));
   if (f !== 'C4H8O') { fail++; console.error(`NG formula: ${f}`); }
@@ -144,7 +186,7 @@ async function main() {
     console.error(`${fail} rule test(s) failed`);
     process.exit(1);
   }
-  console.log(`OK: ${CASES.length + 1} rule tests passed`);
+  console.log(`OK: ${CASES.length + 1} rule tests and ${Object.keys(PUBCHEM).length} PubChem sugar structures passed`);
 }
 
 main();

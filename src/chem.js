@@ -49,6 +49,7 @@ const RESIDUES = {
 };
 
 function expand(s) {
+  if (s.startsWith('sac:')) return require('./sugar').toSmiles(s);
   if (!s.startsWith('pep:')) return s;
   const seq = s.slice(4).split('-');
   return 'N' + seq.map((r, i) => {
@@ -156,6 +157,7 @@ function components(g) {
 }
 
 function canonical(RDKit, smilesOrMolblock) {
+  if (typeof smilesOrMolblock === 'string' && smilesOrMolblock.startsWith('sac:')) return require('./sugar').canonical(smilesOrMolblock);
   const mol = RDKit.get_mol(expand(smilesOrMolblock));
   if (!mol || !mol.is_valid()) throw new Error(`invalid structure: ${smilesOrMolblock}`);
   try {
@@ -255,8 +257,34 @@ function stereoBondCount(g) {
   return n;
 }
 
+// 環のシス-トランス異性: 同じ環（八員環まで・芳香環を除く）の中に、環の外の2つの置換基（H を含む）が互いに異なる炭素が2つ以上ある
+// （1,2-ジメチルシクロプロパン・4-メチルシクロヘキサノールなど。メチルシクロヘキサンや 1,1-ジメチルシクロプロパンにはない）
+function ringCisTrans(g) {
+  const ringBond = new Set(g.bonds.filter((b) => !(g.atoms[b.a].arom && g.atoms[b.b].arom) && bondInSmallRing(g, b, 9)));
+  if (!ringBond.size) return false;
+  // 環の系（環の結合でつながった原子の集まり）
+  const sys = g.atoms.map((_, i) => i);
+  const find = (x) => (sys[x] === x ? x : (sys[x] = find(sys[x])));
+  ringBond.forEach((b) => { sys[find(b.a)] = find(b.b); });
+  const count = new Map();
+  g.atoms.forEach((a, i) => {
+    if (a.el !== 'C' || a.arom) return;
+    const nb = neighbors(g, i);
+    if (nb.some((x) => x.order !== 1)) return;
+    const inRing = nb.filter((x) => ringBond.has(x.bond));
+    if (inRing.length !== 2) return;
+    const { color, adj } = refine(g, [i]);
+    const ringAtoms = new Set(inRing.map((x) => x.atom));
+    const exo = adj[i].filter(([j]) => !ringAtoms.has(j));
+    if (exo.length !== 2 || color[exo[0][0]] === color[exo[1][0]]) return;
+    const k = find(i);
+    count.set(k, (count.get(k) || 0) + 1);
+  });
+  return [...count.values()].some((n) => n >= 2);
+}
+
 function hasCisTrans(g) {
-  return stereoBondCount(g) > 0;
+  return stereoBondCount(g) > 0 || ringCisTrans(g);
 }
 
 // ---------- 変換反応 ----------
@@ -422,9 +450,9 @@ function breakBonds(RDKit, g0, list) {
   return graphToSmilesList(RDKit, g);
 }
 
-// 完全な加水分解
+// 完全な加水分解（エステル・アミドと、糖のグリコシド結合）
 function hydrolyze(RDKit, g) {
-  const hs = hydrolyzable(g);
+  const hs = hydrolyzable(g).concat(require('./reactions').glycosideBonds(g));
   return hs.length ? breakBonds(RDKit, g, hs) : [];
 }
 
@@ -732,7 +760,9 @@ function matchesAny(RDKit, smiles, smartsList) {
   }
 }
 
-const ALDEHYDE = ['[CX3H1](=O)', '[CH2]=O'];
+// 還元性: ホルミル基に加えて、水溶液中で鎖状構造になって還元性を示す環状のヘミアセタール（グルコースなど）と、
+// –CO–CH₂OH（フルクトースの鎖状構造。塩基性の溶液中で還元性を示す）
+const ALDEHYDE = ['[CX3H1](=O)', '[CH2]=O', '[OX2H1][CX4;R][OX2;R][#6]', '[CX3](=O)[CH2][OX2H1]'];
 
 // kind: bool = 陽性/陰性, count = 個数, products = 生成物の構造
 const CARDS = {
@@ -804,7 +834,7 @@ const CARDS = {
   },
   cis_trans: {
     name: 'シス-トランス異性',
-    action: 'シス-トランス異性体が存在するか調べる',
+    action: 'シス-トランス異性体が存在するか調べる（C=C のまわりと、環の2つの炭素の置換基が環の同じ側か反対側か）',
     kind: 'bool', yes: '存在する', no: '存在しない',
     compute: (RDKit, g) => hasCisTrans(g),
   },
@@ -943,6 +973,11 @@ const CARDS = {
     kind: 'products', none: '付加しなかった',
     transform: alkyneHydration,
   },
+  // ---- 糖を加水分解する酵素（基質特異性）。糖の略記 sac: だけに使う ----
+  maltase: { name: 'マルターゼ', action: 'マルターゼ（α-グルコシダーゼ）を作用させる。α-グルコースの還元性を示す炭素がつくる結合（マルトースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  invertase: { name: 'インベルターゼ', action: 'インベルターゼ（スクラーゼ）を作用させる。スクロースの結合を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  lactase: { name: 'ラクターゼ', action: 'ラクターゼ（β-ガラクトシダーゼ）を作用させる。β-ガラクトースの還元性を示す炭素がつくる結合（ラクトースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  cellobiase: { name: 'セロビアーゼ', action: 'セロビアーゼ（β-グルコシダーゼ）を作用させる。β-グルコースの還元性を示す炭素がつくる結合（セロビオースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
   // ---- 以下は reactions.js（与えられた規則・配向性）。require は循環を避けるため呼び出し時に行う ----
   nitration: rx('nitration', 'ニトロ化', '濃硝酸と濃硫酸でベンゼン環をニトロ化する（1か所）。配向性に従い、オルトとパラの両方に入るなら混合物', '反応しない'),
   bromination_fe: rx('bromination', '臭素化（鉄触媒）', '鉄粉を触媒にして臭素をベンゼン環に1つ置換させる。配向性に従う', '反応しない'),
@@ -1010,6 +1045,12 @@ function st(fn, name, action) {
 function evaluate(RDKit, card, smiles) {
   const def = CARDS[card];
   if (!def) throw new Error(`unknown card: ${card}`);
+  // 糖の略記は立体を区別して記号で判定する（sugar.js）。そこで扱わないカードは立体なしの構造で判定する
+  if (smiles.startsWith('sac:')) {
+    const r = require('./sugar').evaluate(card, smiles);
+    if (r !== undefined) return r;
+    if (def.sugarOnly) throw new Unsupported('sugar card on a sugar it does not handle');
+  } else if (def.sugarOnly) throw new Unsupported('enzyme card needs a sugar');
   if (def.stereoFn) return def.stereoFn(RDKit, expand(smiles));
   if (def.smarts) return matchesAny(RDKit, smiles, def.smarts);
   const g = graphFromSmiles(RDKit, smiles);

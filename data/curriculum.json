@@ -393,7 +393,8 @@
       "sugar_degrade"
      ],
      "modes": [
-      "gen"
+      "gen",
+      "sugar"
      ]
     },
     {
@@ -401,9 +402,16 @@
      "name": "二糖",
      "engine": [
       "silver_mirror",
-      "fehling"
+      "fehling",
+      "maltase",
+      "invertase",
+      "lactase",
+      "cellobiase",
+      "hydrolysis"
      ],
-     "modes": []
+     "modes": [
+      "sugar"
+     ]
     },
     {
      "id": "polysaccharide",
@@ -411,7 +419,9 @@
      "engine": [
       "methylation_analysis"
      ],
-     "modes": []
+     "modes": [
+      "sugar"
+     ]
     },
     {
      "id": "cellulose_fiber",
@@ -446,8 +456,15 @@
     {
      "id": "enzyme",
      "name": "酵素",
-     "engine": [],
-     "modes": []
+     "engine": [
+      "maltase",
+      "invertase",
+      "lactase",
+      "cellobiase"
+     ],
+     "modes": [
+      "sugar"
+     ]
     },
     {
      "id": "nucleic_acid",

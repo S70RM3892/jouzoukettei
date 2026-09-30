@@ -316,6 +316,22 @@ function acetalCarbons(g) {
     && neighbors(g, c).filter((x) => x.order === 1 && el(g, x.atom) === 'O').length === 2
     && neighbors(g, c).every((x) => x.order === 1));
 }
+// グリコシド結合: アセタール炭素の2つの O のうち、1つが環の中、もう1つが環の外で炭素とつながっているもの。
+// 加水分解では環の外側の C–O が切れる（還元性を示す炭素に OH が戻る）。スクロースのように両側がアセタール炭素のときは片方だけ切る
+function glycosideBonds(g) {
+  const out = [];
+  const seenO = new Set();
+  for (const c of acetalCarbons(g)) {
+    const os = neighbors(g, c).filter((x) => el(g, x.atom) === 'O');
+    const ring = os.filter((x) => ringSize(g, x.bond) !== Infinity);
+    const exo = os.filter((x) => ringSize(g, x.bond) === Infinity && neighbors(g, x.atom).filter((y) => el(g, y.atom) === 'C').length === 2);
+    if (ring.length !== 1 || exo.length !== 1 || seenO.has(exo[0].atom)) continue;
+    seenO.add(exo[0].atom);
+    out.push({ c, bond: exo[0].bond });
+  }
+  return out;
+}
+
 // すべてのアセタール・ヘミアセタールをカルボニル化合物とアルコールに戻す
 function openAcetals(g0) {
   const g = cloneGraph(g0);
@@ -448,5 +464,5 @@ function bromineAddition(RDKit, g0) {
 module.exports = {
   easPositions, nitration, bromination, chlorination, sulfonation, bromineWater, nitroReduction,
   acetylation, acetylationPrimary, deamination, diazoHydrolysis, azoCoupling, imideHydrolysis, etherHydrogenolysis,
-  ringHydrogenolysis, acetalHydrolysis, acetalExchange, acetonide, methylationAnalysis, bromineAddition,
+  ringHydrogenolysis, acetalHydrolysis, acetalExchange, acetonide, methylationAnalysis, bromineAddition, glycosideBonds,
 };

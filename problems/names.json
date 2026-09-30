@@ -297,5 +297,22 @@
  "CC[C@H](Br)C(C)(C)Br": "2,3-ジブロモ-2-メチルペンタン（S 体）",
  "CC[C@@H](Br)[C@@H](Br)CC": "3,4-ジブロモヘキサン（メソ体）",
  "CC[C@@H](Br)[C@H](Br)CC": "3,4-ジブロモヘキサン（RR 体）",
- "CC[C@H](Br)[C@@H](Br)CC": "3,4-ジブロモヘキサン（SS 体）"
+ "CC[C@H](Br)[C@@H](Br)CC": "3,4-ジブロモヘキサン（SS 体）",
+ "sac:Glc": "グルコース",
+ "sac:Gal": "ガラクトース",
+ "sac:Fru": "フルクトース",
+ "sac:Glc(a1-4)Glc": "マルトース",
+ "sac:Glc(b1-4)Glc": "セロビオース",
+ "sac:Gal(b1-4)Glc": "ラクトース",
+ "sac:Glc(a1-2b)Fru": "スクロース",
+ "sac:Glc(a1-1a)Glc": "トレハロース",
+ "sac:Glc(a1-6)Glc": "イソマルトース",
+ "sac:Gal(a1-6)Glc": "メリビオース",
+ "sac:Glc(b1-6)Glc": "ゲンチオビオース",
+ "sac:Gal(b1-4)Fru": "ラクツロース",
+ "sac:Glc(a1-6)Fru": "パラチノース",
+ "sac:Glc(a1-4)Glc(a1-4)Glc": "マルトトリオース",
+ "sac:Glc(a1-6)Glc(a1-4)Glc": "パノース",
+ "sac:Gal(a1-6)Glc(a1-2b)Fru": "ラフィノース",
+ "sac:Glc(b1-4)Glc(b1-4)Glc": "セロトリオース"
 }
