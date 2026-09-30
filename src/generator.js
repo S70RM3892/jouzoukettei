@@ -211,11 +211,13 @@ const FRAG_CARDS = ['silver_mirror', 'iodoform', 'fecl3', 'kmno4', 'mild_oxidati
   'dehydration_ozonolysis', 'h2_uptake', 'hydrogenation', 'markovnikov', 'chiral', 'cis_trans', 'carbon_env', 'cl_sub', 'ring_cl', 'anhydride', 'periodate', 'bromine', 'naoh', 'hcl',
   'nitration', 'bromine_water', 'acetylation_primary', 'acetonide', 'bromine_addition', 'stereo_count'];
 
+// 値は問題文に出す形（生成物の構造式が答えを明かすときは、分子式と種類の数だけ）で比べる
 function valueTable(RDKit, pool, cards) {
+  const { shownValue } = require('./leak');
   const table = {};
   for (const card of cards) {
     try {
-      const vals = pool.map((s) => JSON.stringify(chem.evaluate(RDKit, card, s)));
+      const vals = pool.map((s) => JSON.stringify(shownValue(RDKit, card, s, chem.normalizeResult(RDKit, card, chem.evaluate(RDKit, card, s)))));
       if (new Set(vals).size > 1) table[card] = vals;
     } catch (e) { /* この候補集合には使えないカード */ }
   }
@@ -444,10 +446,17 @@ function buildProblem(RDKit, r, lib, weights, spec) {
     const a = pool.indexOf(X);
     const cardsX = {};
     try {
+      // 部分加水分解の生成物は断片をそのまま含む（構造式を見せると断片の答えが読める）ので、分子式と不斉炭素の数で示す
+      const { shownValue } = require('./leak');
+      const sig = (pp) => JSON.stringify(shownValue(RDKit, 'partial_hydrolysis', X, pp));
       const partials = chem.partialProducts(RDKit, gx);
+      const done = new Set();
       for (const pp of partials) {
+        const key = sig(pp);
+        if (done.has(key)) continue;
+        done.add(key);
         const vals = pool.map((s) => {
-          try { return chem.partialProducts(RDKit, toGraph(RDKit, s)).includes(pp) ? 'y' : 'n'; } catch (e) { return 'x'; }
+          try { return chem.partialProducts(RDKit, toGraph(RDKit, s)).some((q) => sig(q) === key) ? 'y' : 'n'; } catch (e) { return 'x'; }
         });
         if (new Set(vals).size > 1 && !vals.includes('x')) cardsX[`partial_hydrolysis|${pp}`] = vals;
       }
@@ -516,7 +525,8 @@ function buildProblem(RDKit, r, lib, weights, spec) {
   if (spec.chain !== false) {
     const Ch = require('./chain');
     let d = null;
-    for (let t = 0; t < 4 && !d; t++) d = Ch.design(RDKit, r, problem);
+    // 誘導体の記号は断片の記号の続きから（断片が4つのとき D が重ならないように）
+    for (let t = 0; t < 4 && !d; t++) d = Ch.design(RDKit, r, problem, { labels: 'ABCDEFGHIJK'.slice(problem.fragments.length) });
     if (d && (d.derived.length || d.relations.length)) {
       problem.fragments = d.fragments;
       problem.derived = d.derived;

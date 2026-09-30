@@ -239,6 +239,35 @@ async function main() {
   } };
   convert(problems);
 
+  // 京大2026型: 検証パイプラインを通ったものだけを収録する
+  const { checkK26 } = require('./k26check');
+  const { loadK26, nameMap } = require('./validate');
+  const isMol = (x) => typeof x === 'string' && !['+', '⇄', '→'].includes(x);
+  for (const P of loadK26()) {
+    const r = checkK26(RDKit, P, nameMap(RDKit));
+    if (r.errors.length) { rejected.push(...r.errors); continue; }
+    P.parts.forEach((pt) => {
+      (pt.figs || []).forEach((f) => addMol(chem.canonical(RDKit, f.smiles)));
+      (pt.rules || []).forEach((ru) => (ru.scheme || []).filter(isMol).forEach(addMol));
+    });
+    const questions = P.questions.map((q) => {
+      const base = { no: q.no, id: q.id, part: q.part, type: q.type, prompt: q.prompt, points: q.points, notes: q.notes || [], explain: q.explain || '', refs: q.refs || [], depends_on: q.depends_on || [] };
+      if (q.type === 'draw') { q.answer.smiles.forEach(addMol); return { ...base, answer: q.answer.smiles }; }
+      if (q.type === 'number') return { ...base, answer: q.answer.value, sig: q.answer.sig_figs, unit: q.unit || '' };
+      if (q.type === 'essay') return { ...base, model: q.model, rubric: q.rubric };
+      return { ...base, answer: q.answer };
+    });
+    const parts = P.parts.map((pt) => ({
+      label: pt.label, intro: pt.intro, tail: pt.tail || '', expLead: pt.expLead || '', tailY: pt.tailY || '', limitation: pt.limitation || '',
+      figs: (pt.figs || []).map((f) => ({ label: f.label, smiles: chem.canonical(RDKit, f.smiles) })),
+      rules: pt.rules.map((ru) => ({ id: ru.id, title: ru.title, text: ru.text, scheme: ru.scheme, schemeNote: ru.schemeNote })),
+      equation: pt.equation || null,
+    }));
+    const exam = { parts, intro: '', rules: [], experiments: P.experiments.map((e) => ({ label: e.label, part: e.part, group: e.group, text: e.text, figs: [], hint: e.hint })), questions, total: questions.reduce((a, q) => a + q.points, 0) };
+    // 難易度 1〜5 は、アプリの6段階の 2〜6 に当てる（難易度 1 でも規則の読み取りと逆算があるので「基礎」にはしない）
+    out.push({ id: P.id, mode: 'k26', level: P.level, grade: Math.min(6, P.level + 1), title: P.title, formula: '', params: P.params, validation: P.validation, exam });
+  }
+
   // 自動生成の断片には名前のないものがある（構造式だけを見せる）。手で作った問題だけ名前の抜けを警告する
   const genMols = new Set();
   problems.filter((p) => p.generated).forEach((p) => collectSmiles(RDKit, p, genMols));
@@ -260,7 +289,8 @@ async function main() {
 
   const template = fs.readFileSync(path.join(ROOT, 'src', 'index.html'), 'utf8');
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
-  const html = template.replace('/*__PUZZLE_DATA__*/null', () => json);
+  const lite = fs.readFileSync(path.join(ROOT, 'src', 'smiles-lite.js'), 'utf8').replace(/<\/script/gi, '<\\/script');
+  const html = template.replace('/*__PUZZLE_DATA__*/null', () => json).replace('/*__SMILES_LITE__*/', () => lite);
   if (html === template) throw new Error('data placeholder not found in src/index.html');
   fs.mkdirSync(path.join(ROOT, 'dist'), { recursive: true });
   // GitHub Pages 版のオンライン機能（ランキング・投稿・対戦）は Firebase で動かす。

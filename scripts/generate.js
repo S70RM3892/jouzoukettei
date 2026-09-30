@@ -24,7 +24,7 @@ function todayJST() {
 // 断片ライブラリは異性体の全列挙で重いので、ソースが変わらない限り使い回す
 function loadLibrary(RDKit) {
   const h = crypto.createHash('sha1');
-  for (const f of ['src/generator.js', 'src/enumerate.js', 'src/chem.js']) h.update(fs.readFileSync(path.join(ROOT, f)));
+  for (const f of ['src/generator.js', 'src/enumerate.js', 'src/chem.js', 'src/leak.js']) h.update(fs.readFileSync(path.join(ROOT, f)));
   const key = h.digest('hex');
   const file = path.join(ROOT, 'generated', 'library.json');
   try {

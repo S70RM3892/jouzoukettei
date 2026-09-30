@@ -108,6 +108,15 @@ function atomCounts(RDKit, smiles) {
   return c;
 }
 
+let NAMES = null;
+function nameMap(RDKit) {
+  if (NAMES) return NAMES;
+  NAMES = {};
+  const raw = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'problems', 'names.json'), 'utf8'));
+  for (const [s, n] of Object.entries(raw)) { try { NAMES[chem.canonical(RDKit, s)] = n; } catch (e) { /* 構造でない */ } }
+  return NAMES;
+}
+
 // 大問型: 加水分解で分けて、断片ごとに絞り込み、最後に組み立てる
 function checkBig(RDKit, P) {
   const errors = [];
@@ -191,7 +200,16 @@ function checkBig(RDKit, P) {
       if (!P.assemble || c.answer !== P.assemble.candidates.length) err(`calc n_x: answer ${c.answer} but ${P.assemble ? P.assemble.candidates.length : 0} assembly candidates`);
     } else err(`unknown calc ${c.key}`);
   }
-  return { errors, X, bonds, frags, assemble, calcs: P.calcs || [] };
+  // 京大形式の画面（問題文・実験・設問）を作り、リーク・依存関係・注記・一意性を機械的に検査する
+  let exam = null;
+  if (!errors.length) {
+    try {
+      exam = require('../src/exam').buildExam(RDKit, P);
+      const A = require('../src/audit');
+      [...A.auditSheet(RDKit, exam, nameMap(RDKit)), ...A.checkUniqueBig(RDKit, P, exam)].forEach((m) => err(`exam ${m}`));
+    } catch (e) { err(`exam: ${e.message}`); }
+  }
+  return { errors, X, bonds, frags, assemble, calcs: P.calcs || [], exam };
 }
 
 // 数え上げ型: 母集団（その分子式のすべての異性体）から条件に合うものを数える
@@ -303,10 +321,25 @@ function checkAll(RDKit, problems) {
   return { errors, results };
 }
 
+// 京大2026型（problems/k26.json）: 検証パイプライン（一意性・リーク・依存関係・別解答・注記・採点基準）
+function loadK26() {
+  const file = path.join(__dirname, '..', 'problems', 'k26.json');
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+}
+
 async function main() {
   const problems = loadProblems();
   const RDKit = await loadRDKit();
-  const { errors } = checkAll(RDKit, problems);
+  const { errors, results } = checkAll(RDKit, problems);
+  const k26 = loadK26();
+  const { checkK26, calcsOf } = require('./k26check');
+  for (const P of k26) errors.push(...checkK26(RDKit, P, nameMap(RDKit)).errors);
+  // 計算問題を Python の数値検算（scripts/numcheck.py）に渡す
+  const calcs = [
+    ...results.flatMap((r, i) => (r.exam ? r.exam.questions.filter((q) => q.calc).map((q) => ({ id: `${problems[i].id}/${q.id}`, calc: q.calc })) : [])),
+    ...k26.flatMap(calcsOf),
+  ];
+  fs.writeFileSync(path.join(__dirname, '..', 'generated', 'calcs.json'), JSON.stringify(calcs, null, 1) + '\n');
   if (errors.length) {
     console.error(`NG: ${errors.length} error(s)`);
     errors.forEach((e) => console.error('  ' + e));
@@ -314,9 +347,9 @@ async function main() {
   }
   const by = {};
   problems.forEach((p) => { by[p.mode] = (by[p.mode] || 0) + 1; });
-  console.log(`OK: ${problems.length} problems passed (${Object.entries(by).map(([m, n]) => `${m} ${n}`).join(', ')})`);
+  console.log(`OK: ${problems.length} problems passed (${Object.entries(by).map(([m, n]) => `${m} ${n}`).join(', ')}), k26 ${k26.length}（計算問題 ${calcs.length} 問を generated/calcs.json に書いた）`);
 }
 
 if (require.main === module) main();
 
-module.exports = { loadRDKit, loadProblems, checkNarrow, checkBig, checkCount, checkPolymer, checkAny, checkAll };
+module.exports = { loadK26, nameMap, loadRDKit, loadProblems, checkNarrow, checkBig, checkCount, checkPolymer, checkAny, checkAll };

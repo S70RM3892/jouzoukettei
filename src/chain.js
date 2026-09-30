@@ -6,6 +6,7 @@
 //  - 断片どうしの関係（A と B に水素を付加させると同じ化合物、A を酸化すると C が得られる…）
 // を混ぜ、全部を同時に考えたときに初めて答えが1通りに決まる組を選ぶ。
 const chem = require('./chem');
+const { shownValue } = require('./leak');
 
 // 誘導体をつくる操作（1つの生成物になるもの）
 const OPS = ['mild_oxidation', 'kmno4', 'dehydration', 'hydrogenation', 'markovnikov', 'acetylation_primary', 'bromine_addition', 'kmno4_cleave', 'ozonolysis', 'bromine_water', 'nitration'];
@@ -17,7 +18,7 @@ const CLUE_CARDS = ['silver_mirror', 'iodoform', 'fecl3', 'sodium', 'nahco3', 'b
 
 function makeTools(RDKit) {
   const cache = new Map();
-  const ev = (card, s) => {
+  const full = (card, s) => {
     const key = card + '|' + s;
     if (cache.has(key)) return cache.get(key);
     let v;
@@ -25,14 +26,23 @@ function makeTools(RDKit) {
     cache.set(key, v);
     return v;
   };
+  // 問題文に出す形の結果（生成物の構造式が答えを明かすときは、分子式と種類の数だけ）
+  const shown = (card, s, v) => (v === 'x' ? 'x' : JSON.stringify(shownValue(RDKit, card, s, JSON.parse(v))));
+  const ev = (card, s) => {
+    const key = 'shown|' + card + '|' + s;
+    if (cache.has(key)) return cache.get(key);
+    const v = shown(card, s, full(card, s));
+    cache.set(key, v);
+    return v;
+  };
   // 操作の生成物（ちょうど1つのときだけ）
   const op = (o, s) => {
-    const v = ev(o, s);
+    const v = full(o, s);
     if (v === 'x') return null;
     const a = JSON.parse(v);
     return Array.isArray(a) && a.length === 1 ? a[0] : null;
   };
-  return { ev, op, can: (s) => chem.canonical(RDKit, s) };
+  return { ev, full, shown, op, can: (s) => chem.canonical(RDKit, s) };
 }
 
 // 手がかりの集合から、各断片の候補（添字）と、関係まで含めた解の数を求める
@@ -162,12 +172,12 @@ function design(RDKit, r, P, { labels = 'DEFGHIJ' } = {}) {
   // 書き戻す
   const fragments = P.fragments.map((f, i) => ({
     ...f,
-    clues: f.given ? [] : final.filter((x) => x.kind === 'direct' && x.f === i).map((x) => ({ card: x.card, result: JSON.parse(x.value) })),
+    clues: f.given ? [] : final.filter((x) => x.kind === 'direct' && x.f === i).map((x) => ({ card: x.card, result: JSON.parse(T.full(x.card, frs[i].pool[frs[i].a])) })),
   }));
   const ders = usedD.map((d, k) => ({
     label: labels[k], from: P.fragments[d.from].label, op: d.op, answer: d.answer,
     candidates: [...new Set(d.prods.filter(Boolean))],
-    clues: final.filter((x) => x.kind === 'derived' && x.d === d).map((x) => ({ card: x.card, result: JSON.parse(x.value) })),
+    clues: final.filter((x) => x.kind === 'derived' && x.d === d).map((x) => ({ card: x.card, result: JSON.parse(T.full(x.card, d.answer)) })),
   }));
   const relations = final.filter((x) => x.pair).map((x) => ({ type: x.kind, op: x.op, a: P.fragments[x.pair[0]].label, b: P.fragments[x.pair[1]].label, ...(x.product ? { product: x.product } : {}) }));
   return { fragments, derived: ders, relations };
@@ -183,8 +193,9 @@ function check(RDKit, P) {
   if (errors.length) return errors;
   const feats = [];
   frs.forEach((x, i) => (x.f.clues || []).forEach((c) => {
-    const exp = JSON.stringify(chem.normalizeResult(RDKit, c.card, c.result));
-    if (T.ev(c.card, x.pool[x.a]) !== exp) errors.push(`${x.f.label}: clue ${c.card} does not match the answer`);
+    const expFull = JSON.stringify(chem.normalizeResult(RDKit, c.card, c.result));
+    if (T.full(c.card, x.pool[x.a]) !== expFull) errors.push(`${x.f.label}: clue ${c.card} does not match the answer`);
+    const exp = T.shown(c.card, x.pool[x.a], expFull);
     feats.push({ f: i, test: (k) => T.ev(c.card, x.pool[k]) === exp });
   }));
   for (const d of P.derived || []) {
@@ -193,8 +204,9 @@ function check(RDKit, P) {
     if (T.op(d.op, x.pool[x.a]) !== T.can(d.answer)) errors.push(`${d.label}: ${d.op}(${d.from}) is not the answer`);
     feats.push({ f: i, test: (k) => T.op(d.op, x.pool[k]) !== null });
     d.clues.forEach((c) => {
-      const exp = JSON.stringify(chem.normalizeResult(RDKit, c.card, c.result));
-      if (T.ev(c.card, T.can(d.answer)) !== exp) errors.push(`${d.label}: clue ${c.card} does not match`);
+      const expFull = JSON.stringify(chem.normalizeResult(RDKit, c.card, c.result));
+      if (T.full(c.card, T.can(d.answer)) !== expFull) errors.push(`${d.label}: clue ${c.card} does not match`);
+      const exp = T.shown(c.card, T.can(d.answer), expFull);
       feats.push({ f: i, test: (k) => { const p = T.op(d.op, x.pool[k]); return p !== null && T.ev(c.card, p) === exp; } });
     });
   }
