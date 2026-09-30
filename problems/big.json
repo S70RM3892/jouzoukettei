@@ -82,50 +82,6 @@
     ]
   },
   {
-    "id": "big-003",
-    "mode": "big",
-    "level": 3,
-    "title": "2価カルボン酸のジエステル",
-    "story": "化合物 X は中性のエステルである。X を完全に加水分解すると、2価カルボン酸 A と、アルコール B・C が得られた。",
-    "formula": "C16H22O4",
-    "answer": "CCC(C)OC(=O)C(C)CC(=O)OCc1ccccc1",
-    "fragments": [
-      {
-        "label": "A",
-        "answer": "OC(=O)CC(C)C(=O)O",
-        "candidates": ["OC(=O)CC(C)C(=O)O", "OC(=O)CCCC(=O)O", "CC(C)(C(=O)O)C(=O)O", "CCC(C(=O)O)C(=O)O"],
-        "clues": [
-          {"card": "chiral", "result": 1},
-          {"card": "anhydride", "result": true}
-        ]
-      },
-      {
-        "label": "B",
-        "answer": "CCC(C)O",
-        "candidates": ["CCCCO", "CCC(C)O", "CC(C)CO", "CC(C)(C)O", "CCOCC", "CCCOC", "COC(C)C"],
-        "clues": [
-          {"card": "sodium", "result": true},
-          {"card": "dehydration_count", "result": 3}
-        ]
-      },
-      {
-        "label": "C",
-        "answer": "OCc1ccccc1",
-        "candidates": ["OCc1ccccc1", "Cc1ccccc1O", "Cc1cccc(O)c1", "Cc1ccc(O)cc1", "COc1ccccc1"],
-        "clues": [
-          {"card": "fecl3", "result": false},
-          {"card": "sodium", "result": true}
-        ]
-      }
-    ],
-    "assemble": {
-      "candidates": ["CCC(C)OC(=O)C(C)CC(=O)OCc1ccccc1", "CCC(C)OC(=O)CC(C)C(=O)OCc1ccccc1"],
-      "clues": [
-        {"card": "partial_hydrolysis", "result": "CC(CC(=O)OCc1ccccc1)C(=O)O"}
-      ]
-    }
-  },
-  {
     "id": "big-004",
     "mode": "big",
     "level": 3,
@@ -190,7 +146,7 @@
           {"card": "iodoform", "result": false},
           {"card": "chiral", "result": 0},
           {"card": "dehydration_count", "result": 1},
-          {"card": "dehydration_ozonolysis", "result": ["C=O", "CC(C)C=O"]}
+          {"card": "cl_sub", "result": 4}
         ]
       },
       {

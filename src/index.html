@@ -2,54 +2,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Shippori+Mincho+B1:wght@600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* 試験の問題用紙と赤ペン添削: 用紙の白と藍墨の文字、採点だけ朱。難易度は浅葱から藍、紅への6段 */
+/* 京大の問題冊子にそろえる: 白い紙に細い黒の明朝。採点の印だけ朱。色の面は使わず、罫線と余白で区切る */
 :root {
-  --ground: #eef1f5;
-  --surface: #f7f9fb;
+  color-scheme: light;
+  --ground: #ffffff;
+  --surface: #ffffff;
   --paper: #ffffff;
-  --ink: #151b2e;
-  --muted: #5a6275;
-  --line: #d3d9e3;
-  --rule: #1d2a52;
-  --accent: #26408f;
+  --ink: #111111;
+  --muted: #555555;
+  --line: #cfcfcf;
+  --rule: #111111;
+  --accent: #111111;
   --accent-ink: #ffffff;
-  --accent-soft: #e2e8f6;
-  --pos: #c5302b;
-  --pos-soft: #fbe4e2;
-  --ok: #2c7548;
-  --ok-soft: #ddefe3;
-  --warn: #9a6512;
-  --warn-soft: #f6ead2;
-  --redpen: #d0342c;
-  --grid: rgb(38 64 143 / 0.05);
-  --g1: #3f9aa0; --g2: #3a7fb0; --g3: #3656a8; --g4: #4b3b9e; --g5: #8a2f86; --g6: #c5302b;
-  --shadow: 0 1px 2px rgb(21 27 46 / 0.06), 0 8px 24px rgb(21 27 46 / 0.07);
+  --accent-soft: #f3f3f3;
+  --pos: #b3261e;
+  --pos-soft: #ffffff;
+  --ok: #1f5f36;
+  --ok-soft: #ffffff;
+  --warn: #7a520c;
+  --warn-soft: #ffffff;
+  --redpen: #c8322a;
+  --grid: transparent;
+  --g1: #a6a6a6; --g2: #8c8c8c; --g3: #707070; --g4: #525252; --g5: #333333; --g6: #111111;
+  --shadow: none;
   --mol-filter: none;
-  --f-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
-  --f-body: "BIZ UDPGothic", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --f-display: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+  --f-body: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --ground: #0d1220; --surface: #141b2d; --paper: #182036; --ink: #e7eaf3; --muted: #9aa3b8; --line: #2a3450;
-    --rule: #aab8e8; --accent: #93a9f5; --accent-ink: #0d1220; --accent-soft: #1e2a4c;
-    --pos: #ff8a80; --pos-soft: #3a1f24; --ok: #7ccf9a; --ok-soft: #173024; --warn: #e2b155; --warn-soft: #362c18;
-    --redpen: #ff6f65; --grid: rgb(147 169 245 / 0.05);
-    --g1: #5cc2c7; --g2: #5fa8e0; --g3: #7d93f0; --g4: #9d86f0; --g5: #d77ad2; --g6: #ff7d74;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.5); --mol-filter: invert(0.9) hue-rotate(180deg);
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --ground: #0d1220; --surface: #141b2d; --paper: #182036; --ink: #e7eaf3; --muted: #9aa3b8; --line: #2a3450;
-  --rule: #aab8e8; --accent: #93a9f5; --accent-ink: #0d1220; --accent-soft: #1e2a4c;
-  --pos: #ff8a80; --pos-soft: #3a1f24; --ok: #7ccf9a; --ok-soft: #173024; --warn: #e2b155; --warn-soft: #362c18;
-  --redpen: #ff6f65; --grid: rgb(147 169 245 / 0.05);
-  --g1: #5cc2c7; --g2: #5fa8e0; --g3: #7d93f0; --g4: #9d86f0; --g5: #d77ad2; --g6: #ff7d74;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.5); --mol-filter: invert(0.9) hue-rotate(180deg);
 }
 
 * { box-sizing: border-box; }
@@ -57,36 +38,34 @@
 html, body { min-height: 100%; }
 body {
   margin: 0;
-  background-color: var(--ground);
-  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background: #ffffff;
   color: var(--ink);
-  font: 15px/1.65 var(--f-body);
+  font: 300 15px/1.8 var(--f-body);
   -webkit-text-size-adjust: 100%;
 }
 .wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 120px; }
 h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.3; }
-h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: 0.04em; }
-h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.03em; }
+h1 { font-size: 2.1rem; font-weight: 500; letter-spacing: 0.04em; }
+h2 { font-size: 1.1rem; font-weight: 500; letter-spacing: 0.03em; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.eyebrow { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--muted); font-weight: 500; }
 .muted { color: var(--muted); }
 .mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
-.formula { font-family: var(--f-mono); font-weight: 600; letter-spacing: 0.02em; }
+.formula { font-family: var(--f-mono); font-weight: 500; letter-spacing: 0.02em; }
 .formula sub { font-size: 0.68em; vertical-align: -0.25em; line-height: 0; }
 .stack { display: flex; flex-direction: column; gap: 16px; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
 .btn {
   border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
-  padding: 10px 16px; cursor: pointer; font-weight: 700; min-height: 44px;
+  padding: 10px 16px; cursor: pointer; font-weight: 500; min-height: 44px;
 }
 .btn:hover { border-color: var(--muted); }
 .btn { transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease; }
 .btn:active { transform: translateY(1px); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 14px rgb(38 64 143 / 0.25); }
-.btn.primary:hover { box-shadow: 0 6px 20px rgb(38 64 143 / 0.32); }
+.btn.primary { background: var(--paper); border-color: var(--ink); color: var(--ink); }
+.btn.primary:hover { background: var(--accent-soft); }
 .btn.primary:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn.ghost { background: transparent; border-color: transparent; padding-inline: 8px; }
 .chip {
@@ -98,7 +77,7 @@ button { font: inherit; color: inherit; }
 .chip small { font-size: 0.72rem; margin-left: 4px; }
 
 /* ---------- 難易度（6段） ---------- */
-.grade { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em; color: var(--gc); white-space: nowrap; }
+.grade { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 500; letter-spacing: 0.04em; color: var(--gc); white-space: nowrap; }
 .grade .pips { display: inline-flex; gap: 2px; }
 .grade .pips i { width: 5px; height: 12px; border-radius: 1px; background: var(--line); }
 .grade .pips i.on { background: var(--gc); }
@@ -112,14 +91,14 @@ button { font: inherit; color: inherit; }
 /* ---------- 表紙 ---------- */
 .cover { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 4px; padding: 18px 18px 16px; position: relative; overflow: hidden; }
 .cover::before { content: ""; position: absolute; inset: 8px; border: 3px double var(--rule); border-radius: 2px; pointer-events: none; opacity: 0.55; }
-.cover .kicker { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.3em; font-size: 0.82rem; color: var(--muted); }
+.cover .kicker { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.3em; font-size: 0.82rem; color: var(--muted); }
 .cover h1 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.15; margin-top: 6px; color: var(--ink); }
 .cover h1 em { font-style: normal; color: var(--accent); }
 .cover p { margin: 8px 0 0; max-width: 32em; color: var(--muted); font-size: 0.92rem; }
 .cover .seal { position: absolute; right: 16px; top: 16px; width: 64px; height: 64px; border: 2px solid var(--redpen); color: var(--redpen); border-radius: 50%;
-  display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 0.72rem; line-height: 1.15; text-align: center; transform: rotate(-12deg); opacity: 0.85; }
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 500; font-size: 0.72rem; line-height: 1.15; text-align: center; transform: rotate(-12deg); opacity: 0.85; }
 .today { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gc, var(--accent)); border-radius: 4px; padding: 12px 14px; }
-.today .t { font-family: var(--f-display); font-weight: 800; font-size: 1.05rem; }
+.today .t { font-family: var(--f-display); font-weight: 500; font-size: 1.05rem; }
 .today .s { font-size: 0.8rem; color: var(--muted); }
 
 /* ---------- Home ---------- */
@@ -131,7 +110,7 @@ button { font: inherit; color: inherit; }
 .stat span { font-size: 0.78rem; color: var(--muted); }
 .panel { display: grid; gap: 10px; }
 .weak-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.weak { background: var(--warn-soft); color: var(--warn); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; font-weight: 700; }
+.weak { background: var(--warn-soft); color: var(--warn); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; font-weight: 500; }
 .plist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .plist li { border-bottom: 1px solid var(--line); }
 .plist button {
@@ -143,7 +122,7 @@ button { font: inherit; color: inherit; }
 .plist .num { font-family: var(--f-mono); color: var(--muted); font-size: 0.85rem; }
 .plist .fm { font-size: 1.1rem; }
 .lv { color: var(--warn); letter-spacing: 1px; font-size: 0.8rem; margin-left: 8px; }
-.badge { font-size: 0.78rem; font-weight: 700; border-radius: 6px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+.badge { font-size: 0.78rem; font-weight: 500; border-radius: 6px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
 .badge.ok { background: var(--ok-soft); color: var(--ok); }
 .badge.ng { background: var(--pos-soft); color: var(--pos); }
 .badge.new { color: var(--muted); border: 1px dashed var(--line); }
@@ -173,7 +152,7 @@ button { font: inherit; color: inherit; }
 .cand .tag { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
 .x-btn {
   border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
-  min-width: 44px; min-height: 36px; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+  min-width: 44px; min-height: 36px; cursor: pointer; font-weight: 500; font-size: 0.85rem;
 }
 .cand.struck { opacity: 0.38; }
 .cand.struck .mol { filter: grayscale(1); }
@@ -190,16 +169,16 @@ button { font: inherit; color: inherit; }
   border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
   padding: 12px; text-align: left; cursor: pointer; display: grid; gap: 6px; align-content: start; min-height: 96px;
 }
-.clue .cname { font-family: var(--f-display); font-weight: 700; font-size: 1rem; }
+.clue .cname { font-family: var(--f-display); font-weight: 500; font-size: 1rem; }
 .clue .act { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
 .clue.closed {
   background:
     repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in srgb, var(--line) 55%, transparent) 9px 10px),
     var(--surface);
 }
-.clue.closed .res { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+.clue.closed .res { font-size: 0.8rem; color: var(--accent); font-weight: 500; }
 .clue.open { cursor: default; background: var(--paper); border-color: var(--ink); }
-.clue .res { font-weight: 700; }
+.clue .res { font-weight: 500; }
 .res.pos { color: var(--pos); }
 .res.neg { color: var(--muted); }
 .res.num { font-family: var(--f-mono); font-size: 1.1rem; }
@@ -221,7 +200,7 @@ button { font: inherit; color: inherit; }
 .verdict { display: grid; gap: 4px; padding: 16px; border-radius: 14px; }
 .verdict.ok { background: var(--ok-soft); color: var(--ok); }
 .verdict.ng { background: var(--pos-soft); color: var(--pos); }
-.verdict h2 { font-size: 1.6rem; font-weight: 900; }
+.verdict h2 { font-size: 1.6rem; font-weight: 500; }
 .verdict .score { font-family: var(--f-mono); font-size: 1rem; }
 .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .clue .infer { display: block; margin-top: 6px; padding: 6px 8px; border-radius: 8px; background: var(--accent-soft); color: var(--ink); font-size: 0.82rem; line-height: 1.5; text-align: left; }
@@ -230,7 +209,7 @@ button { font: inherit; color: inherit; }
 .exam .grp { font-size: 0.9rem; margin: 14px 0 4px; color: var(--muted); letter-spacing: 0.04em; }
 .exam .exps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .exam .exps li { line-height: 1.7; }
-.exam .lab { font-weight: 700; margin-right: 2px; }
+.exam .lab { font-weight: 500; margin-right: 2px; }
 .exam .figs { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
 .exam .fig { width: 132px; border: 1px solid var(--line); border-radius: 10px; padding: 4px; background: var(--surface); }
 .exam .fig .pn, .exam .opt .pn { display: block; font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.3; min-height: 1.3em; }
@@ -243,9 +222,9 @@ button { font: inherit; color: inherit; }
 .exam .qhead { display: flex; justify-content: space-between; align-items: baseline; }
 .exam .qhead b { font-family: var(--f-display); font-size: 1.15rem; letter-spacing: 0.06em; }
 .exam .q { position: relative; }
-.exam .stamp { position: absolute; right: 64px; top: 2px; font-family: var(--f-display); font-weight: 800; font-size: 2.6rem; line-height: 1; color: var(--redpen); opacity: 0.85; transform: rotate(-8deg); pointer-events: none; }
+.exam .stamp { position: absolute; right: 64px; top: 2px; font-family: var(--f-display); font-weight: 500; font-size: 2.6rem; line-height: 1; color: var(--redpen); opacity: 0.85; transform: rotate(-8deg); pointer-events: none; }
 .exam .sheet { box-shadow: var(--shadow); border-radius: 4px; }
-.exam .grp { font-family: var(--f-display); font-weight: 800; color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+.exam .grp { font-family: var(--f-display); font-weight: 500; color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 2px; }
 .exam .q.ok, .exam .q.part, .exam .q.ng { background: var(--paper); }
 .exam .qhead .pts { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
 .exam .qp { margin: 6px 0 10px; line-height: 1.7; }
@@ -260,7 +239,7 @@ button { font: inherit; color: inherit; }
 .exam .chip.right { border-color: var(--ok); }
 .exam .rules { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; background: var(--surface); font-size: 0.9rem; line-height: 1.7; }
 .exam .rules p { margin: 6px 0 0; }
-.exam .rules .rn { font-weight: 700; margin-right: 4px; }
+.exam .rules .rn { font-weight: 500; margin-right: 4px; }
 .exam .assign { display: grid; gap: 8px; }
 .exam .arow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .exam .arow > b { min-width: 1.5em; }
@@ -279,20 +258,20 @@ button { font: inherit; color: inherit; }
 .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 table.key { border-collapse: collapse; font-size: 0.82rem; min-width: 100%; }
 table.key th, table.key td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
-table.key thead th { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
-table.key tr.ans td:first-child { font-weight: 700; color: var(--ok); }
-table.key td.bad { background: var(--pos-soft); color: var(--pos); font-weight: 700; }
+table.key thead th { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+table.key tr.ans td:first-child { font-weight: 500; color: var(--ok); }
+table.key td.bad { background: var(--pos-soft); color: var(--pos); font-weight: 500; }
 table.key td.hid { color: var(--muted); }
 
 /* ---------- Big / Count ---------- */
 .progress { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; }
 .step { border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); }
 .step.done { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
-.step.now { background: var(--ink); color: var(--ground); border-color: var(--ink); font-weight: 700; }
+.step.now { background: var(--ink); color: var(--ground); border-color: var(--ink); font-weight: 500; }
 .arrow { color: var(--muted); font-size: 0.75rem; }
 .story { margin: 0; max-width: 40em; }
 .solved { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 8px 12px; }
-.solved summary { cursor: pointer; font-weight: 700; font-size: 0.9rem; min-height: 32px; display: flex; align-items: center; }
+.solved summary { cursor: pointer; font-weight: 500; font-size: 0.9rem; min-height: 32px; display: flex; align-items: center; }
 .solved-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; padding-top: 8px; }
 .btn.right { background: var(--ok); border-color: var(--ok); color: var(--paper); }
 .btn.wrong { background: var(--pos); border-color: var(--pos); color: var(--paper); }
@@ -312,7 +291,7 @@ table.key td.hid { color: var(--muted); }
 .plist .sub { font-size: .8rem; margin-left: 6px; }
 
 /* ---------- Online ---------- */
-table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
+table.rank tr.me td { background: var(--accent-soft); font-weight: 500; }
 .composer { display: grid; gap: 8px; }
 .composer textarea { width: 100%; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
   border-radius: 10px; padding: 10px 12px; resize: vertical; }
@@ -331,11 +310,11 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .kq { font-size: 1.1rem; line-height: 1.6; }
 .kopts { display: grid; gap: 8px; }
 .kopt { text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; min-height: 44px; cursor: pointer; }
-.kopt.right { border-color: var(--ok, #1a7f37); box-shadow: inset 4px 0 0 var(--ok, #1a7f37); font-weight: 700; }
+.kopt.right { border-color: var(--ok, #1a7f37); box-shadow: inset 4px 0 0 var(--ok, #1a7f37); font-weight: 500; }
 .kopt.wrong { border-color: var(--pos); box-shadow: inset 4px 0 0 var(--pos); text-decoration: line-through; }
 .kwrong { padding-left: 1.2em; display: grid; gap: 10px; }
 .qrate { margin: 2px 0 0; font-size: 0.82rem; color: var(--muted); }
-.qrate.low { color: var(--pos); font-weight: 700; }
+.qrate.low { color: var(--pos); font-weight: 500; }
 .misscards { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
 .misscards li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--line); padding: 4px 0; }
 .namerow .codein { width: 12em; font-family: inherit; font-size: 1rem; }
@@ -346,7 +325,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .lobby { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
 .board { display: grid; gap: 6px; }
 .racer { display: grid; grid-template-columns: 1.5em minmax(0, 7em) 1fr auto; gap: 8px; align-items: center; font-size: 0.85rem; }
-.racer.me .rname { font-weight: 700; }
+.racer.me .rname { font-weight: 500; }
 .rname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rbar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .rbar span { display: block; height: 100%; background: var(--accent); transition: width 0.2s ease; }
@@ -365,6 +344,57 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .night .clock { font-family: var(--f-mono); font-size: 2.4rem; color: #7d8fa3; }
 
 @media (prefers-reduced-motion: reduce) { .cand { transition: none; } }
+
+/* ---------- 問題冊子の見た目（細い黒の明朝） ---------- */
+b, strong { font-weight: 500; }
+.btn { border-radius: 2px; font-weight: 400; }
+.chip { border-radius: 2px; }
+.cover::before { border-width: 1px; border-style: solid; }
+.exam .sheet, .exam .q, .cand, .clue, .stat, .molcard, .posts li, .solved, .today, .tbl-wrap, .codebox, .cover, .cover::before, .kt, .kopt, .prod, .x-btn, .codein, .exam input.ans, .exam textarea.ans, .exam .opt { border-radius: 0; box-shadow: none; }
+.exam .q.ok, .exam .q.part, .exam .q.ng { background: var(--paper); }
+.verdict { border-radius: 0; border: 1px solid currentColor; background: var(--paper) !important; }
+.exam .hinttx, .clue .infer { background: var(--paper); border: 1px dotted var(--line); }
+
+/* ---------- 京大2026型: (a)(b) の中問、規則は固定表示、構造式の記述 ---------- */
+.wrap.wide { max-width: 1180px; }
+.k26 { display: grid; gap: 16px; }
+@media (min-width: 980px) {
+  .k26 { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); align-items: start; }
+  .k26 .rulepane { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow: auto; }
+}
+@media (max-width: 979px) {
+  .k26 .rulepane { position: sticky; top: 0; z-index: 4; max-height: 34vh; overflow: auto; background: var(--paper); border-bottom: 1px solid var(--ink); }
+}
+.rulepane { border: 1px solid var(--ink); padding: 10px 12px; font-size: 0.88rem; line-height: 1.75; background: var(--paper); }
+.rulepane h3 { font-size: 0.95rem; font-weight: 500; margin: 8px 0 2px; }
+.rulepane h3:first-child { margin-top: 0; }
+.rulepane .rule { margin: 6px 0 10px; }
+.rulepane .rid { font-weight: 500; margin-right: 6px; }
+.rulepane .limit { border-top: 1px solid var(--line); padding-top: 6px; margin-top: 6px; }
+.scheme { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 4px 0; }
+.scheme .mol { width: 110px; }
+.scheme .op { font-size: 1.1rem; padding: 0 2px; }
+.scheme .note { font-size: 0.75rem; color: var(--muted); width: 100%; }
+.eqn { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: flex-start; margin: 8px 0; }
+.eqn .sp { display: grid; justify-items: center; }
+.eqn .sp small { color: var(--muted); font-size: 0.78rem; }
+.partlab { font-size: 1.05rem; font-weight: 500; margin: 14px 0 6px; }
+.qnotes { list-style: none; margin: -4px 0 8px; padding: 0; font-size: 0.82rem; color: var(--muted); }
+.qnotes li::before { content: "注: "; }
+.draw { display: grid; gap: 6px; }
+.draw textarea.ans { font-family: var(--f-mono); font-size: 1rem; }
+.pal { display: flex; flex-wrap: wrap; gap: 4px; }
+.pal button { font-family: var(--f-mono); font-size: 0.85rem; min-width: 36px; min-height: 32px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
+.prev { border: 1px dashed var(--line); min-height: 60px; padding: 4px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--ink); }
+.prev .pf { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
+.prev .err { color: var(--pos); font-size: 0.85rem; }
+.smiles-help { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+.smiles-help code { font-family: var(--f-mono); color: var(--ink); }
+.rubric { display: grid; gap: 4px; margin-top: 6px; }
+.rubric label { display: flex; gap: 6px; align-items: flex-start; font-size: 0.88rem; }
+.figrow { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; }
+.figrow .fig, .exam .fig { width: 150px; border: 1px solid var(--line); border-radius: 0; padding: 4px; text-align: center; background: var(--paper); }
+.figrow .fig b { font-weight: 500; }
 </style>
 
 <div class="wrap" id="app"></div>
@@ -377,6 +407,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
   </div>
 </div>
 
+<script>/*__SMILES_LITE__*/</script>
 <script>
 const DATA = /*__PUZZLE_DATA__*/null;
 const ONLINE_CONFIG = /*__ONLINE_CONFIG__*/null; // GitHub Pages 版のオンライン機能（Firebase）の設定。ビルド時に入る
@@ -385,6 +416,7 @@ const PER_GUESS = 10;     // 根拠なしで消した候補1つごとの減点
 const NIGHT_FROM = 23, NIGHT_UNTIL = 5;
 const STORE_KEY = 'jouzoukettei.v1';
 const MODES = [
+  { key: 'k26', name: '京大2026型（規則・逆算・量的）', note: '(a) 問題文で定義された規則をその場で読んで適用し、構造式を書く → 分子式と反応性から逆算する。(b) 光学分割を物質量・質量・有効数字で計算する。規則は画面の端に固定して表示する。構造式は SMILES で書く（書き方は入力欄の下）' },
   { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答え 11 題の再現と、基礎から京大超えまで6段階の自動生成の大問。化合物どうしの関係を使う問題が中心' },
   { key: 'big', name: '京大形式（基本）', note: '手作りの大問を京大形式で。問題文と実験を全部読んでから、問1〜に答える' },
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
@@ -661,7 +693,7 @@ function renderHome() {
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
-            const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : p.title ? `${esc(p.title)} ・ 候補${p.candidates.length}` : `候補${p.candidates.length}`;
+            const sub = p.mode === 'k26' ? esc(p.title) : p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : p.title ? `${esc(p.title)} ・ 候補${p.candidates.length}` : `候補${p.candidates.length}`;
             return `<li class="g${gradeOfP(p)}"><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
               <span><span class="formula fm">${p.hideFormula ? '分子式は計算で' : fmtFormula(p.formula)}</span><span class="lv">${gradeBadge(p)}</span>
@@ -2185,13 +2217,35 @@ function normFormula(t) {
   return order.filter((e) => c[e]).map((e) => e + (c[e] > 1 ? c[e] : '')).join('');
 }
 function answered(q, a) {
+  if (q.type === 'draw') return typeof a === 'string' && a.trim().length > 0;
   if (a === undefined || a === null || a === '' || (Array.isArray(a) && !a.length)) return false;
   if (q.type === 'assign') return q.items.every((it) => a[it]);
   if (q.type === 'essay') return String(a).trim().length > 0;
   return true;
 }
+// 有効数字 n けたに丸める
+const roundSig = (x, n) => Number(Number(x).toPrecision(n));
+// 構造式の記述: 答えの構造（順序は問わない）と同じものの数 − 余分に書いた数
+function drawResult(q, a) { return window.SmilesLite.grade(q.answer, a); }
 function examScore(q, a, self) {
-  if (q.type === 'essay') return Math.round(q.points * ((self && self[q.no]) || 0));
+  if (q.type === 'essay') {
+    // 採点基準（必須要素）のうち、入っているものにチェックした割合
+    if (q.rubric && q.rubric.length) { const got = (self && self[q.no]) || []; return Math.round((q.points * (Array.isArray(got) ? got.length : 0)) / q.rubric.length); }
+    return Math.round(q.points * ((self && self[q.no]) || 0));
+  }
+  if (q.type === 'draw') {
+    if (!answered(q, a)) return 0;
+    const g = drawResult(q, a);
+    return Math.max(0, Math.round((q.points * (g.hits - g.extra)) / g.n));
+  }
+  if (q.type === 'number' && q.sig) {
+    // 有効数字どおりなら満点、最後のけたが 1 ずれていれば半分
+    const v = Number(String(a).replace(/[，,]/g, '.'));
+    if (!Number.isFinite(v)) return 0;
+    if (roundSig(v, q.sig) === q.answer) return q.points;
+    const step = Math.pow(10, Math.floor(Math.log10(Math.abs(q.answer))) - q.sig + 1);
+    return Math.abs(roundSig(v, q.sig) - q.answer) <= step * 1.0001 ? Math.round(q.points / 2) : 0;
+  }
   if (!answered(q, a) && q.type !== 'assign') return 0;
   if (q.type === 'assign') {
     if (!a) return 0;
@@ -2216,6 +2270,53 @@ const GROUP = (g) => (g === 'X' ? '化合物 X について' : g === 'rel' ? '�
 function molOpt(s, sel, cls = '', named = false) {
   return `<button class="opt ${sel ? 'sel' : ''} ${cls}" data-v="${esc(s)}" aria-pressed="${sel}"><span class="mol">${molSvg(s)}</span><span class="pn">${named ? esc(molName(s)) : ''}</span></button>`;
 }
+// ---------- 京大2026型の部品 ----------
+const SMILES_PAL = ['C', 'O', 'N', '=', '(', ')', '1', '2', 'c1ccccc1', '.', '⏎', '⌫'];
+function drawInputHtml(q, a, graded) {
+  return `<div class="draw">
+    <textarea class="ans smiles" data-q="${q.no}" data-draw="1" rows="2" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="SMILES で書く（例: CCOC(C)OCC）${q.answer.length > 1 ? '。複数の構造は改行で区切る' : ''}" ${graded ? 'disabled' : ''}>${esc(a || '')}</textarea>
+    ${graded ? '' : `<div class="pal" data-pal="${q.no}">${SMILES_PAL.map((t) => `<button type="button" data-ins="${esc(t)}">${esc(t)}</button>`).join('')}</div>`}
+    <div class="prev" id="prev-${q.no}" aria-live="polite">${previewHtml(a || '')}</div>
+    ${graded ? '' : `<details class="smiles-help"><summary>SMILES の書き方</summary>
+      水素は書かない。原子を左から順に並べる: <code>CCO</code> エタノール、<code>CC(C)O</code> 2-プロパノール（枝は括弧）。
+      二重結合は <code>=</code>: <code>CC=O</code> アセトアルデヒド。環は同じ数字で閉じる: <code>C1CCCCO1</code>（六員環のエーテル）、ベンゼン環は <code>c1ccccc1</code>。
+      <code>COC(C)OC</code> は CH₃–O–CH(CH₃)–O–CH₃。複数の化合物は改行か「.」で区切る。立体（くさび）は書かなくてよい。</details>`}
+  </div>`;
+}
+function previewHtml(text) {
+  const parts = String(text || '').split(/[\n、,，;；]+/).flatMap((x) => x.split('.')).map((x) => x.trim()).filter(Boolean);
+  if (!parts.length) return '<span class="muted">ここに構造式が出る</span>';
+  return parts.map((p) => {
+    try { const g = window.SmilesLite.parse(p); return `<span>${window.SmilesLite.toSvg(g)}<span class="pf">${fmtFormula(window.SmilesLite.formula(g))}</span></span>`; }
+    catch (e) { return `<span class="err">${esc(p)}: ${esc(e.message)}</span>`; }
+  }).join('');
+}
+function schemeHtml(sc, note) {
+  if (!sc) return '';
+  return `<div class="scheme">${sc.map((x) => (['+', '⇄', '→'].includes(x) ? `<span class="op">${x}</span>` : `<span class="mol">${molSvg(x)}</span>`)).join('')}${note ? `<span class="note">（${esc(note)}）</span>` : ''}</div>`;
+}
+function k26RulePane(X) {
+  return `<aside class="rulepane" aria-label="この問題の規則">${X.parts.map((pt) => `
+    <h3>${esc(pt.label)} の規則</h3>
+    ${pt.equation ? `<div class="eqn">${[...pt.equation.lhs.map((t, i) => [i ? '+' : '', t]), ['→', ''], ...pt.equation.rhs.map((t, i) => [i ? '+' : '', t])].map(([op, t]) => `${op ? `<span class="op">${op}</span>` : ''}${t ? `<span class="sp"><span>${esc(t)}</span><small>${pt.equation.masses[t] !== undefined ? `分子量 ${pt.equation.masses[t]}` : ''}</small></span>` : ''}`).join('')}<span class="muted" style="font-size:.78rem">（式1）</span></div>` : ''}
+    ${pt.rules.map((ru) => `<div class="rule"><span class="rid">${esc(ru.id)}</span><b>${esc(ru.title || '')}</b><br>${esc(ru.text)}${schemeHtml(ru.scheme, ru.schemeNote)}</div>`).join('')}
+    ${pt.limitation ? `<p class="limit">${esc(pt.limitation)}</p>` : ''}`).join('')}</aside>`;
+}
+function k26PartHtml(pt, X, E) {
+  const exps = X.experiments.map((e, i) => ({ e, i })).filter(({ e }) => e.part === pt.label);
+  return `<section class="sheet">
+    <p class="story">${esc(pt.intro)}</p>
+    ${pt.figs && pt.figs.length ? `<div class="figrow">${pt.figs.map((f) => `<span class="fig"><span class="mol">${molSvg(f.smiles)}</span><b>${esc(f.label)}</b></span>`).join('')}</div>` : ''}
+    ${pt.tail ? `<p class="story">${esc(pt.tail)}</p>` : ''}
+    ${pt.expLead ? `<p class="story">${esc(pt.expLead)}</p>` : ''}
+    ${exps.length ? `<ol class="exps">${exps.map(({ e, i }) => `<li><span class="lab">${esc(e.label)}</span><span class="tx">${esc(e.text)}</span>
+      ${e.hint ? `<button class="hintbtn" data-h="${i}" aria-expanded="${E.hints.has(i)}">${E.hints.has(i) ? 'わかること' : `わかること（−${HINT_COST}点）`}</button>${E.hints.has(i) ? `<p class="hinttx">${esc(e.hint)}</p>` : ''}` : ''}</li>`).join('')}</ol>` : ''}
+    ${pt.tailY ? `<p class="story">${esc(pt.tailY)}</p>` : ''}
+    <p class="hint">原子量: H = 1.0, C = 12, O = 16。</p>
+  </section>`;
+}
+function k26SheetHtml() { return ''; }
+
 function renderExam() {
   const E = game.exam;
   const P = E.P;
@@ -2232,20 +2333,24 @@ function renderExam() {
     let input = '';
     if (q.type === 'assign') input = `<div class="assign">${q.items.map((it, i) => `<div class="arow"><b>${esc(it)}</b><div class="row" data-assign="${q.no}" data-item="${esc(it)}">${q.options.map((o) => `<button class="chip ${graded && q.answer[i] === o ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || {})[it] === o}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div></div>`).join('')}</div>`;
     else if (q.type === 'essay') input = `<textarea class="ans essay" data-q="${q.no}" rows="3" placeholder="紙に書いてから打ち込む（自己採点）" ${graded ? 'disabled' : ''}>${esc(a || '')}</textarea>`;
+    else if (q.type === 'draw') input = drawInputHtml(q, a, graded);
     else
     if (q.type === 'formula') input = `<input class="ans" data-q="${q.no}" inputmode="text" autocomplete="off" placeholder="例: C8H10O" value="${esc(a || '')}" ${graded ? 'disabled' : ''}>`;
     else if (q.type === 'number') input = `<span class="numrow"><input class="ans" data-q="${q.no}" type="number" inputmode="numeric" value="${esc(a ?? '')}" ${graded ? 'disabled' : ''}> ${esc(q.unit || '')}</span>`;
     else if (q.type === 'choice') input = `<div class="row" data-qopts="${q.no}">${q.options.map((o) => `<button class="chip ${graded && q.answer.includes(o) ? 'right' : ''}" data-v="${esc(o)}" aria-pressed="${(a || []).includes(o)}" ${graded ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>`;
     else input = `<div class="optgrid ${q.options.some((o) => o.replace(/[^A-Za-z]/g, '').length > 16) ? 'wide' : ''}" data-qopts="${q.no}" data-multi="${q.type === 'multi'}">${q.options.map((o) => molOpt(o, (a || []).includes(o), graded ? (q.answer.includes(o) ? 'right' : (a || []).includes(o) ? 'wrong' : '') : '', graded)).join('')}</div>`;
-    const answerText = q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0])
+    const answerText = q.type === 'draw' ? `<span class="figrow">${q.answer.map((sm) => `<span class="fig"><span class="mol">${molSvg(sm)}</span></span>`).join('')}</span>${answered(q, a) ? (() => { const g = drawResult(q, a); return g.error ? `<span class="muted">入力が読めない: ${esc(g.error)}</span>` : `<span class="muted">一致 ${g.hits} / ${g.n}${g.extra ? `、余分 ${g.extra}` : ''}</span>`; })() : ''}`
+      : q.type === 'formula' ? fmtFormula(q.answer) : q.type === 'number' ? `${q.answer} ${esc(q.unit || '')}` : q.type === 'choice' ? esc(q.answer[0])
       : q.type === 'assign' ? q.items.map((it, i) => `${esc(it)} → ${esc(q.answer[i])}`).join('、') : q.type === 'essay' ? `（模範解答）${esc(q.model)}`
       : `緑の枠の構造${q.answer.map((s) => DATA.molecules[s] && DATA.molecules[s].name).filter(Boolean).length ? `（${q.answer.map((s) => DATA.molecules[s] && DATA.molecules[s].name).filter(Boolean).map(esc).join('、')}）` : ''}`;
-    const selfBtns = graded && q.type === 'essay' ? `<div class="row selfgrade" data-self="${q.no}"><span class="muted">自己採点:</span>${[[1, '要点がすべて入っている'], [0.5, '半分'], [0, '入っていない']].map(([v, t]) => `<button class="chip" data-sv="${v}" aria-pressed="${E.self[q.no] === v}">${t}</button>`).join('')}</div>` : '';
+    const selfBtns = graded && q.type === 'essay' && q.rubric && q.rubric.length ? `<div class="rubric" data-rub="${q.no}"><span class="muted">採点基準（入っている要素にチェック。1つにつき ${Math.round(q.points / q.rubric.length * 10) / 10} 点）</span>${q.rubric.map((t, i) => `<label><input type="checkbox" data-ri="${i}" ${((E.self[q.no] || []).includes(i)) ? 'checked' : ''}> ${esc(t)}</label>`).join('')}</div>`
+      : graded && q.type === 'essay' ? `<div class="row selfgrade" data-self="${q.no}"><span class="muted">自己採点:</span>${[[1, '要点がすべて入っている'], [0.5, '半分'], [0, '入っていない']].map(([v, t]) => `<button class="chip" data-sv="${v}" aria-pressed="${E.self[q.no] === v}">${t}</button>`).join('')}</div>` : '';
     return `<section class="q ${graded ? (sc === q.points ? 'ok' : sc > 0 ? 'part' : 'ng') : ''}" id="q${q.no}">
       ${graded ? `<span class="stamp" aria-hidden="true">${sc === q.points ? '〇' : sc > 0 ? '△' : '×'}</span>` : ''}
       <div class="qhead"><b>問${q.no}</b><span class="pts">${graded ? `${sc} / ` : ''}${q.points} 点</span></div>
       ${graded && q.type !== 'essay' ? qRateHtml(P.id, q.no) : ''}
       <p class="qp">${esc(q.prompt)}${q.type === 'multi' ? '<span class="muted">（複数選択）</span>' : ''}</p>
+      ${q.notes && q.notes.length ? `<ul class="qnotes">${q.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}
       ${input}
       ${graded ? `<div class="expl"><p><b>正解</b> ${answerText}</p>${q.refs && q.refs.length ? `<p class="muted">根拠: 実験${q.refs.join('')}</p>` : ''}<p>${esc(q.explain || '')}</p>${selfBtns}</div>` : ''}
     </section>`;
@@ -2257,7 +2362,8 @@ function renderExam() {
         <span class="muted mono" style="font-size:.85rem">${esc(P.id)} <span class="lv">${gradeBadge(P)}</span></span>
       </div>
       <header><span class="eyebrow">京大形式 ・ ${esc(P.title || '')}</span></header>
-      <section class="sheet">
+      ${X.parts ? k26SheetHtml(X, E) : ''}
+      <section class="sheet" ${X.parts ? 'hidden' : ''}>
         ${X.rules && X.rules.length ? `<div class="rules"><b>この問題で用いる反応の規則</b>${X.rules.map((ru) => `<p><span class="rn">${esc(ru.name)}</span> ${esc(ru.text)}</p>`).join('')}</div>` : ''}
         <p class="story">${esc(X.intro)}</p>
         ${groups.map((gr) => `<h3 class="grp">${GROUP(gr.g)}</h3>
@@ -2268,7 +2374,8 @@ function renderExam() {
           </li>`).join('')}</ol>`).join('')}
         <p class="hint">原子量: H = 1.0, C = 12, N = 14, O = 16。気体 1 mol = 22.4 L（標準状態）。構造は紙に書いてから選ぶ。</p>
       </section>
-      ${X.questions.map(qHtml).join('')}
+      ${X.parts ? '' : X.questions.map(qHtml).join('')}
+      ${X.parts ? `<div class="k26">${k26RulePane(X)}<div class="stack">${X.parts.map((pt) => `<h3 class="partlab">${esc(pt.label)}</h3>${k26PartHtml(pt, X, E)}${X.questions.filter((q) => q.part === pt.label).map(qHtml).join('')}`).join('')}</div></div>` : ''}
       ${graded ? `<div class="verdict ${got >= X.total * 0.8 ? 'ok' : 'ng'}"><h2>${got} / ${X.total} 点</h2>
         <span class="score">${E.hints.size ? `ヒント ${E.hints.size} 回で −${E.hints.size * HINT_COST}` : 'ヒントなし'}</span></div>
         ${dailyVerdictHtml(P)}
@@ -2281,10 +2388,33 @@ function renderExam() {
     const t = e.target.closest('input.ans, textarea.ans');
     if (!t || graded) return;
     E.ans[+t.dataset.q] = t.value;
+    if (t.dataset.draw) { const pv = document.getElementById(`prev-${t.dataset.q}`); if (pv) pv.innerHTML = previewHtml(t.value); }
     const dock = document.querySelector('.dock .hint');
     if (dock) dock.textContent = `${X.questions.filter((q) => answered(q, E.ans[q.no])).length} / ${X.questions.length} 問に解答`;
   };
   app.onclick = (e) => {
+    // SMILES の入力補助ボタン: カーソルの位置に文字を入れる
+    const pb = e.target.closest('[data-pal] [data-ins]');
+    if (pb && !graded) {
+      const no = pb.closest('[data-pal]').dataset.pal;
+      const ta = app.querySelector(`textarea[data-q="${no}"]`);
+      const st = ta.selectionStart ?? ta.value.length, en = ta.selectionEnd ?? ta.value.length;
+      const ins = pb.dataset.ins === '⏎' ? '\n' : pb.dataset.ins;
+      if (pb.dataset.ins === '⌫') { ta.value = ta.value.slice(0, Math.max(0, st - (st === en ? 1 : 0))) + ta.value.slice(en); ta.selectionStart = ta.selectionEnd = Math.max(0, st - (st === en ? 1 : 0)); }
+      else { ta.value = ta.value.slice(0, st) + ins + ta.value.slice(en); ta.selectionStart = ta.selectionEnd = st + ins.length; }
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      ta.focus();
+      return;
+    }
+    const rb = e.target.closest('[data-rub] input[data-ri]');
+    if (rb && graded) {
+      const no = +rb.closest('[data-rub]').dataset.rub;
+      const cur = new Set(E.self[no] || []);
+      if (rb.checked) cur.add(+rb.dataset.ri); else cur.delete(+rb.dataset.ri);
+      E.self[no] = [...cur];
+      const y = window.scrollY; renderExam(); window.scrollTo(0, y);
+      return;
+    }
     const h = e.target.closest('[data-h]');
     if (h) { E.hints.add(+h.dataset.h); const y = window.scrollY; renderExam(); window.scrollTo(0, y); return; }
     const asg = e.target.closest('[data-assign] [data-v]');
@@ -2349,6 +2479,7 @@ function renderExam() {
 
 function render() {
   const app0 = document.getElementById('app');
+  if (app0) app0.classList.toggle('wide', view.screen === 'exam' && !!(game && game.exam && game.exam.P.exam && game.exam.P.exam.parts));
   if (view.screen !== 'exam' && app0) { app0.onclick = null; app0.oninput = null; }
   const s = view.screen;
   if (s === 'play' && game && game.p) renderPlay();

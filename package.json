@@ -11,11 +11,14 @@
     "test:rules": "node scripts/test-rules.js",
     "test:enumerate": "node scripts/test-enumerate.js",
     "test:kakomon": "node scripts/test-kakomon.js",
-    "test": "node scripts/test-rules.js && node scripts/test-enumerate.js && node scripts/test-kakomon.js && node scripts/validate.js && node scripts/test-coverage.js",
+    "test": "node scripts/test-rules.js && node scripts/test-enumerate.js && node scripts/test-kakomon.js && node scripts/test-smiles.js && node scripts/validate.js && python3 scripts/numcheck.py && node scripts/test-coverage.js",
+    "gen26": "node scripts/gen26.js",
+    "numcheck": "python3 scripts/numcheck.py",
     "survey": "node scripts/survey.js",
     "test:coverage": "node scripts/test-coverage.js"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.129.0",
     "@rdkit/rdkit": "latest"
   }
 }

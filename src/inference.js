@@ -88,6 +88,17 @@ function sentence(card, subject, result, cards) {
   return `${subject} について「${cards[card].action}」を調べると、${result}。`;
 }
 
+// 生成物の構造式を見せると答えが読めてしまうとき（leak.shownValue が弱めた結果）の文。分子式と種類の数だけを書く
+function shownSentence(card, subject, v, cards) {
+  const sub = (f) => f.replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[d]);
+  if (card === 'partial_hydrolysis') return `${subject} を途中まで加水分解すると、分子式 ${sub(v.formula)} の化合物が得られた。この化合物は不斉炭素原子を${v.chiral ? ` ${v.chiral} 個もち` : 'もたず'}、ヨードホルム反応を${v.iodoform ? '示した' : '示さなかった'}。`;
+  const [pa, verb] = V[card] || ['について', `「${cards[card].action}」の操作を行うと`];
+  const fs = [...new Set(v.formulas)];
+  if (v.n === 1) return `${subject} ${pa}${verb}、分子式 ${sub(fs[0])} の化合物が得られた。`;
+  if (fs.length === 1) return `${subject} ${pa}${verb}、分子式 ${sub(fs[0])} の化合物が ${v.n} 種類得られた。`;
+  return `${subject} ${pa}${verb}、分子式 ${v.formulas.map(sub).join('、')} の化合物が1種類ずつ得られた。`;
+}
+
 // この結果からわかること（部分構造・位置関係）
 const I = {
   silver_mirror: (r) => (r ? 'ホルミル基 –CHO をもつ（アルデヒド）。ギ酸エステル H–CO–O– も陽性' : '–CHO をもたない。C=O があるならケトン（鎖の途中の C=O）'),
@@ -185,4 +196,4 @@ function relationHint(rl, cards) {
 const RULE_CARDS = ['markovnikov', 'acetylation_primary', 'periodate', 'acetonide', 'acetal_etoh', 'acetal_meoh', 'acetal_hydrolysis',
   'imide_hydrolysis', 'ether_hydrogenolysis', 'ring_hydrogenolysis', 'kmno4_cleave', 'carbon_env', 'br2_anti', 'h2_syn', 'sugar_degrade', 'methylation_analysis'];
 
-module.exports = { sentence, infer, NAMES, derivation, relation, relationHint, RULE_CARDS };
+module.exports = { sentence, shownSentence, infer, NAMES, derivation, relation, relationHint, RULE_CARDS };
