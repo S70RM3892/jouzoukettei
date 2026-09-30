@@ -38,6 +38,8 @@ jobs:
         run: |
           npm run forecast
           npm run generate -- "$(TZ=Asia/Tokyo date +%Y%m%d)" 12
+          # 条件を指定して出す問題の在庫（型×難易度に偏りなく 300 問、約5分）
+          npm run generate -- pool "$(TZ=Asia/Tokyo date +%Y%m%d)" 300
           npm run validate
       - name: dist/index.html を生成
         # ランキング・投稿・対戦を Pages で動かす Firebase の設定（Settings → Secrets and variables → Actions → Variables）
@@ -48,6 +50,8 @@ jobs:
         run: |
           mkdir -p site
           cp dist/index.html site/index.html
+          # 条件を指定して出す問題の在庫（1問ずつのファイル）
+          if [ -d dist/pool ]; then cp -r dist/pool site/pool; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

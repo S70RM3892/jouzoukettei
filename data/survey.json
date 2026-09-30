@@ -1,0 +1,57 @@
+{
+  "note": "京大以外の国立大学の理系化学（前期日程）3年分の有機の出題要素を、問題文を写さずにタグと自分の言葉の要約にしたもの。答えの化合物は構造だけを持つ。異性体俯瞰型の問題づくり（scripts/survey.js）で、どのカードを多く使うかの重みに使う。",
+  "tags": {
+    "isomer_enumeration": "分子式や条件から異性体を漏れなく挙げる（環・三重結合を含む）",
+    "alkyne": "アルキンの性質（アセチリド・水の付加）",
+    "ring_compound": "シクロアルケン・小員環",
+    "physical_property": "分子の形と融点・沸点の関係",
+    "addition_selectivity": "付加の向き（マルコフニコフ則）",
+    "stereo_3d": "付加の立体（臭素のアンチ付加でメソ体か鏡像異性体の混合物か）",
+    "optical_resolution": "鏡像異性体をジアステレオマーのエステルにして分ける",
+    "hydrogenation": "H₂ の付加量・付加生成物",
+    "aromatic_substitution": "芳香族の置換反応（臭素化・ニトロ化・還元・フェノールの反応性）",
+    "substituent_effect": "置換基効果（電離定数・反応速度の変化）",
+    "diazo": "ジアゾカップリング",
+    "industrial_process": "工業的製法（クメン法・エチレンからアセトアルデヒドなど）",
+    "atom_economy": "原子効率の計算",
+    "sugar": "単糖・二糖の構造（環状構造と鎖状構造、還元性）",
+    "methylation_analysis": "多糖のメチル化と加水分解から枝分かれの数を求める",
+    "lipid": "油脂・リン脂質の加水分解と脂肪酸の決定",
+    "surfactant": "セッケン・合成洗剤・ミセル",
+    "transesterification": "エステル交換（油脂とメタノール）",
+    "polymer_recycling": "高分子の分解・再資源化（PET の解重合）",
+    "lactone": "分子内エステル（ラクトン）の生成",
+    "enzyme": "酵素反応のしくみ",
+    "mole_calc": "物質量・質量の計算"
+  },
+  "years": {
+    "2023": {
+      "tags": ["isomer_enumeration", "addition_selectivity", "stereo_3d", "optical_resolution", "aromatic_substitution", "industrial_process", "sugar", "methylation_analysis", "mole_calc"],
+      "summary": "炭素数4以下の鎖状アルケンすべてに酸触媒で水を付加させ、同じ生成物を与えるものを選ぶ。生成物の鏡像異性体をジアステレオマーのエステルにして分ける理由。臭素のアンチ付加で単一の化合物になるアルケンを選ぶ。ベンゼンとフェノールの臭素化・ニトロ化と還元、ピクリン酸の収量。糖: グルコース・フルクトースの環状構造、マルトース・スクロース、アミロペクチンのメチル化から枝分かれの間隔を求める。"
+    },
+    "2025": {
+      "tags": ["atom_economy", "industrial_process", "aromatic_substitution", "substituent_effect", "diazo", "surfactant", "lipid", "hydrogenation", "mole_calc"],
+      "summary": "原子効率（エステル化・エチレンからアセトアルデヒド・クメン法などの比較）。パラ置換安息香酸・アニリン・安息香酸エステルの電離定数と加水分解の速さの置換基効果、ニトロ化の速さ、ジアゾカップリング。セッケンと合成洗剤、ミセル、リン脂質の加水分解の質量から分子量と脂肪酸（不飽和の数）を決める。"
+    },
+    "2026": {
+      "tags": ["isomer_enumeration", "alkyne", "ring_compound", "physical_property", "hydrogenation", "mole_calc", "industrial_process", "transesterification", "polymer_recycling", "lactone", "enzyme"],
+      "summary": "C₄H₆ の異性体（鎖状のアルキン2つ・シクロブテン・メチルシクロプロペン）を、分子の形による融点の違い・水の付加の生成物・環の有無から見分ける。クメン法。油脂のエステル交換、不飽和脂肪酸の水素化の量、PET の解重合、ヒドロキシ酸からラクトン。"
+    }
+  },
+  "structures": {
+    "2023-alkene-1": "C=CCC",
+    "2023-alkene-2": "CC=CC",
+    "2023-alkene-3": "C=C(C)C",
+    "2023-alcohol": "CCC(C)O",
+    "2023-branch": "OC1OC(CO)C(O)C(OC)C1OC",
+    "2025-acid": "CCCCCCCCCCCCCCCC(=O)O",
+    "2025-acid-unsat": "CCCCCCC=CCCCCCCCC(=O)O",
+    "2026-alkyne-1": "CC#CC",
+    "2026-alkyne-2": "C#CCC",
+    "2026-ring-1": "C1=CCC1",
+    "2026-ring-2": "CC1C=C1",
+    "2026-ketone": "CCC(C)=O",
+    "2026-aldehyde": "CCCC=O",
+    "2026-lactone": "O=C1CCCCCO1"
+  }
+}

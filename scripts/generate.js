@@ -4,6 +4,7 @@
 //  2. 型の選び方を「前の年までの京大だけで次の年を当てる」形で検証する
 //  3. 日付を種にして N 問作り、検証を通ったものだけを残す
 // 使い方: node scripts/generate.js [種(YYYYMMDD)] [問題数]
+//         node scripts/generate.js pool [種] [問題数]   … 条件を指定して出す問題の在庫（problems/pool.json）を作る
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -53,6 +54,7 @@ function kyotoSpec(RDKit, lib, X) {
 }
 
 async function main() {
+  if (process.argv[2] === 'pool') return makePool(process.argv[3] || todayJST(), Number(process.argv[4]) || 120);
   const seedStr = process.argv[2] || todayJST();
   const N = Number(process.argv[3]) || 12;
   const RDKit = await loadRDKit();
@@ -177,6 +179,57 @@ async function main() {
   const problems = [...kyoto.map((k) => k.p), ...out].map((p) => ({ ...p, meta: { ...p.meta, seed: seedStr, band: [lo, hi], kyotoStats: kstats } }));
   fs.writeFileSync(path.join(ROOT, 'problems', 'generated.json'), JSON.stringify(problems, null, 1) + '\n');
   console.log(`problems/generated.json に ${problems.length} 問（京大の再現 ${kyoto.length}・自動生成 ${out.length}）を書いた`);
+}
+
+// ---- 条件を指定して出す問題の在庫 ----
+// 画面の「条件を指定して出す」で、型・断片の種類・難易度・計算・関係の組み合わせを選べるように、
+// 型ごと・6段階ごとに偏りなく作りためる。難易度の物差しは今日の problems/generated.json（京大の答えから作ったもの）を使う
+async function makePool(seedStr, N) {
+  const RDKit = await loadRDKit();
+  const lib = loadLibrary(RDKit);
+  const forecast = JSON.parse(fs.readFileSync(path.join(ROOT, 'generated', 'forecast.json'), 'utf8'));
+  const weights = G.cardWeights(forecast);
+  const gen = JSON.parse(fs.readFileSync(path.join(ROOT, 'problems', 'generated.json'), 'utf8'));
+  const withStats = gen.find((p) => p.meta && p.meta.kyotoStats);
+  if (!withStats) throw new Error('problems/generated.json に京大の物差しがない。先に npm run generate');
+  const kstats = withStats.meta.kyotoStats;
+  const [, hi] = withStats.meta.band;
+  const seen = new Set(gen.map((p) => p.answer));
+  const tpls = Object.keys(G.TEMPLATES);
+  const capCell = Math.ceil(N / (tpls.length * 3)); // 型×段階ごとの上限（段階は6つだが、出やすい段階に偏るので半分で割る）
+  const capSig = 3;
+  const cell = {}, sigs = {};
+  const seed = parseInt(seedStr, 10) || 7;
+  const r = G.rng(seed * 13 + 5);
+  const out = [];
+  const t0 = Date.now();
+  for (let i = 0; i < N * 60 && out.length < N; i++) {
+    const tpl = tpls[i % tpls.length]; // 型は順番に回す（出題予測の重みに寄せない。練習したい型を選べるように）
+    let spec = G.sampleSpec(r, lib, { [tpl]: 1, ...Object.fromEntries(tpls.filter((t) => t !== tpl).map((t) => [t, 1e-9])) });
+    if (spec && r() < 0.6) spec = G.biasRelations(RDKit, r, lib, spec);
+    if (!spec) continue;
+    spec.id = `p${seedStr}-${String(out.length + 1).padStart(3, '0')}`;
+    let p;
+    try { p = G.buildProblem(RDKit, r, lib, weights, spec); } catch (e) { p = null; }
+    if (!p || seen.has(p.answer)) continue;
+    const g = G.gradeOf(p.meta.difficulty, kstats);
+    if (p.meta.difficulty > hi * 1.3) continue;
+    const ck = spec.template + ':' + g;
+    if ((cell[ck] || 0) >= capCell) continue;
+    const sig = spec.template + ':' + p.fragments.map((f) => (f.given ? 'g' : f.kind)).sort().join('+');
+    if ((sigs[sig] || 0) >= capSig) continue;
+    if (checkBig(RDKit, p).errors.length) continue;
+    p.meta.grade = g;
+    p.title = `条件指定・${(G.TEMPLATES[spec.template] || {}).title || '大問'}`;
+    seen.add(p.answer);
+    cell[ck] = (cell[ck] || 0) + 1;
+    sigs[sig] = (sigs[sig] || 0) + 1;
+    out.push({ ...p, meta: { ...p.meta, seed: seedStr, band: withStats.meta.band, kyotoStats: kstats, pool: true } });
+    if (out.length % 10 === 0) console.log(`  ${out.length} 問（${((Date.now() - t0) / 1000).toFixed(0)} 秒）`);
+  }
+  const file = path.join(ROOT, 'problems', process.env.POOL_OUT || 'pool.json');
+  fs.writeFileSync(file, JSON.stringify(out) + '\n');
+  console.log(`${path.basename(file)} に ${out.length} 問を書いた。型×段階: ${Object.entries(cell).map(([k, v]) => `${k}=${v}`).join(' ')}`);
 }
 
 main();

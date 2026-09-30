@@ -1,2 +1,4 @@
 node_modules/
 generated/library.json
+dist/pool/
+problems/pool.json
