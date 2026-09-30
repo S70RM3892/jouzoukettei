@@ -1,0 +1,592 @@
+[
+ {
+  "id": "sugar-001",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(a1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Glc{2,3,4,6}",
+     "sac:Glc{2,3,6}"
+    ]
+   },
+   {
+    "card": "cellobiase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-002",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(a1-6)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Glc{2,3,4,6}",
+     "sac:Glc{2,3,4}"
+    ]
+   },
+   {
+    "card": "maltase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-003",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(b1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Glc{2,3,4,6}",
+     "sac:Glc{2,3,6}"
+    ]
+   },
+   {
+    "card": "cellobiase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-004",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(b1-6)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Glc{2,3,4,6}",
+     "sac:Glc{2,3,4}"
+    ]
+   },
+   {
+    "card": "maltase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-005",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Gal(a1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Gal{2,3,4,6}",
+     "sac:Glc{2,3,6}"
+    ]
+   },
+   {
+    "card": "lactase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-006",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Gal(a1-6)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Gal{2,3,4,6}",
+     "sac:Glc{2,3,4}"
+    ]
+   },
+   {
+    "card": "lactase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-007",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Gal(b1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Gal{2,3,4,6}",
+     "sac:Glc{2,3,6}"
+    ]
+   },
+   {
+    "card": "lactase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-008",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Gal(b1-6)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Gal{2,3,4,6}",
+     "sac:Glc{2,3,4}"
+    ]
+   },
+   {
+    "card": "lactase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-009",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 2,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(a1-1a)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "hydrolysis",
+    "result": [
+     "sac:Glc"
+    ]
+   },
+   {
+    "card": "maltase",
+    "result": false
+   },
+   {
+    "card": "cellobiase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-010",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(a1-2b)Fru",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "fehling",
+    "result": false
+   },
+   {
+    "card": "hydrolysis",
+    "result": [
+     "sac:Fru",
+     "sac:Glc"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sugar-011",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "二糖の構造",
+  "level": 1,
+  "formula": "C12H22O11",
+  "answer": "sac:Glc(a1-6)Fru",
+  "candidates": [
+   "sac:Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc",
+   "sac:Glc(b1-4)Glc",
+   "sac:Glc(b1-6)Glc",
+   "sac:Gal(a1-4)Glc",
+   "sac:Gal(a1-6)Glc",
+   "sac:Gal(b1-4)Glc",
+   "sac:Gal(b1-6)Glc",
+   "sac:Glc(a1-1a)Glc",
+   "sac:Glc(a1-2b)Fru",
+   "sac:Gal(b1-4)Fru",
+   "sac:Glc(a1-6)Fru"
+  ],
+  "clues": [
+   {
+    "card": "fehling",
+    "result": true
+   },
+   {
+    "card": "hydrolysis",
+    "result": [
+     "sac:Fru",
+     "sac:Glc"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sugar-012",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Glc(a1-4)Glc(a1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "methylation_analysis",
+    "result": [
+     "sac:Glc{2,3,4,6}",
+     "sac:Glc{2,3,6}"
+    ]
+   },
+   {
+    "card": "maltase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-013",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Gal(a1-6)Glc(a1-2b)Fru",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "fehling",
+    "result": false
+   },
+   {
+    "card": "maltase",
+    "result": false
+   },
+   {
+    "card": "lactase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-014",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Glc(b1-4)Glc(b1-4)Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "fehling",
+    "result": true
+   },
+   {
+    "card": "maltase",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "sugar-015",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Gal(b1-4)Glc(a1-2b)Fru",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "hydrolysis",
+    "result": [
+     "sac:Fru",
+     "sac:Gal",
+     "sac:Glc"
+    ]
+   },
+   {
+    "card": "lactase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-016",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Glc(a1-4)Glc(a1-2b)Fru",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "fehling",
+    "result": false
+   },
+   {
+    "card": "maltase",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "sugar-017",
+  "mode": "narrow",
+  "kind": "sugar",
+  "title": "三糖の構造",
+  "level": 3,
+  "formula": "C18H32O16",
+  "answer": "sac:Glc(a1-6)[Gal(b1-4)]Glc",
+  "candidates": [
+   "sac:Glc(a1-4)Glc(a1-4)Glc",
+   "sac:Glc(a1-6)Glc(a1-4)Glc",
+   "sac:Glc(a1-4)Glc(a1-6)Glc",
+   "sac:Glc(a1-6)[Glc(a1-4)]Glc",
+   "sac:Gal(a1-6)Glc(a1-2b)Fru",
+   "sac:Glc(b1-4)Glc(b1-4)Glc",
+   "sac:Gal(b1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-4)Glc(a1-2b)Fru",
+   "sac:Glc(a1-6)[Gal(b1-4)]Glc"
+  ],
+  "clues": [
+   {
+    "card": "invertase",
+    "result": false
+   },
+   {
+    "card": "lactase",
+    "result": true
+   }
+  ]
+ }
+]

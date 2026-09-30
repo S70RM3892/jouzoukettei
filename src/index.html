@@ -323,6 +323,7 @@ table.rank tr.me td { background: var(--accent-soft); font-weight: 700; }
 .btn.small { min-height: 32px; padding: 4px 10px; font-size: 0.8rem; }
 .post-head .small { min-height: 32px; padding: 4px 8px; margin-left: auto; font-size: 0.8rem; }
 .namerow { align-items: center; }
+.sacname { font-family: var(--f-mono); font-size: 0.85rem; margin-right: auto; margin-left: 8px; }
 .klist { display: grid; gap: 6px; }
 .kt { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
 .kt small { grid-column: 1 / -1; color: var(--muted); font-size: 0.75rem; }
@@ -387,6 +388,7 @@ const MODES = [
   { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答え 11 題の再現と、基礎から京大超えまで6段階の自動生成の大問。化合物どうしの関係を使う問題が中心' },
   { key: 'big', name: '京大形式（基本）', note: '手作りの大問を京大形式で。問題文と実験を全部読んでから、問1〜に答える' },
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
+  { key: 'sugar', name: '糖の構造決定', note: '二糖・三糖を、還元性・加水分解の生成物・メチル化分析・酵素（マルターゼ・インベルターゼ・ラクターゼ・セロビアーゼ）の組み合わせで決める。α と β、グルコースとガラクトースは立体でしか区別できないので、構造式のくさび形の線をよく見る' },
   { key: 'survey', name: '異性体俯瞰型', note: '分子式の構造異性体を環・三重結合まで全部挙げてから、性質と反応の組み合わせで1つに決める。難易度は候補の数と手がかりの数で3段階。候補を見る前に、分子式の異性体を紙に全部書き出してから始める' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
@@ -720,11 +722,11 @@ function renderPlay() {
       </div>
       ${solvedSoFar()}
       <p class="hint">手がかりを開いて、矛盾する候補を自分で消す。左右にスワイプか「消す」で消し、もう一度押すと戻る。</p>
-      <section class="cands ${game.big && p.label === 'X' ? 'one' : ''}" id="cands">
+      <section class="cands ${(game.big && p.label === 'X') || p.mode === 'sugar' ? 'one' : ''}" id="cands">
         ${p.candidates.map((s, i) => `
           <div class="cand ${game.struck.has(i) ? 'struck' : ''}" data-i="${i}">
             <div class="mol">${molSvg(s)}</div>
-            <div class="bar"><span class="tag">${letter(i)}</span>
+            <div class="bar"><span class="tag">${letter(i)}</span>${DATA.molecules[s].sac ? `<span class="sacname">${esc(DATA.molecules[s].sac)}</span>` : ''}
               <button class="x-btn" data-x="${i}" aria-label="候補${letter(i)}を${game.struck.has(i) ? '戻す' : '消す'}">${game.struck.has(i) ? '戻す' : '消す'}</button></div>
           </div>`).join('')}
       </section>
@@ -1163,7 +1165,7 @@ function countResultHtml() {
 // ---------- 知識確認（一問一答） ----------
 // 範囲は data/curriculum.json の章・節。問題は problems/knowledge.json。4択で、選択肢は毎回並べ替える
 const KNOW_LEN = 10;
-const PRACTICE_NAMES = { narrow: '絞り込み型', big: '京大形式（基本）', gen: '京大形式（本番レベル）', count: '数え上げ型', polymer: '高分子型', survey: '異性体俯瞰型' };
+const PRACTICE_NAMES = { sugar: '糖の構造決定', narrow: '絞り込み型', big: '京大形式（基本）', gen: '京大形式（本番レベル）', count: '数え上げ型', polymer: '高分子型', survey: '異性体俯瞰型' };
 const quiz = { items: [], idx: 0, order: [], picked: null, results: [], topics: null };
 let knowSel = [];
 const kst = (id) => store.know[id] || { t: 0, c: 0, streak: 0 };

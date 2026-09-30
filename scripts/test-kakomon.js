@@ -286,12 +286,20 @@ async function main() {
       const p = ev('methylation_analysis', maltose).map((x) => chem.formula(chem.graphFromSmiles(R, x))).sort();
       return JSON.stringify(p) === JSON.stringify(['C10H20O6', 'C9H18O6']);
     }],
+    ['2026 IV 糖の立体を区別したメチル化分析: ラクトースとセロビオースは立体を除くと同じ構造だが、生成物のテトラ-O-メチル体がガラクトースかグルコースかで区別できる。スクロースは還元性を示さず、両方の単糖がテトラ-O-メチル体になる', () => {
+      const S = require('../src/sugar');
+      const noStereo = (s) => chem.canonical(R, chem.canonical(R, s).startsWith('sac:') ? S.toSmiles(s).replace(/@/g, '') : s);
+      const lac = 'sac:Gal(b1-4)Glc', cel = 'sac:Glc(b1-4)Glc', suc = 'sac:Glc(a1-2b)Fru';
+      return noStereo(lac) === noStereo(cel)
+        && same(ev('methylation_analysis', lac), ['sac:Gal{2,3,4,6}', 'sac:Glc{2,3,6}'])
+        && same(ev('methylation_analysis', cel), ['sac:Glc{2,3,4,6}', 'sac:Glc{2,3,6}'])
+        && ev('fehling', suc) === false && same(ev('methylation_analysis', suc), ['sac:Fru{1,3,4,6}', 'sac:Glc{2,3,4,6}'])
+        && ev('lactase', lac) === true && ev('lactase', cel) === false && ev('cellobiase', cel) === true;
+    }],
   );
 
   // エンジンでは扱えない出題要素（次に伸ばす候補）
-  const UNSUPPORTED = [
-    '2026 IV 糖の立体を区別したメチル化分析（環状の糖の立体配置を読み書きする表現が未実装。立体なしのメチル化分析はできる）',
-  ];
+  const UNSUPPORTED = [];
 
   let ok = 0;
   for (const [label, f] of CASES) {

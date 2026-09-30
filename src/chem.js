@@ -49,6 +49,7 @@ const RESIDUES = {
 };
 
 function expand(s) {
+  if (s.startsWith('sac:')) return require('./sugar').toSmiles(s);
   if (!s.startsWith('pep:')) return s;
   const seq = s.slice(4).split('-');
   return 'N' + seq.map((r, i) => {
@@ -156,6 +157,7 @@ function components(g) {
 }
 
 function canonical(RDKit, smilesOrMolblock) {
+  if (typeof smilesOrMolblock === 'string' && smilesOrMolblock.startsWith('sac:')) return require('./sugar').canonical(smilesOrMolblock);
   const mol = RDKit.get_mol(expand(smilesOrMolblock));
   if (!mol || !mol.is_valid()) throw new Error(`invalid structure: ${smilesOrMolblock}`);
   try {
@@ -422,9 +424,9 @@ function breakBonds(RDKit, g0, list) {
   return graphToSmilesList(RDKit, g);
 }
 
-// 完全な加水分解
+// 完全な加水分解（エステル・アミドと、糖のグリコシド結合）
 function hydrolyze(RDKit, g) {
-  const hs = hydrolyzable(g);
+  const hs = hydrolyzable(g).concat(require('./reactions').glycosideBonds(g));
   return hs.length ? breakBonds(RDKit, g, hs) : [];
 }
 
@@ -732,7 +734,9 @@ function matchesAny(RDKit, smiles, smartsList) {
   }
 }
 
-const ALDEHYDE = ['[CX3H1](=O)', '[CH2]=O'];
+// 還元性: ホルミル基に加えて、水溶液中で鎖状構造になって還元性を示す環状のヘミアセタール（グルコースなど）と、
+// –CO–CH₂OH（フルクトースの鎖状構造。塩基性の溶液中で還元性を示す）
+const ALDEHYDE = ['[CX3H1](=O)', '[CH2]=O', '[OX2H1][CX4;R][OX2;R][#6]', '[CX3](=O)[CH2][OX2H1]'];
 
 // kind: bool = 陽性/陰性, count = 個数, products = 生成物の構造
 const CARDS = {
@@ -943,6 +947,11 @@ const CARDS = {
     kind: 'products', none: '付加しなかった',
     transform: alkyneHydration,
   },
+  // ---- 糖を加水分解する酵素（基質特異性）。糖の略記 sac: だけに使う ----
+  maltase: { name: 'マルターゼ', action: 'マルターゼ（α-グルコシダーゼ）を作用させる。α-グルコースの還元性を示す炭素がつくる結合（マルトースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  invertase: { name: 'インベルターゼ', action: 'インベルターゼ（スクラーゼ）を作用させる。スクロースの結合を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  lactase: { name: 'ラクターゼ', action: 'ラクターゼ（β-ガラクトシダーゼ）を作用させる。β-ガラクトースの還元性を示す炭素がつくる結合（ラクトースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
+  cellobiase: { name: 'セロビアーゼ', action: 'セロビアーゼ（β-グルコシダーゼ）を作用させる。β-グルコースの還元性を示す炭素がつくる結合（セロビオースなど）を加水分解する', kind: 'bool', yes: '加水分解された', no: '加水分解されなかった', sugarOnly: true },
   // ---- 以下は reactions.js（与えられた規則・配向性）。require は循環を避けるため呼び出し時に行う ----
   nitration: rx('nitration', 'ニトロ化', '濃硝酸と濃硫酸でベンゼン環をニトロ化する（1か所）。配向性に従い、オルトとパラの両方に入るなら混合物', '反応しない'),
   bromination_fe: rx('bromination', '臭素化（鉄触媒）', '鉄粉を触媒にして臭素をベンゼン環に1つ置換させる。配向性に従う', '反応しない'),
@@ -1010,6 +1019,12 @@ function st(fn, name, action) {
 function evaluate(RDKit, card, smiles) {
   const def = CARDS[card];
   if (!def) throw new Error(`unknown card: ${card}`);
+  // 糖の略記は立体を区別して記号で判定する（sugar.js）。そこで扱わないカードは立体なしの構造で判定する
+  if (smiles.startsWith('sac:')) {
+    const r = require('./sugar').evaluate(card, smiles);
+    if (r !== undefined) return r;
+    if (def.sugarOnly) throw new Unsupported('sugar card on a sugar it does not handle');
+  } else if (def.sugarOnly) throw new Unsupported('enzyme card needs a sugar');
   if (def.stereoFn) return def.stereoFn(RDKit, expand(smiles));
   if (def.smarts) return matchesAny(RDKit, smiles, def.smarts);
   const g = graphFromSmiles(RDKit, smiles);
