@@ -1,0 +1,461 @@
+{
+ "note": "高校化学（学習指導要領「化学」の有機化合物・高分子化合物）の内容を、教科書の節の順に並べたチェックリスト。engine は構造決定・数え上げ・高分子の問題でその内容を判定できるカード、modes はその内容を練習できるモード。すべての節に知識確認（problems/knowledge.json）の問題があることを scripts/test-coverage.js で確かめる。",
+ "sections": [
+  {
+   "id": "basic",
+   "name": "有機化合物の特徴と構造",
+   "topics": [
+    {
+     "id": "org_features",
+     "name": "有機化合物の特徴と官能基",
+     "engine": [
+      "sodium",
+      "nahco3",
+      "fecl3",
+      "silver_mirror"
+     ],
+     "modes": [
+      "narrow"
+     ]
+    },
+    {
+     "id": "elemental_analysis",
+     "name": "元素分析と組成式・分子式",
+     "engine": [],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "isomers_structural",
+     "name": "構造異性体",
+     "engine": [
+      "cl_sub",
+      "carbon_env",
+      "ring_cl"
+     ],
+     "modes": [
+      "count",
+      "survey"
+     ]
+    },
+    {
+     "id": "isomers_stereo",
+     "name": "立体異性体（シス-トランス・鏡像）",
+     "engine": [
+      "cis_trans",
+      "chiral",
+      "stereo_count",
+      "optically_active",
+      "br2_anti",
+      "h2_syn"
+     ],
+     "modes": [
+      "count",
+      "gen"
+     ]
+    },
+    {
+     "id": "structure_determination",
+     "name": "構造決定の考え方",
+     "engine": [
+      "sodium",
+      "fecl3",
+      "iodoform",
+      "silver_mirror",
+      "bromine",
+      "cl_sub"
+     ],
+     "modes": [
+      "narrow",
+      "big",
+      "gen",
+      "survey"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hydrocarbon",
+   "name": "脂肪族炭化水素",
+   "topics": [
+    {
+     "id": "alkane",
+     "name": "アルカン・シクロアルカン",
+     "engine": [
+      "cl_sub",
+      "ring_hydrogenolysis"
+     ],
+     "modes": [
+      "count"
+     ]
+    },
+    {
+     "id": "alkene",
+     "name": "アルケン（付加・酸化・製法）",
+     "engine": [
+      "bromine",
+      "hydrogenation",
+      "h2_uptake",
+      "markovnikov",
+      "ozonolysis",
+      "kmno4_cleave",
+      "bromine_addition"
+     ],
+     "modes": [
+      "narrow",
+      "gen",
+      "survey"
+     ]
+    },
+    {
+     "id": "alkyne",
+     "name": "アルキン（アセチレン）",
+     "engine": [
+      "acetylide",
+      "alkyne_hydration"
+     ],
+     "modes": [
+      "survey"
+     ]
+    },
+    {
+     "id": "petroleum",
+     "name": "石油と炭化水素の利用",
+     "engine": [],
+     "modes": []
+    }
+   ]
+  },
+  {
+   "id": "oxygen",
+   "name": "酸素を含む脂肪族化合物",
+   "topics": [
+    {
+     "id": "alcohol",
+     "name": "アルコール（級数・酸化・脱水）",
+     "engine": [
+      "sodium",
+      "mild_oxidation",
+      "kmno4",
+      "dehydration",
+      "dehydration_count",
+      "iodoform"
+     ],
+     "modes": [
+      "narrow",
+      "gen"
+     ]
+    },
+    {
+     "id": "ether",
+     "name": "エーテル",
+     "engine": [
+      "sodium"
+     ],
+     "modes": [
+      "narrow",
+      "count"
+     ]
+    },
+    {
+     "id": "aldehyde_ketone",
+     "name": "アルデヒド・ケトン",
+     "engine": [
+      "silver_mirror",
+      "fehling",
+      "iodoform"
+     ],
+     "modes": [
+      "narrow",
+      "gen"
+     ]
+    },
+    {
+     "id": "carboxylic",
+     "name": "カルボン酸",
+     "engine": [
+      "nahco3",
+      "anhydride",
+      "silver_mirror"
+     ],
+     "modes": [
+      "narrow",
+      "gen"
+     ]
+    },
+    {
+     "id": "ester",
+     "name": "エステル（エステル化・加水分解・けん化）",
+     "engine": [
+      "hydrolysis",
+      "partial_hydrolysis"
+     ],
+     "modes": [
+      "big",
+      "gen",
+      "count"
+     ]
+    },
+    {
+     "id": "fat",
+     "name": "油脂",
+     "engine": [
+      "hydrolysis",
+      "h2_uptake"
+     ],
+     "modes": [
+      "big",
+      "gen"
+     ]
+    },
+    {
+     "id": "soap",
+     "name": "セッケンと合成洗剤",
+     "engine": [],
+     "modes": []
+    }
+   ]
+  },
+  {
+   "id": "aromatic",
+   "name": "芳香族化合物",
+   "topics": [
+    {
+     "id": "benzene",
+     "name": "ベンゼンの構造と反応",
+     "engine": [
+      "nitration",
+      "bromination_fe",
+      "chlorination",
+      "sulfonation"
+     ],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "aromatic_sidechain",
+     "name": "側鎖の酸化（トルエン・キシレン）",
+     "engine": [
+      "kmno4",
+      "anhydride"
+     ],
+     "modes": [
+      "gen",
+      "count"
+     ]
+    },
+    {
+     "id": "phenol",
+     "name": "フェノール類",
+     "engine": [
+      "fecl3",
+      "bromine_water",
+      "naoh"
+     ],
+     "modes": [
+      "narrow",
+      "gen"
+     ]
+    },
+    {
+     "id": "salicylic",
+     "name": "サリチル酸とその誘導体",
+     "engine": [
+      "fecl3",
+      "acetylation"
+     ],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "aniline",
+     "name": "アニリン・ジアゾ化・アゾ化合物",
+     "engine": [
+      "nitro_reduction",
+      "hcl",
+      "acetylation",
+      "deamination",
+      "diazo_hydrolysis",
+      "azo_coupling"
+     ],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "separation",
+     "name": "有機化合物の分離（抽出）",
+     "engine": [
+      "naoh",
+      "hcl",
+      "nahco3"
+     ],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "orientation",
+     "name": "置換反応の配向性",
+     "engine": [
+      "nitration",
+      "bromination_fe",
+      "ring_cl"
+     ],
+     "modes": [
+      "gen"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "synthetic_polymer",
+   "name": "合成高分子化合物",
+   "topics": [
+    {
+     "id": "polymer_basics",
+     "name": "高分子の特徴と重合の種類",
+     "engine": [],
+     "modes": [
+      "polymer"
+     ]
+    },
+    {
+     "id": "addition_polymer",
+     "name": "付加重合の高分子",
+     "engine": [],
+     "modes": [
+      "polymer"
+     ]
+    },
+    {
+     "id": "vinylon",
+     "name": "ビニロン",
+     "engine": [],
+     "modes": [
+      "polymer"
+     ]
+    },
+    {
+     "id": "polyamide",
+     "name": "ポリアミド（ナイロン・アラミド）",
+     "engine": [
+      "hydrolysis"
+     ],
+     "modes": [
+      "polymer"
+     ]
+    },
+    {
+     "id": "polyester",
+     "name": "ポリエステル（PET・ポリ乳酸）",
+     "engine": [
+      "hydrolysis"
+     ],
+     "modes": [
+      "polymer"
+     ]
+    },
+    {
+     "id": "thermoset",
+     "name": "熱硬化性樹脂",
+     "engine": [],
+     "modes": []
+    },
+    {
+     "id": "rubber",
+     "name": "ゴム",
+     "engine": [],
+     "modes": []
+    },
+    {
+     "id": "functional_polymer",
+     "name": "機能性高分子",
+     "engine": [],
+     "modes": []
+    }
+   ]
+  },
+  {
+   "id": "natural_polymer",
+   "name": "天然高分子化合物",
+   "topics": [
+    {
+     "id": "monosaccharide",
+     "name": "単糖",
+     "engine": [
+      "silver_mirror",
+      "fehling",
+      "nitric_oxidation",
+      "sugar_degrade"
+     ],
+     "modes": [
+      "gen"
+     ]
+    },
+    {
+     "id": "disaccharide",
+     "name": "二糖",
+     "engine": [
+      "silver_mirror",
+      "fehling"
+     ],
+     "modes": []
+    },
+    {
+     "id": "polysaccharide",
+     "name": "多糖（デンプン・セルロース・グリコーゲン）",
+     "engine": [
+      "methylation_analysis"
+     ],
+     "modes": []
+    },
+    {
+     "id": "cellulose_fiber",
+     "name": "セルロースの利用（再生繊維・半合成繊維）",
+     "engine": [],
+     "modes": []
+    },
+    {
+     "id": "amino_acid",
+     "name": "アミノ酸",
+     "engine": [
+      "ninhydrin",
+      "alpha_amino"
+     ],
+     "modes": [
+      "big"
+     ]
+    },
+    {
+     "id": "protein",
+     "name": "タンパク質",
+     "engine": [
+      "biuret",
+      "xanthoprotein",
+      "sulfur",
+      "partial_hydrolysis"
+     ],
+     "modes": [
+      "big"
+     ]
+    },
+    {
+     "id": "enzyme",
+     "name": "酵素",
+     "engine": [],
+     "modes": []
+    },
+    {
+     "id": "nucleic_acid",
+     "name": "核酸",
+     "engine": [],
+     "modes": []
+    }
+   ]
+  }
+ ]
+}

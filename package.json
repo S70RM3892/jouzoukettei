@@ -11,8 +11,9 @@
     "test:rules": "node scripts/test-rules.js",
     "test:enumerate": "node scripts/test-enumerate.js",
     "test:kakomon": "node scripts/test-kakomon.js",
-    "test": "node scripts/test-rules.js && node scripts/test-enumerate.js && node scripts/test-kakomon.js && node scripts/validate.js",
-    "survey": "node scripts/survey.js"
+    "test": "node scripts/test-rules.js && node scripts/test-enumerate.js && node scripts/test-kakomon.js && node scripts/validate.js && node scripts/test-coverage.js",
+    "survey": "node scripts/survey.js",
+    "test:coverage": "node scripts/test-coverage.js"
   },
   "devDependencies": {
     "@rdkit/rdkit": "latest"
