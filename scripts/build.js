@@ -121,7 +121,7 @@ async function main() {
   for (const [s, n] of Object.entries(rawNames)) names[chem.canonical(RDKit, s)] = n;
   collectPeptideNames(RDKit, problems, names);
 
-  const molecules = {};
+  let molecules = {};
   const addMol = (s) => {
     if (!molecules[s]) {
       molecules[s] = { name: names[s] || null, svg: drawSvg(RDKit, s) };
@@ -150,12 +150,12 @@ async function main() {
     return { ...extra, candidates: r.cands, answer: r.cands.indexOf(r.answer), minCards: minCards(r, clues.length), clues: shapeClues(clues, r) };
   };
 
-  const out = [];
+  let out = [];
   const rejected = [];
   // 京大の答えの難易度分布（generate.js が書いたもの。なければ既定値）
   const genP = problems.find((p) => p.meta && p.meta.kyotoStats);
   const kyotoStats = genP ? genP.meta.kyotoStats : { min: 7, p25: 12, median: 14, p75: 16, max: 25 };
-  for (const p of problems) {
+  const convert = (list) => { for (const p of list) {
     const r = checkAny(RDKit, p);
     if (r.errors.length) {
       rejected.push(...r.errors);
@@ -231,7 +231,8 @@ async function main() {
         nStereo: r.nStereo,
       });
     }
-  }
+  } };
+  convert(problems);
 
   // 自動生成の断片には名前のないものがある（構造式だけを見せる）。手で作った問題だけ名前の抜けを警告する
   const genMols = new Set();
@@ -262,6 +263,34 @@ async function main() {
   fs.writeFileSync(path.join(ROOT, 'dist', 'artifact.html'), html);
 
   console.log(`built dist/index.html: ${out.length} problems, ${Object.keys(molecules).length} structures, ${(html.length / 1024).toFixed(0)} KB`);
+  // 条件を指定して出す問題の在庫: 1問ずつ別のファイル（構造式つき）にし、条件で選ぶための一覧を index.json に置く。
+  // 画面は選んだ1問のファイルだけを読むので、在庫が増えてもページは重くならない。GitHub Pages でだけ使う
+  const poolFile = path.join(ROOT, 'problems', 'pool.json');
+  const poolDir = path.join(ROOT, 'dist', 'pool');
+  fs.rmSync(poolDir, { recursive: true, force: true });
+  if (fs.existsSync(poolFile)) {
+    const pool = JSON.parse(fs.readFileSync(poolFile, 'utf8'));
+    fs.mkdirSync(poolDir, { recursive: true });
+    const index = [];
+    const nRejected = rejected.length;
+    for (const p of pool) {
+      out = [];
+      molecules = {};
+      convert([p]);
+      const item = out[0];
+      if (!item || !item.exam) continue;
+      fs.writeFileSync(path.join(poolDir, `${p.id}.json`), JSON.stringify({ problem: item, molecules }).replace(/</g, '\\u003c'));
+      index.push({
+        id: p.id, grade: item.grade, template: p.meta.template, frags: [...new Set(p.meta.frags)],
+        calcs: [...new Set((p.calcs || []).map((c) => c.key))], relations: !!(p.relations && p.relations.length),
+        derived: !!(p.derived && p.derived.length), rules: !!(item.exam.rules && item.exam.rules.length), formula: p.formula,
+      });
+    }
+    const dropped = rejected.splice(nRejected);
+    fs.writeFileSync(path.join(poolDir, 'index.json'), JSON.stringify({ templates: Object.fromEntries(Object.entries(G.TEMPLATES).map(([k, v]) => [k, v.title])), items: index }));
+    console.log(`built dist/pool: ${index.length} problems${dropped.length ? `（検証で落とした ${dropped.length} 件）` : ''}`);
+  }
+
   if (rejected.length) {
     console.error(`rejected ${rejected.length} error(s):`);
     rejected.forEach((e) => console.error('  ' + e));
