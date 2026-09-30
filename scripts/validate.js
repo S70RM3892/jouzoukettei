@@ -6,7 +6,7 @@ const path = require('path');
 const chem = require('../src/chem');
 const calc = require('../src/calc');
 
-const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json', 'generated.json'];
+const PROBLEM_FILES = ['narrow.json', 'big.json', 'count.json', 'polymer.json', 'generated.json', 'survey.json'];
 
 async function loadRDKit() {
   const init = require('@rdkit/rdkit');

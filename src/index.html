@@ -377,6 +377,7 @@ const MODES = [
   { key: 'gen', name: '京大形式（本番レベル）', note: '京大の過去問の答え 11 題の再現と、基礎から京大超えまで6段階の自動生成の大問。化合物どうしの関係を使う問題が中心' },
   { key: 'big', name: '京大形式（基本）', note: '手作りの大問を京大形式で。問題文と実験を全部読んでから、問1〜に答える' },
   { key: 'narrow', name: '絞り込み型', note: '断片1つを決める' },
+  { key: 'survey', name: '異性体俯瞰型', note: '分子式の構造異性体を環・三重結合まで全部挙げてから、性質と反応の組み合わせで1つに決める。難易度は候補の数と手がかりの数で3段階。候補を見る前に、分子式の異性体を紙に全部書き出してから始める' },
   { key: 'count', name: '数え上げ型', note: '異性体を数える' },
   { key: 'polymer', name: '高分子型', note: '重合度を計算し、単量体を決める' },
 ];
@@ -642,7 +643,7 @@ function renderHome() {
             const badge = !st ? '<span class="badge new">未挑戦</span>'
               : st.lastCorrect ? `<span class="badge ok">最高 ${st.best}点</span>`
               : '<span class="badge ng">要復習</span>';
-            const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : `候補${p.candidates.length}`;
+            const sub = p.mode === 'gen' ? `${esc(p.title)} ・ 難易度 ${p.difficulty}` : p.stages ? esc(p.title) : p.mode === 'count' ? esc(DATA.cards[p.clues[0].card].name) + 'で数える' : p.title ? `${esc(p.title)} ・ 候補${p.candidates.length}` : `候補${p.candidates.length}`;
             return `<li class="g${gradeOfP(p)}"><button data-id="${p.id}">
               <span class="num">#${p.id.split('-')[1]}</span>
               <span><span class="formula fm">${p.hideFormula ? '分子式は計算で' : fmtFormula(p.formula)}</span><span class="lv">${gradeBadge(p)}</span>

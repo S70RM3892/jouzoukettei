@@ -167,7 +167,8 @@ async function main() {
       const d = p.meta && p.meta.difficulty !== undefined ? p.meta.difficulty : G.difficulty(p);
       grade = G.gradeOf(d, kyotoStats);
     }
-    const base = { id: p.id, mode: p.mode, level: p.level || 1, grade, formula: p.formula };
+    // 異性体俯瞰型は絞り込み型と同じ形で、別のモードとして出す
+    const base = { id: p.id, mode: p.kind === 'survey' ? 'survey' : p.mode, level: p.level || 1, grade, formula: p.formula, ...(p.title ? { title: p.title } : {}) };
     if (p.mode === 'narrow') {
       out.push(narrowData(r, p.clues, base));
     } else if (p.mode === 'big') {

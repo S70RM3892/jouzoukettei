@@ -675,6 +675,27 @@ function markovnikov(RDKit, g0) {
   return [...new Set(out)];
 }
 
+// 三重結合への水の付加（HgSO₄ 触媒）: エノールを経てカルボニル化合物になる。
+// O は H の少ない側の炭素につく（アセチレン → アセトアルデヒド、末端アルキン → メチルケトン）。内部アルキンは両側
+function alkyneHydration(RDKit, g0) {
+  const tri = g0.bonds.filter((b) => b.order === 3 && g0.atoms[b.a].el === 'C' && g0.atoms[b.b].el === 'C');
+  if (!tri.length) return []; // C≡C がなければ付加しない（この条件では C=C には付加しないものとする）
+  if (tri.length !== 1) throw new Unsupported('several C#C');
+  if (g0.bonds.some((b) => b.order === 2 && !isAromBond(g0, b))) throw new Unsupported('C=C and C#C');
+  const b0 = tri[0];
+  const ha = hCount(g0, b0.a), hb = hCount(g0, b0.b);
+  const targets = ha === hb ? [b0.a, b0.b] : [ha < hb ? b0.a : b0.b];
+  const out = [];
+  for (const t of targets) {
+    const g = cloneGraph(g0);
+    g.bonds[g0.bonds.indexOf(b0)].order = 1;
+    g.atoms.push({ el: 'O' });
+    g.bonds.push({ a: t, b: g.atoms.length - 1, order: 2 });
+    out.push(...graphToSmilesList(RDKit, g));
+  }
+  return [...new Set(out)].sort();
+}
+
 // 二クロム酸カリウムによる穏やかな酸化: 第一級アルコール → アルデヒド、第二級 → ケトン
 function mildOxidize(RDKit, g0) {
   const g = cloneGraph(g0);
@@ -909,6 +930,18 @@ const CARDS = {
     action: '酸触媒で C=C に水を付加させる。H は H の多い側の炭素に、OH は H の少ない側の炭素につく（同じなら両方できる）',
     kind: 'products', none: '付加しなかった',
     transform: markovnikov,
+  },
+  acetylide: {
+    name: 'アセチリドの沈殿',
+    action: 'アンモニア性硝酸銀水溶液に通じる（末端の H–C≡C– をもつものは白色の銀アセチリドが沈殿する）',
+    kind: 'bool', yes: '白色沈殿が生じた', no: '変化なし',
+    smarts: ['[CX2H1]#[CX2]'],
+  },
+  alkyne_hydration: {
+    name: '水の付加（三重結合）',
+    action: '硫酸水銀(II) を触媒に C≡C に水を付加させる（この条件では C=C には付加しないものとする）。できたエノールはすぐにカルボニル化合物になる。O は H の少ない側の炭素につく',
+    kind: 'products', none: '付加しなかった',
+    transform: alkyneHydration,
   },
   // ---- 以下は reactions.js（与えられた規則・配向性）。require は循環を避けるため呼び出し時に行う ----
   nitration: rx('nitration', 'ニトロ化', '濃硝酸と濃硫酸でベンゼン環をニトロ化する（1か所）。配向性に従い、オルトとパラの両方に入るなら混合物', '反応しない'),

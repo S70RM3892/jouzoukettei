@@ -1,0 +1,912 @@
+[
+ {
+  "id": "iso-001",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈ の異性体",
+  "level": 1,
+  "formula": "C4H8",
+  "answer": "C=CCC",
+  "candidates": [
+   "C1CCC1",
+   "C=C(C)C",
+   "C=CCC",
+   "CC1CC1",
+   "CC=CC"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCC"
+    ]
+   },
+   {
+    "card": "stereo_count",
+    "result": 1
+   }
+  ]
+ },
+ {
+  "id": "iso-002",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈ の異性体",
+  "level": 1,
+  "formula": "C4H8",
+  "answer": "CC=CC",
+  "candidates": [
+   "C1CCC1",
+   "C=C(C)C",
+   "C=CCC",
+   "CC1CC1",
+   "CC=CC"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCC"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-003",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈ の異性体",
+  "level": 1,
+  "formula": "C4H8",
+  "answer": "C=C(C)C",
+  "candidates": [
+   "C1CCC1",
+   "C=C(C)C",
+   "C=CCC",
+   "CC1CC1",
+   "CC=CC"
+  ],
+  "clues": [
+   {
+    "card": "stereo_count",
+    "result": 1
+   },
+   {
+    "card": "cl_sub",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-004",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 1,
+  "formula": "C4H10O",
+  "answer": "CCC(C)O",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "mild_oxidation",
+    "result": [
+     "CCC(C)=O"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "iso-005",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 2,
+  "formula": "C4H6",
+  "answer": "CC#CC",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "acetylide",
+    "result": false
+   },
+   {
+    "card": "bromine_addition",
+    "result": []
+   }
+  ]
+ },
+ {
+  "id": "iso-006",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 2,
+  "formula": "C4H6",
+  "answer": "C#CCC",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCC"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-007",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 1,
+  "formula": "C4H6",
+  "answer": "C1=CCC1",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "C1CCC1"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "iso-008",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 1,
+  "formula": "C4H6",
+  "answer": "CC1C=C1",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "bromine_addition",
+    "result": [
+     "CC1C(Br)C1Br"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "iso-009",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈O の異性体",
+  "level": 3,
+  "formula": "C4H8O",
+  "answer": "CCC(C)=O",
+  "candidates": [
+   "C1CCOC1",
+   "C=C(C)CO",
+   "C=C(C)OC",
+   "C=CC(C)O",
+   "C=CCCO",
+   "C=CCOC",
+   "C=COCC",
+   "CC(C)C=O",
+   "CC1(C)CO1",
+   "CC1(O)CC1",
+   "CC1CC1O",
+   "CC1CCO1",
+   "CC1COC1",
+   "CC1OC1C",
+   "CC=CCO",
+   "CC=COC",
+   "CCC(C)=O",
+   "CCC1CO1",
+   "CCCC=O",
+   "COC1CC1",
+   "OC1CCC1",
+   "OCC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "h2_uptake",
+    "result": 0
+   },
+   {
+    "card": "iodoform",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "iso-010",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈O の異性体",
+  "level": 3,
+  "formula": "C4H8O",
+  "answer": "CCCC=O",
+  "candidates": [
+   "C1CCOC1",
+   "C=C(C)CO",
+   "C=C(C)OC",
+   "C=CC(C)O",
+   "C=CCCO",
+   "C=CCOC",
+   "C=COCC",
+   "CC(C)C=O",
+   "CC1(C)CO1",
+   "CC1(O)CC1",
+   "CC1CC1O",
+   "CC1CCO1",
+   "CC1COC1",
+   "CC1OC1C",
+   "CC=CCO",
+   "CC=COC",
+   "CCC(C)=O",
+   "CCC1CO1",
+   "CCCC=O",
+   "COC1CC1",
+   "OC1CCC1",
+   "OCC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": []
+   },
+   {
+    "card": "stereo_count",
+    "result": 1
+   },
+   {
+    "card": "cl_sub",
+    "result": 4
+   }
+  ]
+ },
+ {
+  "id": "iso-011",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₃H₆O の異性体",
+  "level": 2,
+  "formula": "C3H6O",
+  "answer": "C=CCO",
+  "candidates": [
+   "C1COC1",
+   "C=CCO",
+   "C=COC",
+   "CC(C)=O",
+   "CC1CO1",
+   "CCC=O",
+   "OC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "sodium",
+    "result": true
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-012",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈O の異性体",
+  "level": 3,
+  "formula": "C4H8O",
+  "answer": "C=CCCO",
+  "candidates": [
+   "C1CCOC1",
+   "C=C(C)CO",
+   "C=C(C)OC",
+   "C=CC(C)O",
+   "C=CCCO",
+   "C=CCOC",
+   "C=COCC",
+   "CC(C)C=O",
+   "CC1(C)CO1",
+   "CC1(O)CC1",
+   "CC1CC1O",
+   "CC1CCO1",
+   "CC1COC1",
+   "CC1OC1C",
+   "CC=CCO",
+   "CC=COC",
+   "CCC(C)=O",
+   "CCC1CO1",
+   "CCCC=O",
+   "COC1CC1",
+   "OC1CCC1",
+   "OCC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCCO"
+    ]
+   },
+   {
+    "card": "stereo_count",
+    "result": 1
+   }
+  ]
+ },
+ {
+  "id": "iso-013",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 2,
+  "formula": "C4H10O",
+  "answer": "CCCOC",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "mild_oxidation",
+    "result": []
+   },
+   {
+    "card": "cl_sub",
+    "result": 4
+   }
+  ]
+ },
+ {
+  "id": "iso-014",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 2,
+  "formula": "C4H6",
+  "answer": "C=CC=C",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCC"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-015",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₅H₈ の異性体",
+  "level": 3,
+  "formula": "C5H8",
+  "answer": "C=CC=CC",
+  "candidates": [
+   "C#CC(C)C",
+   "C#CCCC",
+   "C1=CCCC1",
+   "C=C1CC1C",
+   "C=C1CCC1",
+   "C=CC(=C)C",
+   "C=CC1CC1",
+   "C=CC=CC",
+   "C=CCC=C",
+   "CC#CCC",
+   "CC1(C)C=C1",
+   "CC1=C(C)C1",
+   "CC1=CC1C",
+   "CC1=CCC1",
+   "CC1C=CC1",
+   "CC=C1CC1",
+   "CCC1=CC1",
+   "CCC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "h2_uptake",
+    "result": 2
+   },
+   {
+    "card": "stereo_count",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-016",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₃H₆O の異性体",
+  "level": 2,
+  "formula": "C3H6O",
+  "answer": "OC1CC1",
+  "candidates": [
+   "C1COC1",
+   "C=CCO",
+   "C=COC",
+   "CC(C)=O",
+   "CC1CO1",
+   "CCC=O",
+   "OC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": []
+   },
+   {
+    "card": "sodium",
+    "result": true
+   }
+  ]
+ },
+ {
+  "id": "iso-017",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₈O の異性体",
+  "level": 3,
+  "formula": "C4H8O",
+  "answer": "C=CC(C)O",
+  "candidates": [
+   "C1CCOC1",
+   "C=C(C)CO",
+   "C=C(C)OC",
+   "C=CC(C)O",
+   "C=CCCO",
+   "C=CCOC",
+   "C=COCC",
+   "CC(C)C=O",
+   "CC1(C)CO1",
+   "CC1(O)CC1",
+   "CC1CC1O",
+   "CC1CCO1",
+   "CC1COC1",
+   "CC1OC1C",
+   "CC=CCO",
+   "CC=COC",
+   "CCC(C)=O",
+   "CCC1CO1",
+   "CCCC=O",
+   "COC1CC1",
+   "OC1CCC1",
+   "OCC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "h2_uptake",
+    "result": 1
+   },
+   {
+    "card": "stereo_count",
+    "result": 2
+   },
+   {
+    "card": "cis_trans",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "iso-018",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 2,
+  "formula": "C4H10O",
+  "answer": "CC(C)CO",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "dehydration",
+    "result": [
+     "C=C(C)C"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-019",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₆ の異性体",
+  "level": 2,
+  "formula": "C4H6",
+  "answer": "C=C1CC1",
+  "candidates": [
+   "C#CCC",
+   "C1=CCC1",
+   "C=C1CC1",
+   "C=CC=C",
+   "CC#CC",
+   "CC1=CC1",
+   "CC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CC1CC1"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-020",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₅H₈ の異性体",
+  "level": 3,
+  "formula": "C5H8",
+  "answer": "CC=C1CC1",
+  "candidates": [
+   "C#CC(C)C",
+   "C#CCCC",
+   "C1=CCCC1",
+   "C=C1CC1C",
+   "C=C1CCC1",
+   "C=CC(=C)C",
+   "C=CC1CC1",
+   "C=CC=CC",
+   "C=CCC=C",
+   "CC#CCC",
+   "CC1(C)C=C1",
+   "CC1=C(C)C1",
+   "CC1=CC1C",
+   "CC1=CCC1",
+   "CC1C=CC1",
+   "CC=C1CC1",
+   "CCC1=CC1",
+   "CCC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCC1CC1"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-021",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 2,
+  "formula": "C4H10O",
+  "answer": "COC(C)C",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "mild_oxidation",
+    "result": []
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-022",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₅H₁₀ の異性体",
+  "level": 2,
+  "formula": "C5H10",
+  "answer": "C=CCCC",
+  "candidates": [
+   "C1CCCC1",
+   "C=C(C)CC",
+   "C=CC(C)C",
+   "C=CCCC",
+   "CC1(C)CC1",
+   "CC1CC1C",
+   "CC1CCC1",
+   "CC=C(C)C",
+   "CC=CCC",
+   "CCC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CCCCC"
+    ]
+   },
+   {
+    "card": "cis_trans",
+    "result": false
+   }
+  ]
+ },
+ {
+  "id": "iso-023",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₃H₆O の異性体",
+  "level": 2,
+  "formula": "C3H6O",
+  "answer": "CCC=O",
+  "candidates": [
+   "C1COC1",
+   "C=CCO",
+   "C=COC",
+   "CC(C)=O",
+   "CC1CO1",
+   "CCC=O",
+   "OC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": []
+   },
+   {
+    "card": "stereo_count",
+    "result": 1
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-024",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 2,
+  "formula": "C4H10O",
+  "answer": "CCCCO",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "chiral",
+    "result": 0
+   },
+   {
+    "card": "sodium",
+    "result": true
+   },
+   {
+    "card": "cl_sub",
+    "result": 4
+   }
+  ]
+ },
+ {
+  "id": "iso-025",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₅H₈ の異性体",
+  "level": 3,
+  "formula": "C5H8",
+  "answer": "CC1=CCC1",
+  "candidates": [
+   "C#CC(C)C",
+   "C#CCCC",
+   "C1=CCCC1",
+   "C=C1CC1C",
+   "C=C1CCC1",
+   "C=CC(=C)C",
+   "C=CC1CC1",
+   "C=CC=CC",
+   "C=CCC=C",
+   "CC#CCC",
+   "CC1(C)C=C1",
+   "CC1=C(C)C1",
+   "CC1=CC1C",
+   "CC1=CCC1",
+   "CC1C=CC1",
+   "CC=C1CC1",
+   "CCC1=CC1",
+   "CCC1C=C1"
+  ],
+  "clues": [
+   {
+    "card": "hydrogenation",
+    "result": [
+     "CC1CCC1"
+    ]
+   },
+   {
+    "card": "cl_sub",
+    "result": 4
+   }
+  ]
+ },
+ {
+  "id": "iso-026",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₃H₆O の異性体",
+  "level": 2,
+  "formula": "C3H6O",
+  "answer": "CC1CO1",
+  "candidates": [
+   "C1COC1",
+   "C=CCO",
+   "C=COC",
+   "CC(C)=O",
+   "CC1CO1",
+   "CCC=O",
+   "OC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "bromine_addition",
+    "result": []
+   },
+   {
+    "card": "silver_mirror",
+    "result": false
+   },
+   {
+    "card": "cl_sub",
+    "result": 3
+   }
+  ]
+ },
+ {
+  "id": "iso-027",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₃H₆O の異性体",
+  "level": 2,
+  "formula": "C3H6O",
+  "answer": "C1COC1",
+  "candidates": [
+   "C1COC1",
+   "C=CCO",
+   "C=COC",
+   "CC(C)=O",
+   "CC1CO1",
+   "CCC=O",
+   "OC1CC1"
+  ],
+  "clues": [
+   {
+    "card": "mild_oxidation",
+    "result": []
+   },
+   {
+    "card": "cl_sub",
+    "result": 2
+   }
+  ]
+ },
+ {
+  "id": "iso-028",
+  "mode": "narrow",
+  "kind": "survey",
+  "title": "C₄H₁₀O の異性体",
+  "level": 2,
+  "formula": "C4H10O",
+  "answer": "CC(C)(C)O",
+  "candidates": [
+   "CC(C)(C)O",
+   "CC(C)CO",
+   "CCC(C)O",
+   "CCCCO",
+   "CCCOC",
+   "CCOCC",
+   "COC(C)C"
+  ],
+  "clues": [
+   {
+    "card": "mild_oxidation",
+    "result": []
+   },
+   {
+    "card": "dehydration",
+    "result": [
+     "C=C(C)C"
+    ]
+   }
+  ]
+ }
+]
