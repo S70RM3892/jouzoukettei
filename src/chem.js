@@ -257,8 +257,34 @@ function stereoBondCount(g) {
   return n;
 }
 
+// 環のシス-トランス異性: 同じ環（八員環まで・芳香環を除く）の中に、環の外の2つの置換基（H を含む）が互いに異なる炭素が2つ以上ある
+// （1,2-ジメチルシクロプロパン・4-メチルシクロヘキサノールなど。メチルシクロヘキサンや 1,1-ジメチルシクロプロパンにはない）
+function ringCisTrans(g) {
+  const ringBond = new Set(g.bonds.filter((b) => !(g.atoms[b.a].arom && g.atoms[b.b].arom) && bondInSmallRing(g, b, 9)));
+  if (!ringBond.size) return false;
+  // 環の系（環の結合でつながった原子の集まり）
+  const sys = g.atoms.map((_, i) => i);
+  const find = (x) => (sys[x] === x ? x : (sys[x] = find(sys[x])));
+  ringBond.forEach((b) => { sys[find(b.a)] = find(b.b); });
+  const count = new Map();
+  g.atoms.forEach((a, i) => {
+    if (a.el !== 'C' || a.arom) return;
+    const nb = neighbors(g, i);
+    if (nb.some((x) => x.order !== 1)) return;
+    const inRing = nb.filter((x) => ringBond.has(x.bond));
+    if (inRing.length !== 2) return;
+    const { color, adj } = refine(g, [i]);
+    const ringAtoms = new Set(inRing.map((x) => x.atom));
+    const exo = adj[i].filter(([j]) => !ringAtoms.has(j));
+    if (exo.length !== 2 || color[exo[0][0]] === color[exo[1][0]]) return;
+    const k = find(i);
+    count.set(k, (count.get(k) || 0) + 1);
+  });
+  return [...count.values()].some((n) => n >= 2);
+}
+
 function hasCisTrans(g) {
-  return stereoBondCount(g) > 0;
+  return stereoBondCount(g) > 0 || ringCisTrans(g);
 }
 
 // ---------- 変換反応 ----------
@@ -808,7 +834,7 @@ const CARDS = {
   },
   cis_trans: {
     name: 'シス-トランス異性',
-    action: 'シス-トランス異性体が存在するか調べる',
+    action: 'シス-トランス異性体が存在するか調べる（C=C のまわりと、環の2つの炭素の置換基が環の同じ側か反対側か）',
     kind: 'bool', yes: '存在する', no: '存在しない',
     compute: (RDKit, g) => hasCisTrans(g),
   },
